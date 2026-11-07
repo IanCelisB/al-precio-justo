@@ -141,4 +141,11 @@ export class Datos {
       empresasConDocumentos: cuenta("filings", "SELECT COUNT(DISTINCT cik) AS n FROM filings WHERE status='leido'"),
     };
   }
+
+  /** Perfil descriptivo guardado por `ingesta.perfil` (null si aún no se generó). */
+  perfil(ticker: string): unknown {
+    if (!this.hay("perfiles")) return null;
+    const r = this.db.prepare("SELECT datos FROM perfiles WHERE ticker = ?").get(ticker) as any;
+    return r ? JSON.parse(r.datos) : null;
+  }
 }

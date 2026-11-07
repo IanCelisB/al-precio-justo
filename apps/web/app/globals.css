@@ -338,3 +338,29 @@ a { color: inherit; text-decoration: none; }
 .control-cab b { white-space: nowrap; }
 .control input[type=range] { width: 100%; accent-color: var(--link); height: 24px; margin: 0; }
 .enlace { all: unset; cursor: pointer; color: var(--link); font-weight: 700; font-size: 14px; align-self: flex-start; }
+
+/* Sobre la empresa */
+.sobre { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+.sobre-titulo { font-family: var(--f-head); font-size: 18px; }
+.sobre-sub { font-family: var(--f-head); font-size: 15.5px; margin-top: 4px; }
+.sobre-desc { margin: 0; font-size: 15px; line-height: 1.55; }
+.sobre-desc a { font-size: 12.5px; text-decoration: underline; }
+.sobre-ficha, .sobre-clave { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; margin: 0; }
+@media (min-width: 720px) { .sobre-ficha, .sobre-clave { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.sobre-ficha div, .sobre-clave div { display: flex; flex-direction: column; min-width: 0; }
+.sobre-ficha dt, .sobre-clave dt { color: var(--muted); font-size: 12px; }
+.sobre-ficha dd, .sobre-clave dd { margin: 0; font-weight: 700; font-size: 14.5px; overflow-wrap: anywhere; }
+.sobre-ficha a { color: var(--link); }
+.sobre-clave dd { font-family: var(--f-head); font-size: 19px; font-variant-numeric: tabular-nums; }
+.sobre-clave small { color: var(--muted); font-size: 11.5px; }
+.rango52 { display: flex; flex-direction: column; gap: 6px; }
+.rango52-cab { display: flex; justify-content: space-between; font-size: 13px; }
+.rango52-barra { position: relative; height: 6px; border-radius: 999px; background: var(--band); }
+.rango52-barra span { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 999px; background: var(--link); box-shadow: 0 0 0 3px var(--card); }
+.rango52-extremos { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--muted); }
+.ingresos { display: flex; flex-direction: column; gap: 8px; }
+.ingreso { display: flex; flex-direction: column; gap: 4px; }
+.ingreso-cab { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; }
+.ingreso-cab span { min-width: 0; overflow-wrap: anywhere; }
+.ingreso-barra { height: 8px; border-radius: 999px; background: var(--bg); overflow: hidden; }
+.ingreso-barra span { display: block; height: 100%; border-radius: 999px; background: var(--mint); }

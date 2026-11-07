@@ -8,6 +8,7 @@ import { Metricas } from "@/components/Metricas";
 import { PanelSimular } from "@/components/PanelSimular";
 import { MaquinaTiempo } from "@/components/MaquinaTiempo";
 import { GraficoValor } from "@/components/GraficoValor";
+import { SobreEmpresa } from "@/components/SobreEmpresa";
 import { BotonSeguir } from "@/components/BotonSeguir";
 import { TIPOS } from "@ancla/valoracion/recomendaciones";
 import { api, type Ficha } from "@/lib/api";
@@ -97,6 +98,8 @@ export default async function Empresa({ params }: { params: Promise<{ ticker: st
           </ul>
         )}
       </div>
+
+      <SobreEmpresa nombre={nombre} perfil={f.perfil} clave={f.clave} />
 
       <div className="dos-columnas">
         <PanelSimular ticker={f.ticker} nombre={nombre} precio={f.precio} conSesion={!!yo}

@@ -1,5 +1,6 @@
 /** Cliente de la API de Al Precio Justo (se usa en el servidor de Next.js). */
 import { cookies } from "next/headers";
+import type { DatosClave, Perfil } from "@ancla/valoracion/perfil";
 import type { Estado, Trimestre, Valoracion } from "@ancla/valoracion";
 import type { Tipo } from "@ancla/valoracion/recomendaciones";
 
@@ -51,6 +52,8 @@ export interface Ficha extends ConRazones {
   valoracion: Valoracion | null;
   trimestres: Trimestre[];
   precios: { fecha: string; cierre: number }[];
+  perfil: Perfil | null;
+  clave: DatosClave | null;
 }
 
 export interface Recomendaciones {

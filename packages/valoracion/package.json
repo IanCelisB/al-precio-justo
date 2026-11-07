@@ -13,6 +13,7 @@
     "./sectores": "./src/sectores.ts",
     "./recomendaciones": "./src/recomendaciones.ts",
     "./simulador": "./src/simulador.ts",
-    "./grafico": "./src/grafico.ts"
+    "./grafico": "./src/grafico.ts",
+    "./perfil": "./src/perfil.ts"
   }
 }

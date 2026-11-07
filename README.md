@@ -78,6 +78,19 @@ estuvo barata, justa o cara. En «Tu modelo» el usuario cambia crecimiento,
 rentabilidad exigida, crecimiento a perpetuidad y recompra neta: la banda y el
 valor se recalculan al instante en el dispositivo y se guardan en él.
 
+### Sobre la empresa
+
+`ingesta/perfil.py` arma el perfil de cada empresa con fuentes públicas:
+
+- **Descripción**: el resumen de su artículo en Wikipedia en español (en inglés si no hay), encontrado por su número de la SEC (CIK) en Wikidata. Se muestra con el enlace a la fuente (licencia CC BY-SA).
+- **Ficha**: fundación, sede, CEO, empleados y web (Wikidata); industria, bolsa y cierre del año fiscal (SEC).
+- **¿De dónde vienen sus ingresos?**: ventas por negocio, producto y región del último 10-K, leídas por el propio lector de documentos (`lector.read_inline_segments`) con los nombres que usa la empresa.
+- **Datos clave** (`packages/valoracion/src/perfil.ts`): capitalización, PER, rentabilidad por dividendo, rango de 52 semanas y beta frente al S&P 500 (2 años, semanal).
+
+```bash
+py -m ingesta.perfil --todas          # ~35 min para ~1.000 empresas
+```
+
 ## Búsqueda con criterio prudente
 
 `packages/valoracion/src/recomendaciones.ts` analiza cada empresa con las mismas reglas:

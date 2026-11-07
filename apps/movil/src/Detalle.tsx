@@ -16,6 +16,7 @@ import type { Estilos } from "./estilos";
 import { Logo } from "./componentes";
 import { MaquinaTiempo, PanelSimular } from "./simulacion";
 import { GraficoValor } from "./GraficoValor";
+import { SobreEmpresa } from "./SobreEmpresa";
 import { useSesion } from "./sesion";
 import type { Tema } from "./tema";
 
@@ -142,6 +143,8 @@ export function Detalle({ ticker, s, tema, volver }: { ticker: string; s: Estilo
                 <Text key={r} style={[s.ui, s.muted, { fontSize: 12.5 }]}><Text style={{ color: tema.down }}>! </Text>{r}</Text>
               ))}
             </View>
+
+            <SobreEmpresa s={s} tema={tema} perfil={f.perfil} clave={f.clave} />
 
             <PanelSimular s={s} tema={tema} ticker={f.ticker} nombre={nombreCorto(f.nombre)} precio={f.precio} />
             <MaquinaTiempo s={s} tema={tema} ticker={f.ticker} nombre={nombreCorto(f.nombre)} />

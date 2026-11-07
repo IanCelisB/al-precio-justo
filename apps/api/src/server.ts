@@ -3,7 +3,7 @@
  *
  *   GET /inicio?seguidas=AAPL,MSFT      oportunidad del día, tus empresas y las más baratas
  *   GET /empresas?tickers=A,B           todas (o solo esas), con precio, valor, estado y análisis
- *   GET /empresas/:ticker               ficha: trimestres, valoración, análisis y precios
+ *   GET /empresas/:ticker               ficha: trimestres, valoración, análisis, precios, perfil y datos clave
  *   GET /buscar?q=&tipo=&buenPrecio=1   búsqueda ordenada por el criterio prudente
  *   GET /recomendaciones                sugeridas y para vigilar, con sus razones
  *   GET /logos/:ticker                  logo de la empresa (PNG)
@@ -28,6 +28,7 @@ import { resolve } from "node:path";
 import { estado, valorar, type Estado, type Trimestre, type Valoracion } from "@ancla/valoracion";
 import { analizar, type Analisis, type Tipo } from "@ancla/valoracion/recomendaciones";
 import { porId } from "@ancla/valoracion/metricas";
+import { datosClave } from "@ancla/valoracion/perfil";
 import { MONTO_MAXIMO } from "@ancla/valoracion/formato";
 import { curva, maquinaDelTiempo, prepararCompra, prepararVenta, REFERENCIA, resumen } from "@ancla/valoracion/simulador";
 import { Datos, type Cotizacion, type Empresa } from "./datos.ts";
@@ -253,13 +254,16 @@ app.get<{ Params: { ticker: string } }>("/empresas/:ticker", async (req, rep) =>
   if (!resumen) return rep.code(404).send({ error: `No conocemos ${ticker}` });
   const a = c.analisis.get(ticker)!;
   const desde = new Date(Date.now() - 10 * 365.25 * 86_400_000).toISOString().slice(0, 10);
+  const precios = datos.historicoPrecios(ticker, desde);
   return {
     ...resumen,
     razones: a.calidad.razones,
     alertas: a.calidad.alertas,
     valoracion: c.valoraciones.get(ticker) ?? null,
     trimestres: c.trimestres.get(ticker) ?? [],
-    precios: datos.historicoPrecios(ticker, desde),
+    precios,
+    perfil: datos.perfil(ticker),
+    clave: datosClave(c.trimestres.get(ticker) ?? [], precios, datos.historicoPrecios(REFERENCIA, desde), resumen.precio),
   };
 });
 

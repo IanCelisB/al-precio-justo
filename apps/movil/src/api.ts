@@ -1,6 +1,7 @@
 import type { Estado, Trimestre, Valoracion } from "@ancla/valoracion";
 import type { Tipo } from "@ancla/valoracion/recomendaciones";
 import { BASE, DEMO, ErrorDemo, responder } from "./demo";
+import type { DatosClave, Perfil } from "@ancla/valoracion/perfil";
 
 /**
  * En un teléfono, "localhost" es el propio teléfono: define EXPO_PUBLIC_ANCLA_API
@@ -46,6 +47,8 @@ export interface Ficha extends ConRazones {
   valoracion: Valoracion | null;
   trimestres: Trimestre[];
   precios: { fecha: string; cierre: number }[];
+  perfil: Perfil | null;
+  clave: DatosClave | null;
 }
 
 export interface Inicio {
