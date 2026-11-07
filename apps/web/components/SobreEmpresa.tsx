@@ -1,5 +1,5 @@
 import { dinero, fechaCorta, grande } from "@ancla/valoracion/formato";
-import { mesCierre, partes, textoBeta, type DatosClave, type Perfil } from "@ancla/valoracion/perfil";
+import { fraseIngresos, mesCierre, monto, partes, textoBeta, type DatosClave, type Perfil } from "@ancla/valoracion/perfil";
 
 const EJES = [
   { id: "segmentos", titulo: "Por negocio" },
@@ -79,12 +79,16 @@ export function SobreEmpresa({ nombre, perfil, clave }: { nombre: string; perfil
       {mostrados.length > 0 && (
         <>
           <b className="sobre-sub">¿De dónde vienen sus ingresos?</b>
+          {fraseIngresos(nombre, p.ingresos![mostrados[0].id], p.ingresosAnio) && (
+            <p className="sobre-desc">{fraseIngresos(nombre, p.ingresos![mostrados[0].id], p.ingresosAnio)}</p>
+          )}
           {mostrados.map((e) => (
             <div key={e.id} className="ingresos">
               <small className="muted">{e.titulo}</small>
               {partes(p.ingresos![e.id]).map((x) => (
                 <div key={x.nombre} className="ingreso">
-                  <div className="ingreso-cab"><span>{x.nombre}</span><b className="mono">{num(x.pct * 100, 0)} %</b></div>
+                  <div className="ingreso-cab"><span>{x.nombre}</span>
+                    <span className="ingreso-monto"><b className="mono">{monto(x.valor)}</b> <small className="muted">{num(x.pct * 100, 0)} %</small></span></div>
                   <div className="ingreso-barra"><span style={{ width: `${Math.max(2, x.pct * 100)}%` }} /></div>
                 </div>
               ))}

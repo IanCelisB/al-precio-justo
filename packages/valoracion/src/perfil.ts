@@ -112,3 +112,25 @@ export function textoBeta(b: number): string {
   if (b <= 1.5) return "algo más movida que la bolsa";
   return "mucho más movida que la bolsa";
 }
+
+/** "$254 mil M", "$950 M": montos de ventas en palabras cortas. */
+export function monto(x: number): string {
+  const n = (v: number, d: number) => v.toLocaleString("es", { maximumFractionDigits: d });
+  if (x >= 1e12) return `$${n(x / 1e12, 2)} billones`;
+  if (x >= 1e9) return `$${n(x / 1e9, x >= 1e11 ? 0 : 1)} mil M`;
+  if (x >= 1e6) return `$${n(x / 1e6, 0)} M`;
+  return `$${n(x, 0)}`;
+}
+
+/**
+ * Resumen en una frase: "Apple vendió $479 mil M en su año fiscal 2026: $254 mil M en iPhone,
+ * $123 mil M en Servicios, $37,9 mil M en Mac y $63,5 mil M en el resto."
+ */
+export function fraseIngresos(nombre: string, lista: { nombre: string; valor: number }[] | undefined, anio?: string): string | null {
+  const p = partes(lista, 4);
+  if (p.length < 2) return null;
+  const total = p.reduce((s, x) => s + x.valor, 0);
+  const trozos = p.map((x) => (x.nombre === "Otros" ? `${monto(x.valor)} en el resto` : `${monto(x.valor)} en ${x.nombre}`));
+  const texto = `${trozos.slice(0, -1).join(", ")} y ${trozos.at(-1)}`;
+  return `${nombre} vendió ${monto(total)}${anio ? ` en su año fiscal ${anio}` : " en su último año"}: ${texto}.`;
+}

@@ -1,7 +1,7 @@
 /** A qué se dedica, datos de la empresa, datos clave para invertir y de dónde vienen sus ingresos. */
 import { Linking, Pressable, Text, View } from "react-native";
 import { dinero, fechaCorta, grande } from "@ancla/valoracion/formato";
-import { mesCierre, partes, textoBeta, type DatosClave, type Perfil } from "@ancla/valoracion/perfil";
+import { fraseIngresos, mesCierre, monto, partes, textoBeta, type DatosClave, type Perfil } from "@ancla/valoracion/perfil";
 import type { Estilos } from "./estilos";
 import type { Tema } from "./tema";
 
@@ -13,7 +13,9 @@ const EJES = [
 
 const num = (x: number, d = 1) => x.toLocaleString("es", { maximumFractionDigits: d });
 
-export function SobreEmpresa({ s, tema, perfil, clave }: { s: Estilos; tema: Tema; perfil: Perfil | null; clave: DatosClave | null }) {
+export function SobreEmpresa({ s, tema, nombre, perfil, clave }: {
+  s: Estilos; tema: Tema; nombre: string; perfil: Perfil | null; clave: DatosClave | null;
+}) {
   const p = perfil ?? {};
   const ficha: [string, string | null | undefined][] = [
     ["Fundación", p.fundacion], ["Sede", p.sede], ["CEO", p.ceo],
@@ -91,6 +93,9 @@ export function SobreEmpresa({ s, tema, perfil, clave }: { s: Estilos; tema: Tem
       {mostrados.length > 0 && (
         <>
           <Text style={[s.hd, { fontSize: 15.5 }]}>¿De dónde vienen sus ingresos?</Text>
+          {fraseIngresos(nombre, p.ingresos![mostrados[0].id], p.ingresosAnio) && (
+            <Text style={[s.ui, { fontSize: 15, lineHeight: 22 }]}>{fraseIngresos(nombre, p.ingresos![mostrados[0].id], p.ingresosAnio)}</Text>
+          )}
           {mostrados.map((e) => (
             <View key={e.id} style={{ gap: 8 }}>
               <Text style={[s.ui, s.muted, { fontSize: 12.5 }]}>{e.titulo}</Text>
@@ -98,7 +103,8 @@ export function SobreEmpresa({ s, tema, perfil, clave }: { s: Estilos; tema: Tem
                 <View key={x.nombre} style={{ gap: 4 }}>
                   <View style={[s.fila, { gap: 10 }]}>
                     <Text style={[s.ui, { fontSize: 14, flex: 1 }]}>{x.nombre}</Text>
-                    <Text style={[s.mono, { fontSize: 13 }]}>{num(x.pct * 100, 0)} %</Text>
+                    <Text style={[s.mono, { fontSize: 13 }]}>{monto(x.valor)}</Text>
+                    <Text style={[s.ui, s.muted, { fontSize: 12, width: 36, textAlign: "right" }]}>{num(x.pct * 100, 0)} %</Text>
                   </View>
                   <View style={{ height: 8, borderRadius: 4, backgroundColor: tema.bg, overflow: "hidden" }}>
                     <View style={{ height: 8, borderRadius: 4, backgroundColor: tema.mint, width: `${Math.max(2, x.pct * 100)}%` }} />

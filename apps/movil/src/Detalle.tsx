@@ -144,7 +144,7 @@ export function Detalle({ ticker, s, tema, volver }: { ticker: string; s: Estilo
               ))}
             </View>
 
-            <SobreEmpresa s={s} tema={tema} perfil={f.perfil} clave={f.clave} />
+            <SobreEmpresa s={s} tema={tema} nombre={nombreCorto(f.nombre)} perfil={f.perfil} clave={f.clave} />
 
             <PanelSimular s={s} tema={tema} ticker={f.ticker} nombre={nombreCorto(f.nombre)} precio={f.precio} />
             <MaquinaTiempo s={s} tema={tema} ticker={f.ticker} nombre={nombreCorto(f.nombre)} />

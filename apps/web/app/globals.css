@@ -362,5 +362,7 @@ a { color: inherit; text-decoration: none; }
 .ingreso { display: flex; flex-direction: column; gap: 4px; }
 .ingreso-cab { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; }
 .ingreso-cab span { min-width: 0; overflow-wrap: anywhere; }
+.ingreso-cab .ingreso-monto { white-space: nowrap; flex-shrink: 0; }
+.ingreso-monto small { font-size: 12px; }
 .ingreso-barra { height: 8px; border-radius: 999px; background: var(--bg); overflow: hidden; }
 .ingreso-barra span { display: block; height: 100%; border-radius: 999px; background: var(--mint); }

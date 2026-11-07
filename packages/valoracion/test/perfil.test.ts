@@ -43,3 +43,17 @@ test("partes agrupa el resto en Otros y suma 100 %", async () => {
   assert.ok(Math.abs(p.reduce((s, x) => s + x.pct, 0) - 1) < 1e-9);
   assert.deepEqual(partes(undefined), []);
 });
+
+test("frase de ingresos con montos", async () => {
+  const { fraseIngresos, monto } = await import("../src/perfil.ts");
+  assert.equal(monto(254.1e9), "$254 mil M");
+  assert.equal(monto(37.9e9), "$37,9 mil M");
+  assert.equal(monto(950e6), "$950 M");
+  const f = fraseIngresos("Apple", [
+    { nombre: "iPhone", valor: 254.1e9 }, { nombre: "Servicios", valor: 123.3e9 }, { nombre: "Mac", valor: 37.9e9 },
+    { nombre: "Wearables", valor: 35.6e9 }, { nombre: "iPad", valor: 27.9e9 },
+  ], "2026");
+  assert.equal(f, "Apple vendió $479 mil M en su año fiscal 2026: $254 mil M en iPhone, $123 mil M en Servicios, "
+    + "$37,9 mil M en Mac y $63,5 mil M en el resto.");
+  assert.equal(fraseIngresos("X", [{ nombre: "A", valor: 1 }]), null);
+});
