@@ -13,3 +13,4 @@ dist/
 *.db-*
 apps/movil/public/datos/
 apps/movil/public/logos/
+apps/movil/.sitio/

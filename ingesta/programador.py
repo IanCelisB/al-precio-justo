@@ -1,4 +1,4 @@
-"""Programador: deja Ancla al día sin que nadie ejecute nada.
+"""Programador: deja Al Precio Justo al día sin que nadie ejecute nada.
 
 - Cada `--cada` minutos (60 por defecto): busca 10-Q / 10-K nuevos en el índice de
   EDGAR y los procesa (`actualizar`). La SEC publica el índice de cada día por la

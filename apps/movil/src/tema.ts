@@ -1,5 +1,5 @@
 /**
- * Paleta de Ancla: azul marino profundo + menta, sobre blanco limpio (oscuro: grafito).
+ * Paleta de Al Precio Justo: azul marino profundo + menta, sobre blanco limpio (oscuro: grafito).
  * Los mismos valores que apps/web/app/globals.css. Todos los pares texto/fondo
  * cumplen WCAG AA (≥ 4,5:1).
  */

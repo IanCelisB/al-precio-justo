@@ -1,5 +1,5 @@
 /**
- * API de Ancla.
+ * API de Al Precio Justo.
  *
  *   GET /inicio?seguidas=AAPL,MSFT      oportunidad del día, tus empresas y las más baratas
  *   GET /empresas?tickers=A,B           todas (o solo esas), con precio, valor, estado y análisis
@@ -43,6 +43,7 @@ const SEGUIDAS_POR_DEFECTO = ["AAPL", "MSFT", "GOOGL", "NVDA"];
 
 /** Resumen del análisis prudente que viaja con cada empresa (sin las razones). */
 export interface AnalisisCorto {
+  orden: number;
   tipo: Tipo;
   calidad: number;
   precioCompra: number | null;
@@ -119,7 +120,7 @@ function calcular(previo: Cache | null): Cache {
       ultimoTrimestre: t.at(-1)?.periodo ?? null,
       analisis: {
         tipo: a.tipo, calidad: a.calidad.puntos, precioCompra: a.precioCompra, buenPrecio: a.buenPrecio,
-        sugerida: a.sugerida, vigilar: a.vigilar, motivo: a.motivo,
+        sugerida: a.sugerida, vigilar: a.vigilar, motivo: a.motivo, orden: a.orden,
       },
     });
   }
@@ -418,4 +419,4 @@ version = datos.version();
 // "::" escucha en IPv6 e IPv4: en Windows "localhost" prueba primero ::1 y, si nadie
 // responde ahí, cada petición pierde ~200 ms antes de pasar a 127.0.0.1.
 await app.listen({ port: PUERTO, host: "::" });
-console.log(`API de Ancla en http://localhost:${PUERTO} (base: ${DB})`);
+console.log(`API de Al Precio Justo en http://localhost:${PUERTO} (base: ${DB})`);

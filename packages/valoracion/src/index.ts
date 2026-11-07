@@ -1,5 +1,5 @@
 /**
- * Motor de valoración de Ancla.
+ * Motor de valoración de Al Precio Justo.
  *
  * Se usa igual en la API (para la lista del día), en la web y en el móvil (para
  * que "Tu modelo" recalcule al instante, sin preguntar al servidor). No depende

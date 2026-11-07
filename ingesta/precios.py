@@ -70,7 +70,7 @@ class YahooPrices:
             time.sleep(wait)
         self._last = time.monotonic()
         req = urllib.request.Request(self.URL.format(symbol=self.symbol(ticker), range=rng),
-                                     headers={"User-Agent": "Mozilla/5.0 (Ancla prototipo)"})
+                                     headers={"User-Agent": "Mozilla/5.0 (AlPrecioJusto prototipo)"})
         try:
             with urllib.request.urlopen(req, timeout=30) as r:
                 doc = json.loads(r.read())

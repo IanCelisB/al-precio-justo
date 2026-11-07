@@ -1,5 +1,5 @@
 /**
- * Criterio prudente de Ancla para sugerir empresas.
+ * Criterio prudente de Al Precio Justo para sugerir empresas.
  *
  * No es una recomendación personalizada: aplica las mismas reglas a todas las
  * empresas y explica por qué cada una pasa o no pasa el filtro.

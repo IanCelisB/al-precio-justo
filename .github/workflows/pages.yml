@@ -1,0 +1,94 @@
+# Demo estática en GitHub Pages.
+#
+# Arma la base de datos desde cero (reportes de la SEC + precios), levanta la API, toma
+# una foto de los datos y publica la app (Expo web) en modo demo. La app real (API,
+# base de datos y login con Google) no cambia: la demo solo se activa con
+# EXPO_PUBLIC_ANCLA_DEMO=1 al compilar.
+#
+# Se ejecuta al subir cambios a main, a mano y de lunes a viernes tras el cierre de la bolsa.
+# Si una ejecución falla, la página sigue mostrando la última foto publicada.
+name: Demo en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "30 22 * * 1-5"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      # Nombre y email de contacto que exige la SEC (secreto del repositorio).
+      SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+      BASE: /${{ github.event.repository.name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "26"
+          cache: npm
+
+      - name: Dependencias
+        run: npm ci
+
+      - name: Trimestres de las ~1.000 empresas (SEC)
+        run: |
+          test -n "$SEC_USER_AGENT" || { echo "Falta el secreto SEC_USER_AGENT"; exit 1; }
+          python -m ingesta.ejecutar --todas | tail -15 || true
+          n=$(python -c "import sqlite3; print(sqlite3.connect('data/ancla.db').execute('select count(*) from companies').fetchone()[0])")
+          echo "Empresas con trimestres: $n"
+          test "$n" -ge 900 || { echo "Muy pocas empresas: no se publica"; exit 1; }
+
+      - name: Precios (10 años)
+        run: |
+          python -m ingesta.precios --todas --rango 10y || true
+          n=$(python -c "import sqlite3; print(sqlite3.connect('data/ancla.db').execute('select count(*) from quotes').fetchone()[0])")
+          echo "Empresas con precio: $n"
+          test "$n" -ge 800 || { echo "Muy pocas empresas con precio: no se publica"; exit 1; }
+
+      - name: API y foto de los datos
+        run: |
+          node apps/api/src/server.ts > api.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf http://127.0.0.1:4000/salud && break; sleep 2; done
+          node apps/api/src/foto-demo.ts
+
+      - name: App en modo demo
+        working-directory: apps/movil
+        env:
+          EXPO_PUBLIC_ANCLA_DEMO: "1"
+          EXPO_PUBLIC_BASE: ${{ env.BASE }}
+          EXPO_BASE_URL: ${{ env.BASE }}
+        run: |
+          npx expo export --platform web --output-dir dist
+          cp dist/index.html dist/404.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/movil/dist
+
+  publicar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - id: despliegue
+        uses: actions/deploy-pages@v4

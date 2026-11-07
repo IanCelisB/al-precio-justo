@@ -17,7 +17,7 @@ export function Navegacion() {
   const activa = (href: string) => (href === "/" ? ruta === "/" : ruta.startsWith(href));
   return (
     <nav className="nav" aria-label="Principal">
-      <Link href="/" className="nav-logo logo"><i aria-hidden />Ancla</Link>
+      <Link href="/" className="nav-logo logo"><i aria-hidden />Al Precio Justo</Link>
       <div className="nav-pestanas">
         {PESTANAS.map((p) => (
           <Link key={p.href} href={p.href} className={activa(p.href) ? "on" : ""} aria-current={activa(p.href) ? "page" : undefined}>

@@ -37,7 +37,7 @@ SECTOR_MANUAL = {
     "MSTR": "Information Technology", "MARA": "Information Technology", "RIOT": "Information Technology",
     "CLSK": "Information Technology",
 }
-_UA_PUBLICO = "Ancla/0.1 (prototipo)"   # para sitios que no son la SEC: sin datos de contacto
+_UA_PUBLICO = "AlPrecioJusto/0.1 (prototipo)"   # para sitios que no son la SEC: sin datos de contacto
 
 
 def descargar_publico(url: str, destino: Path, refrescar: bool = False) -> str:

@@ -14,7 +14,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-DEFAULT_USER_AGENT = "Ancla/0.1 prototipo (define SEC_USER_AGENT con nombre y email)"
+DEFAULT_USER_AGENT = "AlPrecioJusto/0.1 prototipo (define SEC_USER_AGENT con nombre y email)"
 
 
 class SecError(RuntimeError):

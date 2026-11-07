@@ -5,6 +5,7 @@ import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { porId } from "@ancla/valoracion/metricas";
 import { api, type Resumen } from "./api";
+import { DEMO } from "./demo";
 import { Rejilla, type Abrir } from "./componentes";
 import type { Estilos } from "./estilos";
 import { useSesion } from "./sesion";
@@ -65,7 +66,7 @@ export function Perfil({ s, tema }: { s: Estilos; tema: Tema }) {
             {prueba && (
               <Pressable style={s.agregar} onPress={() => api.entrarPrueba().then(entrar).catch((e) => setError(e.message))}
                 accessibilityRole="button">
-                <Text style={[s.uiB, { color: tema.link, fontSize: 14 }]}>Entrar con un usuario de prueba (solo desarrollo)</Text>
+                <Text style={[s.uiB, { color: tema.link, fontSize: 14 }]}>{DEMO ? "Entrar como invitado (demo)" : "Entrar con un usuario de prueba (solo desarrollo)"}</Text>
               </Pressable>
             )}
             {error && <Text style={[s.ui, { color: tema.down }]}>{error}</Text>}

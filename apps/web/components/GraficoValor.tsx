@@ -117,7 +117,7 @@ export function GraficoValor({ ticker, sector, trimestres, precios, precio }: {
                 );
               })}
               {!ahora.ok && <p className="nota en-contra">{ahora.motivo}</p>}
-              {propio && <button className="enlace" onClick={() => cambiar({})}>Volver al modelo de Ancla</button>}
+              {propio && <button className="enlace" onClick={() => cambiar({})}>Volver al modelo por defecto</button>}
             </>
           )}
         </div>

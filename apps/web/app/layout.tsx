@@ -8,7 +8,7 @@ const ui = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], variable
 const mono = DM_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--f-mono" });
 
 export const metadata: Metadata = {
-  title: "Ancla · el valor real de cada empresa",
+  title: "Al Precio Justo · el valor real de cada empresa",
   description: "Precio de hoy frente al valor que muestran sus resultados trimestrales.",
 };
 

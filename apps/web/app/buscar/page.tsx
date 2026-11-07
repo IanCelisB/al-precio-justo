@@ -4,7 +4,7 @@ import { Idea } from "@/components/Idea";
 import { api } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Buscar · Ancla" };
+export const metadata = { title: "Buscar · Al Precio Justo" };
 
 export default async function Buscar() {
   const rec = await api.recomendaciones();

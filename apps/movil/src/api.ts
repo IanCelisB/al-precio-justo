@@ -1,5 +1,6 @@
 import type { Estado, Trimestre, Valoracion } from "@ancla/valoracion";
 import type { Tipo } from "@ancla/valoracion/recomendaciones";
+import { BASE, DEMO, ErrorDemo, responder } from "./demo";
 
 /**
  * En un teléfono, "localhost" es el propio teléfono: define EXPO_PUBLIC_ANCLA_API
@@ -7,7 +8,8 @@ import type { Tipo } from "@ancla/valoracion/recomendaciones";
  */
 export const API = process.env.EXPO_PUBLIC_ANCLA_API ?? "http://localhost:4000";
 
-export const urlLogo = (ticker: string) => `${API}/logos/${encodeURIComponent(ticker)}`;
+export const urlLogo = (ticker: string) =>
+  DEMO ? `${BASE}/logos/${encodeURIComponent(ticker)}.png` : `${API}/logos/${encodeURIComponent(ticker)}`;
 
 export interface AnalisisCorto {
   tipo: Tipo;
@@ -17,6 +19,7 @@ export interface AnalisisCorto {
   sugerida: boolean;
   vigilar: boolean;
   motivo: string;
+  orden?: number;
 }
 
 export interface Resumen {
@@ -102,6 +105,11 @@ export class ErrorApi extends Error {
 }
 
 async function pedir<T>(ruta: string, token?: string | null, init: RequestInit = {}): Promise<T> {
+  if (DEMO) { // versión estática de GitHub Pages: datos fijos y todo guardado en el navegador
+    try { return (await responder(ruta, init)) as T; } catch (e) {
+      throw e instanceof ErrorDemo ? new ErrorApi(e.codigo, e.message) : e;
+    }
+  }
   const headers: Record<string, string> = {};
   if (token) headers.Authorization = `Bearer ${token}`;
   if (init.body) headers["Content-Type"] = "application/json";

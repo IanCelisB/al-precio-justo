@@ -8,7 +8,7 @@ import { MaquinaTiempo } from "@/components/MaquinaTiempo";
 import { api } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Simulador · Ancla" };
+export const metadata = { title: "Simulador · Al Precio Justo" };
 
 
 export default async function Simulador() {

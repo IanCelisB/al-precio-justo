@@ -4,7 +4,7 @@ import { BorrarCuenta, CerrarSesion, IniciarSesion } from "@/components/IniciarS
 import { api } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Perfil · Ancla" };
+export const metadata = { title: "Perfil · Al Precio Justo" };
 
 export default async function Perfil() {
   const [yo, config] = await Promise.all([api.yo(), api.config()]);

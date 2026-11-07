@@ -1,7 +1,17 @@
-# Ancla
+# Al Precio Justo
 
 El valor real de cada empresa de la bolsa de EE. UU. según sus reportes
 trimestrales, frente a su precio de hoy.
+
+**Demo:** https://iancelisb.github.io/al-precio-justo/
+
+La demo es la app (Expo web) compilada en **modo demo**: lee una foto de los datos
+de las ~1.000 empresas en vez de la API, entra como invitado (sin Google) y guarda
+las empresas seguidas, las métricas y el simulador en el navegador. Se vuelve a
+publicar con cada cambio en `main` y de lunes a viernes tras el cierre
+([`.github/workflows/pages.yml`](.github/workflows/pages.yml)). La app real no
+cambia: el modo demo solo se activa al compilar con `EXPO_PUBLIC_ANCLA_DEMO=1`
+(ver [`apps/movil/src/demo.ts`](apps/movil/src/demo.ts)).
 
 | Carpeta | Qué es | Tecnología |
 |---|---|---|
@@ -16,6 +26,17 @@ trimestrales, frente a su precio de hoy.
 `ingesta/universo.py` arma la lista y la guarda en `ingesta/universo.json`: **S&P 500 + S&P 400 + ~70 populares** entre inversores minoristas (MercadoLibre, Snowflake, Roblox, SoFi…), 971 en total. Solo empresas que presentan 10‑Q/10‑K; las extranjeras (20‑F) y las chilenas (CMF) quedan para cuando escalemos. Para cambiar las populares, edita `POPULARES` y vuelve a armar la lista con `universo.lista(client, refrescar=True)`.
 
 **Espacio**: de cada documento solo se guardan las ~40 etiquetas que usan las métricas (un 8 % de sus cifras, con resultados idénticos) y el documento se borra tras leerlo. Con `ANCLA_GUARDAR_DOCUMENTOS=1` se conservan los documentos y todas sus cifras.
+
+## Demo estática
+
+```bash
+npm run api                                   # en otra terminal: la API con datos
+node apps/api/src/foto-demo.ts                # foto de los datos en apps/movil/public/
+cd apps/movil
+EXPO_PUBLIC_ANCLA_DEMO=1 EXPO_PUBLIC_BASE=/al-precio-justo EXPO_BASE_URL=/al-precio-justo npx expo export --platform web
+```
+
+En GitHub hay que definir el secreto `SEC_USER_AGENT` (nombre y email de contacto para la SEC) y activar Pages con origen «GitHub Actions».
 
 ## Puesta en marcha
 
@@ -75,7 +96,7 @@ La web y el móvil obtienen un *ID token* de Google y la API lo verifica (firma 
 Para activarlo:
 
 1. En [Google Cloud Console](https://console.cloud.google.com/apis/credentials) crea un proyecto y una pantalla de consentimiento OAuth.
-2. Crea IDs de cliente OAuth: uno **Web** (orígenes autorizados: `http://localhost:3000` y tu dominio), uno **iOS** (bundle `app.ancla`) y uno **Android** (paquete `app.ancla` + huella SHA-1).
+2. Crea IDs de cliente OAuth: uno **Web** (orígenes autorizados: `http://localhost:3000` y tu dominio), uno **iOS** (bundle `app.alpreciojusto`) y uno **Android** (paquete `app.alpreciojusto` + huella SHA-1).
 3. Configura las variables:
 
 | Dónde | Variable | Valor |
@@ -194,7 +215,7 @@ py -m ingesta.actualizar --rechazar AAPL   # descartarlo (sus cifras no se usan)
 En desarrollo se deja corriendo así (escribe en `data/actualizador.log`):
 
 ```bash
-set SEC_USER_AGENT=Ancla tu-email@dominio.com
+set SEC_USER_AGENT=AlPrecioJusto tu-email@dominio.com
 py -u -m ingesta.programador --cada 60 --migrar 20 >> data/actualizador.log 2>&1
 ```
 
@@ -210,7 +231,7 @@ La SEC pide que cada cliente automático se identifique con un nombre y un
 email de contacto. Antes de usarlo de forma continuada:
 
 ```bash
-set SEC_USER_AGENT=Ancla tu-email@dominio.com
+set SEC_USER_AGENT=AlPrecioJusto tu-email@dominio.com
 ```
 
 Sin esa variable, la API de datos funciona, pero `www.sec.gov` rechaza las

@@ -160,7 +160,7 @@ def alertar(texto: str) -> None:
     if not url:
         return
     try:
-        req = urllib.request.Request(url, data=json.dumps({"text": f"Ancla: {texto}"}).encode(),
+        req = urllib.request.Request(url, data=json.dumps({"text": f"Al Precio Justo: {texto}"}).encode(),
                                      headers={"Content-Type": "application/json"})
         urllib.request.urlopen(req, timeout=10).close()
     except OSError as e:

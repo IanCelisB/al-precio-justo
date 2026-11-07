@@ -152,7 +152,7 @@ export function GraficoValor({ s, tema, ticker, sector, trimestres, precios, pre
               {!ahora.ok && <Text style={[s.ui, { fontSize: 12.5, color: tema.down }]}>{ahora.motivo}</Text>}
               {propio && (
                 <Pressable onPress={() => cambiar({})} accessibilityRole="button" style={{ alignSelf: "flex-start" }}>
-                  <Text style={[s.uiB, s.enlace, { fontSize: 14 }]}>Volver al modelo de Ancla</Text>
+                  <Text style={[s.uiB, s.enlace, { fontSize: 14 }]}>Volver al modelo por defecto</Text>
                 </Pressable>
               )}
             </>

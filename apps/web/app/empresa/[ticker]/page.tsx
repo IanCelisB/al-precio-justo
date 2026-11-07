@@ -22,7 +22,7 @@ const FRASE = {
 
 export async function generateMetadata({ params }: { params: Promise<{ ticker: string }> }) {
   const { ticker } = await params;
-  return { title: `${ticker.toUpperCase()} · valor real según sus resultados · Ancla` };
+  return { title: `${ticker.toUpperCase()} · valor real según sus resultados · Al Precio Justo` };
 }
 
 /** Ficha amigable: precio frente a valor, las 7 métricas clave y las que el usuario añada. */

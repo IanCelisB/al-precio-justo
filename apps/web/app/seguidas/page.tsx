@@ -3,7 +3,7 @@ import { Tarjeta } from "@/components/Tarjeta";
 import { api } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Seguidas · Ancla" };
+export const metadata = { title: "Seguidas · Al Precio Justo" };
 
 export default async function Seguidas() {
   const yo = await api.yo();

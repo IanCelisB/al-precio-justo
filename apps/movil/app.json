@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "Ancla",
-    "slug": "ancla",
+    "name": "Al Precio Justo",
+    "slug": "al-precio-justo",
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
-    "ios": { "supportsTablet": true, "bundleIdentifier": "app.ancla" },
-    "android": { "package": "app.ancla" },
+    "ios": { "supportsTablet": true, "bundleIdentifier": "app.alpreciojusto" },
+    "android": { "package": "app.alpreciojusto" },
     "web": { "bundler": "metro" }
   }
 }
