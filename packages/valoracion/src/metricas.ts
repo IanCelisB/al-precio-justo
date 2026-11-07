@@ -9,6 +9,7 @@
  */
 import { ttm, type Trimestre } from "./index.ts";
 import { cierreHasta, type Cierre } from "./grafico.ts";
+import { divisaActual } from "./formato.ts";
 
 export type Formato = "dinero" | "porcentaje" | "veces" | "acciones" | "dineroAccion";
 
@@ -265,21 +266,23 @@ export function serieMetrica(m: Metrica, t: Trimestre[], anios: number,
 /** Formato para mostrar un valor de métrica. */
 export function mostrar(x: number | null, f: Formato): string {
   if (x === null || !Number.isFinite(x)) return "—";
-  const n = (v: number, d: number) => v.toLocaleString("es", { minimumFractionDigits: d, maximumFractionDigits: d });
-  const a = Math.abs(x);
+  const n = (v: number, d: number) => v.toLocaleString("es", { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: "always" });
+  const dv = divisaActual();
+  const $ = dv.simbolo;
+  const a = Math.abs(f === "dinero" || f === "dineroAccion" ? x * dv.porUsd : x);
   const s = x < 0 ? "−" : "";
   switch (f) {
     case "porcentaje": return `${s}${n(a * 100, 1)} %`;
     case "veces": return `${s}${n(a, 1)}x`;
-    case "dineroAccion": return `${s}$${n(a, 2)}`;
+    case "dineroAccion": return `${s}${$}${n(a, dv.decimales === 0 ? 0 : 2)}`;
     case "acciones":
       return a >= 1e9 ? `${n(a / 1e9, 2)} mil M` : `${n(a / 1e6, 0)} M`;
     case "dinero":
     default:
-      if (a >= 1e12) return `${s}$${n(a / 1e12, 2)} B`;
-      if (a >= 1e9) return `${s}$${n(a / 1e9, 1)} mil M`;
-      if (a >= 1e6) return `${s}$${n(a / 1e6, 0)} M`;
-      return `${s}$${n(a, 0)}`;
+      if (a >= 1e12) return `${s}${$}${n(a / 1e12, 2)} B`;
+      if (a >= 1e9) return `${s}${$}${n(a / 1e9, 1)} mil M`;
+      if (a >= 1e6) return `${s}${$}${n(a / 1e6, 0)} M`;
+      return `${s}${$}${n(a, 0)}`;
   }
 }
 

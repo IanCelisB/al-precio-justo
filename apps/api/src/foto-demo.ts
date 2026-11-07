@@ -40,6 +40,7 @@ const empresas: { ticker: string }[] = await json("/empresas");
 escribir("resumenes.json", empresas);
 escribir("inicio.json", { ...(await json("/inicio")), generado: new Date().toISOString() });
 escribir("recomendaciones.json", await json("/recomendaciones"));
+escribir("divisas.json", await json("/divisas"));
 
 // S&P 500 (SPY) semanal, para la máquina del tiempo y la curva del simulador.
 const desde = new Date(Date.now() - 10 * 365.25 * 86_400_000).toISOString().slice(0, 10);

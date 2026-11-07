@@ -20,36 +20,61 @@ import { estilos, type Estilos } from "./estilos";
 import { Perfil, Seguidas } from "./Perfil";
 import { Simulador } from "./Simulador";
 import { ProveedorSesion, useSesion } from "./sesion";
-import { claro, oscuro, type Tema } from "./tema";
+import type { Tema } from "./tema";
+import { ProveedorConfig, useConfig } from "./config";
+import { Configuracion } from "./Configuracion";
 
 type Pestana = "Inicio" | "Buscar" | "Simulador" | "Seguidas" | "Perfil";
 
 export default function App() {
   const [cargadas] = useFonts({ BricolageGrotesque_800ExtraBold, DMSans_400Regular, DMSans_700Bold, DMMono_400Regular });
-  const tema = useColorScheme() === "dark" ? oscuro : claro;
   return (
     <SafeAreaProvider>
-      <StatusBar style={tema === oscuro ? "light" : "dark"} />
-      <ProveedorSesion>
-        {cargadas ? <Navegacion tema={tema} /> : <View style={{ flex: 1, backgroundColor: tema.bg }} />}
-      </ProveedorSesion>
+      <ProveedorConfig>
+        <ProveedorSesion>
+          <Raiz cargadas={cargadas} />
+        </ProveedorSesion>
+      </ProveedorConfig>
     </SafeAreaProvider>
   );
 }
 
-function Navegacion({ tema }: { tema: Tema }) {
-  const s = useMemo(() => estilos(tema), [tema]);
+/** Estado de navegación fuera de Navegacion: sobrevive al repintado por cambio de divisa. */
+interface EstadoNav {
+  pestana: Pestana; setPestana: (p: Pestana) => void;
+  empresa: string | null; setEmpresa: (t: string | null) => void;
+  config: boolean; setConfig: (v: boolean) => void;
+}
+
+function Raiz({ cargadas }: { cargadas: boolean }) {
+  const { tema, version } = useConfig();
   const [pestana, setPestana] = useState<Pestana>("Inicio");
   const [empresa, setEmpresa] = useState<string | null>(null);
+  const [config, setConfig] = useState(false);
+  const nav: EstadoNav = { pestana, setPestana, empresa, setEmpresa, config, setConfig };
+  const oscuroActivo = tema.bg !== "#F8F9FB";
+  return (
+    <>
+      <StatusBar style={oscuroActivo ? "light" : "dark"} />
+      {/* key: al cambiar la divisa se vuelven a pintar todos los montos */}
+      {cargadas ? <Navegacion key={version} tema={tema} nav={nav} /> : <View style={{ flex: 1, backgroundColor: tema.bg }} />}
+    </>
+  );
+}
+
+function Navegacion({ tema, nav }: { tema: Tema; nav: EstadoNav }) {
+  const s = useMemo(() => estilos(tema), [tema]);
+  const { pestana, setPestana, empresa, setEmpresa, config, setConfig } = nav;
 
   // Botón "atrás" de Android: de la ficha vuelve a la pestaña.
   useEffect(() => {
-    if (!empresa) return;
-    const sub = BackHandler.addEventListener("hardwareBackPress", () => { setEmpresa(null); return true; });
+    if (!empresa && !config) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => { setEmpresa(null); setConfig(false); return true; });
     return () => sub.remove();
-  }, [empresa]);
+  }, [empresa, config]);
 
-  if (empresa) return <Detalle ticker={empresa} s={s} tema={tema} volver={() => setEmpresa(null)} />;
+  if (empresa) return <Detalle ticker={empresa} s={s} tema={tema} volver={() => setEmpresa(null)} abrir={setEmpresa} />;
+  if (config) return <Configuracion s={s} tema={tema} volver={() => setConfig(false)} />;
   return (
     <View style={{ flex: 1, backgroundColor: tema.bg }}>
       <View style={{ flex: 1 }}>
@@ -57,7 +82,7 @@ function Navegacion({ tema }: { tema: Tema }) {
         {pestana === "Buscar" && <Buscar tema={tema} s={s} abrir={setEmpresa} />}
         {pestana === "Simulador" && <Simulador tema={tema} s={s} abrir={setEmpresa} irA={setPestana} />}
         {pestana === "Seguidas" && <Seguidas tema={tema} s={s} abrir={setEmpresa} irAPerfil={() => setPestana("Perfil")} />}
-        {pestana === "Perfil" && <Perfil tema={tema} s={s} />}
+        {pestana === "Perfil" && <Perfil tema={tema} s={s} abrirConfig={() => setConfig(true)} />}
       </View>
       <Pestanas s={s} tema={tema} activa={pestana} elegir={setPestana} />
     </View>
@@ -68,6 +93,7 @@ function PantallaInicio({ tema, s, abrir, irA }: { tema: Tema; s: Estilos; abrir
   const { token, yo } = useSesion();
   const [inicio, setInicio] = useState<Inicio | null>(null);
   const [baratas, setBaratas] = useState<Resumen[]>([]);
+  const [vistas, setVistas] = useState<Resumen[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [recargando, setRecargando] = useState(false);
   const seguidasClave = yo?.seguidas.join(",") ?? "";
@@ -77,6 +103,7 @@ function PantallaInicio({ tema, s, abrir, irA }: { tema: Tema; s: Estilos; abrir
       const i = await api.inicio(token);
       setInicio(i);
       setBaratas(i.baratas.slice(0, 6));
+      api.tendencias(7).then((t) => setVistas(t.vistas.slice(0, 4).map((x) => x.empresa))).catch(() => {});
       setError(null);
     } catch {
       setError(`No pudimos conectar con ${API}. ¿Está la API encendida?`);
@@ -130,6 +157,12 @@ function PantallaInicio({ tema, s, abrir, irA }: { tema: Tema; s: Estilos; abrir
               extra={inicio.seguidasPropias ? "Ver todas" : "Sigue las tuyas"}
               onExtra={() => irA(inicio.seguidasPropias ? "Seguidas" : "Perfil")} />
             <Rejilla s={s} tema={tema} empresas={inicio.seguidas} abrir={abrir} />
+            {vistas.length >= 2 && (
+              <>
+                <Seccion s={s} titulo="Lo más visto esta semana" extra="tendencia" />
+                <Rejilla s={s} tema={tema} empresas={vistas} abrir={abrir} />
+              </>
+            )}
             <Seccion s={s} titulo="Más baratas hoy" extra="Ideas prudentes" onExtra={() => irA("Buscar")} />
             <Rejilla s={s} tema={tema} empresas={baratas} abrir={abrir} />
             <Text style={[s.ui, s.muted, { fontSize: 11 }]}>

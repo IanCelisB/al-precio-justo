@@ -14,6 +14,7 @@
     "./recomendaciones": "./src/recomendaciones.ts",
     "./simulador": "./src/simulador.ts",
     "./grafico": "./src/grafico.ts",
-    "./perfil": "./src/perfil.ts"
+    "./perfil": "./src/perfil.ts",
+    "./apariencia": "./src/apariencia.ts"
   }
 }

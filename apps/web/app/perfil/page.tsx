@@ -13,6 +13,7 @@ export default async function Perfil() {
     return (
       <main className="wrap">
         <h1 className="hd titulo">Perfil</h1>
+        <Link href="/configuracion" className="chip perfil-config">⚙ Configuración</Link>
         <div className="tarjeta-login">
           <h2 className="hd">Guarda tus empresas</h2>
           <p>Inicia sesión con tu cuenta de Google para seguir empresas y guardar tus métricas en todos tus dispositivos.
@@ -27,6 +28,7 @@ export default async function Perfil() {
   return (
     <main className="wrap">
       <h1 className="hd titulo">Perfil</h1>
+      <Link href="/configuracion" className="chip perfil-config">⚙ Configuración</Link>
       <div className="perfil">
         {u.foto
           // eslint-disable-next-line @next/next/no-img-element

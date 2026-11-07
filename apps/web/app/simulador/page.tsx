@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { dinero, dineroConSigno as usd, nombreCorto, porcentajeConSigno as pct, tono } from "@ancla/valoracion/formato";
+import { dineroUsd, dineroConSigno as usd, nombreCorto, porcentajeConSigno as pct, tono } from "@ancla/valoracion/formato";
 import { SALDO_INICIAL } from "@ancla/valoracion/simulador";
 import { Reiniciar, VenderTodo } from "@/components/AccionesSimulador";
 import { Comparado } from "@/components/Comparado";
@@ -20,7 +20,7 @@ export default async function Simulador() {
         <h1 className="hd titulo">Simulador</h1>
         <div className="tarjeta-login">
           <span className="pildora-fake">Dinero ficticio · precios reales</span>
-          <h2 className="hd">Practica con {dinero(SALDO_INICIAL, 0)} sin arriesgar nada</h2>
+          <h2 className="hd">Practica con {dineroUsd(SALDO_INICIAL, 0)} sin arriesgar nada</h2>
           <p>Compra y vende acciones reales con dinero de mentira. Si Nvidia sube un 100 %, lo verás en tu cartera.
             Compara tus resultados con el S&P 500 y descubre si tus ideas funcionan antes de invertir de verdad.</p>
           <Link href="/perfil" className="cta-link">Iniciar sesión para empezar</Link>
@@ -41,11 +41,11 @@ export default async function Simulador() {
 
       <div className="cartera">
         <small>Valor de tu cartera</small>
-        <b className="cartera-total">{dinero(c.valorTotal)}</b>
+        <b className="cartera-total">{dineroUsd(c.valorTotal)}</b>
         <span className={tono(c.ganancia)}>{usd(c.ganancia)} ({pct(c.gananciaPct)}) desde que empezaste</span>
         <div className="cartera-datos">
-          <div><small>Disponible</small><b className="mono">{dinero(c.efectivo)}</b></div>
-          <div><small>Invertido</small><b className="mono">{dinero(c.valorPosiciones)}</b></div>
+          <div><small>Disponible</small><b className="mono">{dineroUsd(c.efectivo)}</b></div>
+          <div><small>Invertido</small><b className="mono">{dineroUsd(c.valorPosiciones)}</b></div>
           <div><small>Ya ganado al vender</small><b className={`mono ${tono(c.realizada)}`}>{usd(c.realizada)}</b></div>
         </div>
         {c.curva.length > 1 && (
@@ -53,8 +53,8 @@ export default async function Simulador() {
         )}
         {vsIndice !== null && c.posiciones.length > 0 && (
           <p className="nota">
-            Si hubieras puesto lo mismo en el S&P 500 tendrías {dinero(c.referencia!)}:
-            {" "}{vsIndice >= 0 ? `le vas ganando por ${dinero(vsIndice)}.` : `te va ganando por ${dinero(-vsIndice)}.`}
+            Si hubieras puesto lo mismo en el S&P 500 tendrías {dineroUsd(c.referencia!)}:
+            {" "}{vsIndice >= 0 ? `le vas ganando por ${dineroUsd(vsIndice)}.` : `te va ganando por ${dineroUsd(-vsIndice)}.`}
           </p>
         )}
       </div>
@@ -73,11 +73,11 @@ export default async function Simulador() {
                 <Logo ticker={p.ticker} sector={p.sector} size={40} />
                 <div>
                   <b>{nombreCorto(p.nombre)}</b>
-                  <small className="mono">{p.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acc. · coste {dinero(p.costeMedio)}</small>
+                  <small className="mono">{p.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acc. · coste {dineroUsd(p.costeMedio)}</small>
                 </div>
               </Link>
               <div className="posicion-valor">
-                <b className="mono">{p.valor !== null ? dinero(p.valor) : "—"}</b>
+                <b className="mono">{p.valor !== null ? dineroUsd(p.valor) : "—"}</b>
                 {p.ganancia !== null && p.gananciaPct !== null && (
                   <small className={tono(p.ganancia)}>{usd(p.ganancia)} ({pct(p.gananciaPct)})</small>
                 )}
@@ -95,8 +95,8 @@ export default async function Simulador() {
             {c.operaciones.map((o, i) => (
               <li key={i}>
                 <span className={o.tipo === "compra" ? "tipo compra" : "tipo venta"}>{o.tipo === "compra" ? "Compra" : "Venta"}</span>
-                <span>{nombreCorto(o.nombre)} · {o.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acc. a {dinero(o.precio)}</span>
-                <b className="mono">{dinero(o.importe)}</b>
+                <span>{nombreCorto(o.nombre)} · {o.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acc. a {dineroUsd(o.precio)}</span>
+                <b className="mono">{dineroUsd(o.importe)}</b>
                 <small className="muted">{new Date(o.fecha).toLocaleDateString("es", { day: "numeric", month: "short" })}</small>
               </li>
             ))}

@@ -6,6 +6,7 @@
  * de su cierre). geometriaValor: el dibujo en un lienzo 0-100, igual en web y móvil.
  */
 import { ANCHO_BANDA, estado, valorar, type Estado, type Supuestos, type Trimestre } from "./index.ts";
+import { divisaActual } from "./formato.ts";
 
 /** Días entre el cierre de un trimestre y su presentación a la SEC (aprox.). */
 export const RETRASO_REPORTE = 45;
@@ -137,7 +138,10 @@ export function geometriaValor(cierres: Cierre[], historial: PuntoValor[], desde
 
   const dp = paso(hi - lo, 3);
   const marcasY: Marca[] = [];
-  for (let v = Math.ceil(lo / dp) * dp; v <= hi; v += dp) marcasY.push({ pos: f(Y(v)), texto: `$${Number(v.toPrecision(6)).toLocaleString("en-US")}` });
+  const dv = divisaActual();
+  for (let v = Math.ceil(lo / dp) * dp; v <= hi; v += dp) {
+    marcasY.push({ pos: f(Y(v)), texto: `${dv.simbolo}${Math.round(v * dv.porUsd).toLocaleString("es", { useGrouping: "always" })}` });
+  }
 
   const marcasX: Marca[] = [];
   const a0 = new Date(x0).getUTCFullYear() + 1, a1 = new Date(x1).getUTCFullYear();

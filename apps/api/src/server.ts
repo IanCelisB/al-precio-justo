@@ -8,6 +8,10 @@
  *   GET /recomendaciones                sugeridas y para vigilar, con sus razones
  *   GET /logos/:ticker                  logo de la empresa (PNG)
  *   GET /novedades?limite=20            últimos reportes publicados
+ *   GET /divisas                        tipos de cambio del día (unidades por 1 USD)
+ *   POST /eventos {tipo, ticker, sesion}  registro de uso anónimo (vistas)
+ *   GET /tendencias?dias=7              las más vistas, seguidas y compradas
+ *   GET /empresas/:ticker/tambien       quienes la vieron también vieron…
  *   GET /estado-datos                   estado de la actualización automática
  *
  *   GET  /auth/config                   qué formas de iniciar sesión están activas
@@ -32,6 +36,7 @@ import { datosClave } from "@ancla/valoracion/perfil";
 import { MONTO_MAXIMO } from "@ancla/valoracion/formato";
 import { curva, maquinaDelTiempo, prepararCompra, prepararVenta, REFERENCIA, resumen } from "@ancla/valoracion/simulador";
 import { Datos, type Cotizacion, type Empresa } from "./datos.ts";
+import { Analitica, TIPOS_EVENTO, type TipoEvento } from "./analitica.ts";
 import { CLIENT_IDS, crearSesion, ErrorAuth, LOGIN_PRUEBA, usuarioDeSesion, verificarGoogle } from "./auth.ts";
 import { Usuarios } from "./usuarios.ts";
 import { Logos } from "./logos.ts";
@@ -39,6 +44,7 @@ import { Logos } from "./logos.ts";
 const RAIZ = resolve(fileURLToPath(import.meta.url), "../../../..");
 const DB = process.env.ANCLA_DB ?? resolve(RAIZ, "data/ancla.db");
 const DB_USUARIOS = process.env.ANCLA_DB_USUARIOS ?? resolve(RAIZ, "data/usuarios.db");
+const DB_ANALITICA = process.env.ANCLA_DB_ANALITICA ?? resolve(RAIZ, "data/analitica.db");
 const PUERTO = Number(process.env.PORT ?? 4000);
 const SEGUIDAS_POR_DEFECTO = ["AAPL", "MSFT", "GOOGL", "NVDA"];
 
@@ -78,6 +84,7 @@ interface Cache {
 
 const datos = new Datos(DB);
 const usuarios = new Usuarios(DB_USUARIOS);
+const analitica = new Analitica(DB_ANALITICA);
 const logos = new Logos(process.env.ANCLA_LOGOS ?? resolve(RAIZ, "data/logos"));
 let cache: Cache | null = null;
 
@@ -209,6 +216,42 @@ app.get<{ Querystring: { limite?: string } }>("/novedades", async (req) => {
   });
 });
 
+app.get("/divisas", async () => {
+  const filas = datos.divisas();
+  return {
+    base: "USD",
+    tasas: Object.fromEntries([["USD", 1], ...filas.map((f) => [f.codigo, f.porUsd])]),
+    detalle: filas,
+  };
+});
+
+// --- uso anónimo --------------------------------------------------------------------------------
+const SESION = /^[A-Za-z0-9-]{8,64}$/;
+
+app.post<{ Body: { tipo?: string; ticker?: string; sesion?: string } }>("/eventos", async (req, rep) => {
+  const t = String(req.body?.ticker ?? "").toUpperCase();
+  const sesion = String(req.body?.sesion ?? "");
+  // Desde la app solo llegan vistas; seguir y comprar se cuentan aquí mismo, en el servidor.
+  if (req.body?.tipo !== "vista" || !actual().resumenes.has(t) || !SESION.test(sesion)) {
+    return rep.code(400).send({ error: "Evento no válido" });
+  }
+  analitica.registrar("vista", t, sesion);
+  return rep.code(204).send();
+});
+
+const conResumen = <T extends { ticker: string }>(filas: T[]) =>
+  filas.map((f) => ({ ...f, empresa: actual().resumenes.get(f.ticker) ?? null })).filter((f) => f.empresa);
+
+app.get<{ Querystring: { dias?: string } }>("/tendencias", async (req) => {
+  const dias = Math.min(Math.max(Number(req.query.dias ?? 7) || 7, 1), 90);
+  const r = (tipo: TipoEvento) => conResumen(analitica.ranking(tipo, dias, 10).map((x) => ({ ...x })));
+  return { dias, vistas: r("vista"), seguidas: r("seguir"), compras: r("compra") };
+});
+
+app.get<{ Params: { ticker: string } }>("/empresas/:ticker/tambien", async (req) => {
+  return conResumen(analitica.tambienVieron(req.params.ticker.toUpperCase()).map((x) => ({ ...x })));
+});
+
 app.get("/estado-datos", async () => ({ ...datos.estadoIngesta(), empresas: actual().resumenes.size }));
 
 /** Logo de la empresa (PNG, en caché 7 días). 404 si no hay: las apps muestran la ilustración del sector. */
@@ -322,6 +365,7 @@ app.put<{ Params: { ticker: string } }>("/yo/seguidas/:ticker", async (req, rep)
   const t = req.params.ticker.toUpperCase();
   if (!actual().resumenes.has(t)) return rep.code(404).send({ error: `No conocemos ${t}` });
   usuarios.seguir(id, t);
+  analitica.registrar("seguir", t);
   return { seguidas: usuarios.seguidas(id) };
 });
 
@@ -382,6 +426,7 @@ app.post<{ Body: { ticker?: string; importe?: number } }>("/simulador/comprar", 
   const o = prepararCompra(usuarios.operaciones(id), t, Number(req.body?.importe), e.precio, new Date().toISOString());
   if (typeof o === "string") return rep.code(400).send({ error: o });
   usuarios.registrar(id, o);
+  analitica.registrar("compra", t);
   return { operacion: o, cartera: estadoSimulador(id) };
 });
 

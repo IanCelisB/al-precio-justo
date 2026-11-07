@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { dinero, dineroConSigno, leerMonto, porcentajeConSigno, tono } from "@ancla/valoracion/formato";
+import { dineroUsd, dineroConSigno, leerMonto, porcentajeConSigno, tono } from "@ancla/valoracion/formato";
 
 const RAPIDOS = [500, 1000, 5000];
 
@@ -36,8 +36,8 @@ export function PanelSimular({ ticker, nombre, precio, conSesion, efectivo, posi
     if (!r.ok) { setEstado({ tipo: "error", texto: d.error ?? "No se pudo completar." }); return; }
     const o = d.operacion;
     setEstado({ tipo: "ok", texto: accion === "comprar"
-      ? `Compraste ${o.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acciones por ${dinero(o.importe)}.`
-      : `Vendiste ${o.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acciones por ${dinero(o.importe)}.` });
+      ? `Compraste ${o.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acciones por ${dineroUsd(o.importe)}.`
+      : `Vendiste ${o.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acciones por ${dineroUsd(o.importe)}.` });
     router.refresh();
   };
 
@@ -48,7 +48,7 @@ export function PanelSimular({ ticker, nombre, precio, conSesion, efectivo, posi
       {posicion && (
         <div className="simular-posicion">
           <div><small>Tienes</small><b className="mono">{posicion.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acc.</b></div>
-          <div><small>Valen</small><b className="mono">{posicion.valor !== null ? dinero(posicion.valor) : "—"}</b></div>
+          <div><small>Valen</small><b className="mono">{posicion.valor !== null ? dineroUsd(posicion.valor) : "—"}</b></div>
           <div><small>Resultado</small>
             <b className={`mono ${tono(posicion.ganancia)}`}>
               {posicion.ganancia !== null ? dineroConSigno(posicion.ganancia) : "—"}
@@ -62,14 +62,14 @@ export function PanelSimular({ ticker, nombre, precio, conSesion, efectivo, posi
         <input inputMode="decimal" value={importe} onChange={(e) => setImporte(e.target.value)} aria-label="Importe a invertir en USD" />
       </label>
       <div className="filtros">
-        {RAPIDOS.map((x) => <button key={x} className="chip" onClick={() => setImporte(String(x))}>{dinero(x, 0)}</button>)}
+        {RAPIDOS.map((x) => <button key={x} className="chip" onClick={() => setImporte(String(x))}>{dineroUsd(x, 0)}</button>)}
         {efectivo !== null && efectivo >= 1 && (
           <button className="chip" onClick={() => setImporte(String(Math.floor(efectivo * 100) / 100))}>Todo</button>
         )}
       </div>
       <p className="nota">
-        {precio && n > 0 ? `≈ ${(n / precio).toLocaleString("es", { maximumFractionDigits: 4 })} acciones a ${dinero(precio)}. ` : ""}
-        Disponible: {efectivo !== null ? dinero(efectivo) : "—"}.
+        {precio && n > 0 ? `≈ ${(n / precio).toLocaleString("es", { maximumFractionDigits: 4 })} acciones a ${dineroUsd(precio)}. ` : ""}
+        Disponible: {efectivo !== null ? dineroUsd(efectivo) : "—"}.
       </p>
       <div className="acciones">
         <button className="cta-btn" disabled={ocupado || !(n > 0)} onClick={() => operar("comprar", { ticker, importe: n })}>

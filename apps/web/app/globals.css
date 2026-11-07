@@ -18,6 +18,14 @@
   }
 }
 
+:root[data-theme="dark"] {
+    --bg: #07090C; --card: #14171C; --fg: #F2F5F8; --muted: #8A9AA8; --line: #23282F;
+    --acc: #10233D; --on-acc: #F2F5F8; --mint: #3EDCA6; --on-mint: #03140D; --link: #3EDCA6;
+    --band: #123A2C; --good: #3EDCA6; --down: #FF7A66;
+    --c1: #17243B; --c2: #102A21; --c3: #211D35; --c4: #2A2318; --c5: #19222C; --c-fg: #F2F5F8;
+    color-scheme: dark;
+  }
+
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
@@ -87,9 +95,9 @@ a { color: inherit; text-decoration: none; }
 /* Ficha */
 .volver { color: var(--link); font-weight: 700; font-size: 15px; }
 .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.duo div { border-radius: 20px; padding: 14px 16px; display: flex; flex-direction: column; color: var(--c-fg); }
+.duo div { border-radius: 20px; padding: 14px 16px; display: flex; flex-direction: column; color: var(--c-fg); min-width: 0; }
 .duo small { font-size: 13px; opacity: .75; }
-.duo b { font-family: var(--f-head); font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.duo b { font-family: var(--f-head); font-size: clamp(19px, 6.2vw, 30px); font-weight: 800; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .frase { font-size: 18px; line-height: 1.45; margin: 0; }
 .frase strong.cara { color: var(--down); } .frase strong.barata { color: var(--good); }
 .datos { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
@@ -366,3 +374,25 @@ a { color: inherit; text-decoration: none; }
 .ingreso-monto small { font-size: 12px; }
 .ingreso-barra { height: 8px; border-radius: 999px; background: var(--bg); overflow: hidden; }
 .ingreso-barra span { display: block; height: 100%; border-radius: 999px; background: var(--mint); }
+
+/* Configuración */
+.config { display: flex; flex-direction: column; gap: 14px; }
+.config-caja { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+.config-caja > b { font-family: var(--f-head); font-size: 18px; }
+.config-caja .nota { margin: 0; }
+.acentos { display: flex; gap: 10px; flex-wrap: wrap; }
+.acento { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--card); color: var(--fg);
+  border-radius: 999px; padding: 6px 12px 6px 6px; font: 600 14px var(--f-ui), system-ui, sans-serif; cursor: pointer; }
+.acento i { width: 24px; height: 24px; border-radius: 999px; display: inline-block; }
+.acento.on { border-color: var(--fg); box-shadow: 0 0 0 1px var(--fg); }
+.config-lista { display: flex; flex-direction: column; }
+.config-opcion { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+.config-opcion:last-child { border-bottom: 0; }
+.config-opcion.apagada { opacity: .5; cursor: default; }
+.config-opcion input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--link); }
+.config-opcion span, .config-interruptor span { display: flex; flex-direction: column; gap: 2px; font-size: 14.5px; }
+.config-opcion small, .config-interruptor small { font-size: 12.5px; }
+.config-interruptor { display: flex; gap: 14px; align-items: center; justify-content: space-between; cursor: pointer; }
+.config-interruptor b { font-family: var(--f-head); font-size: 18px; }
+.config-interruptor input { width: 22px; height: 22px; accent-color: var(--link); flex-shrink: 0; }
+.perfil-config { align-self: flex-start; }

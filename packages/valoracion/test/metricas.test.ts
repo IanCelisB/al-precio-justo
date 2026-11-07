@@ -123,3 +123,22 @@ test("serieMetrica: trimestral hasta 3 años, anual después", async () => {
   const cinco = serieMetrica(ventas, t, 5);
   assert.equal(cinco.puntos.length, 6);
 });
+
+test("divisa elegida: convierte al mostrar y vuelve a USD", async () => {
+  const f = await import("../src/formato.ts");
+  const { mostrar } = await import("../src/metricas.ts");
+  const clp = f.divisa("CLP", { CLP: 970.94 });
+  assert.deepEqual(clp, { codigo: "CLP", simbolo: "CLP$", decimales: 0, porUsd: 970.94 });
+  assert.equal(f.divisa("XXX", { CLP: 1 }), f.USD);
+  assert.equal(f.divisa("EUR", {}), f.USD);   // sin tasa: USD
+  f.establecerDivisa(clp);
+  try {
+    assert.equal(f.dinero(100), "CLP$97.094");
+    assert.equal(f.dineroUsd(100), "$100,00");
+    assert.equal(f.grande(1e9), "CLP$970,9 mil M");
+    assert.equal(mostrar(2, "dineroAccion"), "CLP$1.942");
+  } finally {
+    f.establecerDivisa(f.USD);
+  }
+  assert.equal(f.dinero(100), "$100,00");
+});

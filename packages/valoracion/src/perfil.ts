@@ -4,6 +4,7 @@
  */
 import { ttm, type Trimestre } from "./index.ts";
 import type { Cierre } from "./grafico.ts";
+import { divisaActual } from "./formato.ts";
 
 export interface DatosClave {
   capitalizacion: number | null;    // precio × acciones
@@ -114,12 +115,14 @@ export function textoBeta(b: number): string {
 }
 
 /** "$254 mil M", "$950 M": montos de ventas en palabras cortas. */
-export function monto(x: number): string {
-  const n = (v: number, d: number) => v.toLocaleString("es", { maximumFractionDigits: d });
-  if (x >= 1e12) return `$${n(x / 1e12, 2)} billones`;
-  if (x >= 1e9) return `$${n(x / 1e9, x >= 1e11 ? 0 : 1)} mil M`;
-  if (x >= 1e6) return `$${n(x / 1e6, 0)} M`;
-  return `$${n(x, 0)}`;
+export function monto(usd: number): string {
+  const d = divisaActual();
+  const x = usd * d.porUsd;
+  const n = (v: number, dec: number) => v.toLocaleString("es", { maximumFractionDigits: dec });
+  if (x >= 1e12) return `${d.simbolo}${n(x / 1e12, 2)} billones`;
+  if (x >= 1e9) return `${d.simbolo}${n(x / 1e9, x >= 1e11 ? 0 : 1)} mil M`;
+  if (x >= 1e6) return `${d.simbolo}${n(x / 1e6, 0)} M`;
+  return `${d.simbolo}${n(x, 0)}`;
 }
 
 /**

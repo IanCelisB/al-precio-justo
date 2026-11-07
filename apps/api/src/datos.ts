@@ -148,4 +148,14 @@ export class Datos {
     const r = this.db.prepare("SELECT datos FROM perfiles WHERE ticker = ?").get(ticker) as any;
     return r ? JSON.parse(r.datos) : null;
   }
+
+  /** Última tasa de cada divisa (unidades por 1 USD), con su fecha y fuente. */
+  divisas(): { codigo: string; porUsd: number; fecha: string; fuente: string }[] {
+    if (!this.hay("divisas")) return [];
+    return this.db.prepare(
+      `SELECT d.codigo, d.por_usd AS porUsd, d.fecha, d.fuente FROM divisas d
+       JOIN (SELECT codigo, MAX(fecha) AS fecha FROM divisas GROUP BY codigo) u ON u.codigo = d.codigo AND u.fecha = d.fecha
+       ORDER BY d.codigo`,
+    ).all() as any;
+  }
 }

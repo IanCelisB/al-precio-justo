@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { dinero, dineroConSigno, nombreCorto, porcentajeConSigno } from "@ancla/valoracion/formato";
+import { dineroUsd, dineroConSigno, nombreCorto, porcentajeConSigno } from "@ancla/valoracion/formato";
 import { SALDO_INICIAL } from "@ancla/valoracion/simulador";
 import { api, type Cartera } from "./api";
 import { Logo, Seccion, type Abrir } from "./componentes";
@@ -29,7 +29,7 @@ export function Simulador({ s, tema, abrir, irA }: { s: Estilos; tema: Tema; abr
             <View style={[s.pildora, { backgroundColor: tema.band, alignSelf: "flex-start" }]}>
               <Text style={[s.uiB, s.cFg, { fontSize: 11 }]}>Dinero ficticio · precios reales</Text>
             </View>
-            <Text style={[s.hd, { fontSize: 22 }]}>Practica con {dinero(SALDO_INICIAL, 0)} sin arriesgar nada</Text>
+            <Text style={[s.hd, { fontSize: 22 }]}>Practica con {dineroUsd(SALDO_INICIAL, 0)} sin arriesgar nada</Text>
             <Text style={[s.ui, s.muted, { fontSize: 14.5 }]}>
               Compra y vende acciones reales con dinero de mentira. Si Nvidia sube un 100 %, lo verás en tu cartera.
               Compara tus resultados con el S&P 500 antes de invertir de verdad.
@@ -58,12 +58,12 @@ export function Simulador({ s, tema, abrir, irA }: { s: Estilos; tema: Tema; abr
           <>
             <View style={[s.metrica, { gap: 6 }]}>
               <Text style={[s.ui, s.muted, { fontSize: 13 }]}>Valor de tu cartera</Text>
-              <Text style={[s.hd, { fontSize: 36 }]}>{dinero(c.valorTotal)}</Text>
+              <Text style={[s.hd, { fontSize: 36 }]}>{dineroUsd(c.valorTotal)}</Text>
               <Text style={[s.uiB, { fontSize: 14, color: colorTono(tema, c.ganancia) }]}>
                 {dineroConSigno(c.ganancia)} ({porcentajeConSigno(c.gananciaPct)}) desde que empezaste
               </Text>
               <View style={{ flexDirection: "row", backgroundColor: tema.bg, borderRadius: 14, padding: 10, marginTop: 4 }}>
-                {[["Disponible", dinero(c.efectivo), tema.fg], ["Invertido", dinero(c.valorPosiciones), tema.fg],
+                {[["Disponible", dineroUsd(c.efectivo), tema.fg], ["Invertido", dineroUsd(c.valorPosiciones), tema.fg],
                   ["Ganado al vender", dineroConSigno(c.realizada), colorTono(tema, c.realizada)]].map(([k, v, col]) => (
                   <View key={k} style={{ flex: 1 }}>
                     <Text style={[s.ui, s.muted, { fontSize: 11 }]}>{k}</Text>
@@ -77,8 +77,8 @@ export function Simulador({ s, tema, abrir, irA }: { s: Estilos; tema: Tema; abr
               )}
               {vsIndice !== null && c.posiciones.length > 0 && (
                 <Text style={[s.ui, s.muted, { fontSize: 12.5 }]}>
-                  Con lo mismo en el S&P 500 tendrías {dinero(c.referencia!)}:{" "}
-                  {vsIndice >= 0 ? `le vas ganando por ${dinero(vsIndice)}.` : `te va ganando por ${dinero(-vsIndice)}.`}
+                  Con lo mismo en el S&P 500 tendrías {dineroUsd(c.referencia!)}:{" "}
+                  {vsIndice >= 0 ? `le vas ganando por ${dineroUsd(vsIndice)}.` : `te va ganando por ${dineroUsd(-vsIndice)}.`}
                 </Text>
               )}
             </View>
@@ -100,11 +100,11 @@ export function Simulador({ s, tema, abrir, irA }: { s: Estilos; tema: Tema; abr
                 <View style={{ flex: 1 }}>
                   <Text style={[s.hd, { fontSize: 16 }]} numberOfLines={1}>{nombreCorto(p.nombre)}</Text>
                   <Text style={[s.mono, s.muted, { fontSize: 11 }]} numberOfLines={1}>
-                    {p.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acc. · coste {dinero(p.costeMedio)}
+                    {p.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acc. · coste {dineroUsd(p.costeMedio)}
                   </Text>
                 </View>
                 <View style={{ alignItems: "flex-end" }}>
-                  <Text style={[s.mono, { fontSize: 14 }]}>{p.valor !== null ? dinero(p.valor) : "—"}</Text>
+                  <Text style={[s.mono, { fontSize: 14 }]}>{p.valor !== null ? dineroUsd(p.valor) : "—"}</Text>
                   {p.ganancia !== null && p.gananciaPct !== null && (
                     <Text style={[s.uiB, { fontSize: 12, color: colorTono(tema, p.ganancia) }]}>
                       {dineroConSigno(p.ganancia)} ({porcentajeConSigno(p.gananciaPct)})
@@ -121,9 +121,9 @@ export function Simulador({ s, tema, abrir, irA }: { s: Estilos; tema: Tema; abr
                   <Text style={[s.uiB, s.cFg, { fontSize: 11 }]}>{o.tipo === "compra" ? "Compra" : "Venta"}</Text>
                 </View>
                 <Text style={[s.ui, { fontSize: 13, flex: 1 }]} numberOfLines={1}>
-                  {nombreCorto(o.nombre)} · {o.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acc. a {dinero(o.precio)}
+                  {nombreCorto(o.nombre)} · {o.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acc. a {dineroUsd(o.precio)}
                 </Text>
-                <Text style={[s.mono, { fontSize: 13 }]}>{dinero(o.importe)}</Text>
+                <Text style={[s.mono, { fontSize: 13 }]}>{dineroUsd(o.importe)}</Text>
               </View>
             ))}
 
@@ -133,7 +133,7 @@ export function Simulador({ s, tema, abrir, irA }: { s: Estilos; tema: Tema; abr
               </Pressable>
             ) : (
               <View style={[s.caja, { borderColor: tema.down }]}>
-                <Text style={[s.ui, { fontSize: 14 }]}>Se borrarán tus operaciones simuladas y volverás a tener {dinero(SALDO_INICIAL, 0)} ficticios.</Text>
+                <Text style={[s.ui, { fontSize: 14 }]}>Se borrarán tus operaciones simuladas y volverás a tener {dineroUsd(SALDO_INICIAL, 0)} ficticios.</Text>
                 <View style={{ flexDirection: "row", gap: 16 }}>
                   <Pressable onPress={async () => { setC(await api.reiniciar(token)); setConfirmar(false); }} accessibilityRole="button">
                     <Text style={[s.uiB, { color: tema.down }]}>Sí, reiniciar</Text>

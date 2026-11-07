@@ -91,6 +91,42 @@ valor se recalculan al instante en el dispositivo y se guardan en él.
 py -m ingesta.perfil --todas          # ~35 min para ~1.000 empresas
 ```
 
+### Configuración: tema, color y divisa
+
+Web (`/configuracion`, cookie `apj_pref`) y móvil (Perfil → Configuración, guardado en el dispositivo):
+
+- **Tema**: como el sistema, claro u oscuro. **Color de acento**: menta, azul, violeta o ámbar (el verde de «barata» y el rojo de «cara» no cambian).
+- **Divisa**: USD, CLP, EUR, MXN, BRL, GBP, CAD, CHF o JPY. Todos los datos están en USD y se convierten al mostrarlos (`establecerDivisa` en `formato.ts`). El simulador y la máquina del tiempo siguen en USD.
+- **Tipos de cambio** (`ingesta/divisas.py`, una vez al día con el programador): tasas de referencia del **Banco Central Europeo** (api.frankfurter.dev) y **dólar observado del Banco Central de Chile** (mindicador.cl). `GET /divisas` las entrega con su fecha y fuente.
+
+### Uso anónimo y tendencias
+
+`apps/api/src/analitica.ts` guarda en `data/analitica.db` qué empresas se **ven** (enviado por la app con un número aleatorio por dispositivo, sin usuario ni email), se **siguen** y se **compran** en el simulador (contados en el servidor, sin sesión). Se puede desactivar en Configuración y los eventos se borran a los 180 días.
+
+- `GET /tendencias?dias=7`: las más vistas (sesiones distintas), seguidas y compradas, con el periodo anterior para ver si suben. La app muestra «Lo más visto esta semana».
+- `GET /empresas/:ticker/tambien`: «quienes vieron X también vieron…» (mínimo 2 sesiones en 30 días).
+
+Para analizar los datos:
+
+```sql
+-- sqlite3 data/analitica.db
+SELECT ticker, COUNT(DISTINCT sesion) AS personas FROM eventos
+WHERE tipo = 'vista' AND dia >= date('now', '-30 day') GROUP BY ticker ORDER BY personas DESC LIMIT 20;
+
+-- De lo visto a lo comprado: qué empresas pasan de la curiosidad al simulador
+SELECT v.ticker, v.n AS vistas, COALESCE(c.n, 0) AS compras, ROUND(1.0 * COALESCE(c.n, 0) / v.n, 3) AS conversion
+FROM (SELECT ticker, COUNT(*) n FROM eventos WHERE tipo = 'vista' GROUP BY ticker) v
+LEFT JOIN (SELECT ticker, COUNT(*) n FROM eventos WHERE tipo = 'compra' GROUP BY ticker) c USING (ticker)
+ORDER BY vistas DESC LIMIT 20;
+
+-- Pares de empresas que se miran juntas (base para recomendaciones)
+SELECT a.ticker AS empresa, b.ticker AS tambien, COUNT(DISTINCT a.sesion) AS sesiones
+FROM eventos a JOIN eventos b ON a.sesion = b.sesion AND a.ticker < b.ticker
+WHERE a.tipo = 'vista' AND b.tipo = 'vista' GROUP BY 1, 2 HAVING sesiones >= 3 ORDER BY sesiones DESC LIMIT 30;
+```
+
+En la demo de GitHub Pages no hay servidor: las vistas se cuentan solo en ese navegador.
+
 ## Búsqueda con criterio prudente
 
 `packages/valoracion/src/recomendaciones.ts` analiza cada empresa con las mismas reglas:

@@ -9,6 +9,9 @@ import { PanelSimular } from "@/components/PanelSimular";
 import { MaquinaTiempo } from "@/components/MaquinaTiempo";
 import { GraficoValor } from "@/components/GraficoValor";
 import { SobreEmpresa } from "@/components/SobreEmpresa";
+import { RegistrarVista } from "@/components/Preferencias";
+import { Tarjeta } from "@/components/Tarjeta";
+import { preferencias } from "@/lib/preferencias";
 import { BotonSeguir } from "@/components/BotonSeguir";
 import { TIPOS } from "@ancla/valoracion/recomendaciones";
 import { api, type Ficha } from "@/lib/api";
@@ -35,7 +38,7 @@ export default async function Empresa({ params }: { params: Promise<{ ticker: st
   } catch {
     notFound();
   }
-  const [yo, cartera] = await Promise.all([api.yo(), api.simulador()]);
+  const [yo, cartera, tambien, { pref }] = await Promise.all([api.yo(), api.simulador(), api.tambien(f.ticker), preferencias()]);
   const posicion = cartera?.posiciones.find((p) => p.ticker === f.ticker) ?? null;
   const nombre = nombreCorto(f.nombre);
   const a = f.analisis;
@@ -98,6 +101,14 @@ export default async function Empresa({ params }: { params: Promise<{ ticker: st
           </ul>
         )}
       </div>
+
+      <RegistrarVista ticker={f.ticker} activo={pref.analitica} />
+      {tambien.length > 0 && (
+        <>
+          <div className="sec">Quienes vieron {nombre} también vieron <span>últimos 30 días</span></div>
+          <div className="tarjetas">{tambien.slice(0, 4).map((x) => <Tarjeta key={x.ticker} e={x.empresa} />)}</div>
+        </>
+      )}
 
       <SobreEmpresa nombre={nombre} perfil={f.perfil} clave={f.clave} />
 

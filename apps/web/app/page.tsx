@@ -9,7 +9,8 @@ import { api } from "@/lib/api";
 export const dynamic = "force-dynamic";
 
 export default async function Inicio() {
-  const inicio = await api.inicio();
+  const [inicio, tendencias] = await Promise.all([api.inicio(), api.tendencias(7)]);
+  const vistas = tendencias.vistas.slice(0, 4).map((v) => v.empresa);
   const op = inicio.oportunidad;
   const baratas = inicio.baratas;
   // Las fechas se muestran en hora de Nueva York (la de la bolsa).
@@ -45,6 +46,12 @@ export default async function Inicio() {
         {inicio.seguidas.map((e) => <Tarjeta key={e.ticker} e={e} />)}
       </div>
 
+      {vistas.length >= 2 && (
+        <>
+          <div className="sec">Lo más visto esta semana <span>tendencia</span></div>
+          <div className="tarjetas">{vistas.map((e) => <Tarjeta key={e.ticker} e={e} />)}</div>
+        </>
+      )}
       <div className="sec">Más baratas hoy <span>respecto a su valor</span></div>
       <div className="tarjetas">
         {baratas.map((e) => <Tarjeta key={e.ticker} e={e} />)}

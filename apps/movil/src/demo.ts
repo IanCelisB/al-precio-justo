@@ -113,8 +113,24 @@ export async function responder(ruta: string, init: RequestInit = {}): Promise<u
     const t = q.get("tickers");
     return t ? t.split(",").map((x) => todas.find((r) => r.ticker === x.toUpperCase())).filter(Boolean) : todas;
   }
-  if (p.startsWith("/empresas/")) return ficha(decodeURIComponent(p.slice(10)).toUpperCase());
+  if (p.startsWith("/empresas/") && !p.endsWith("/tambien")) return ficha(decodeURIComponent(p.slice(10)).toUpperCase());
   if (p === "/recomendaciones") return archivo("recomendaciones.json");
+  if (p === "/divisas") return archivo("divisas.json");
+  // Uso: en la demo no hay servidor; se cuenta solo en este navegador.
+  if (p === "/eventos") {
+    const vistas: Record<string, number> = (() => { try { return JSON.parse(globalThis.localStorage?.getItem("apj.demo.vistas") ?? "{}"); } catch { return {}; } })();
+    vistas[cuerpo.ticker] = (vistas[cuerpo.ticker] ?? 0) + 1;
+    try { globalThis.localStorage?.setItem("apj.demo.vistas", JSON.stringify(vistas)); } catch { /* sin almacenamiento */ }
+    return null;
+  }
+  if (p === "/tendencias") {
+    const vistas: Record<string, number> = (() => { try { return JSON.parse(globalThis.localStorage?.getItem("apj.demo.vistas") ?? "{}"); } catch { return {}; } })();
+    const todas = await resumenes();
+    const lista = Object.entries(vistas).sort((a, b) => b[1] - a[1]).slice(0, 10)
+      .map(([ticker, n]) => ({ ticker, n, previo: 0, empresa: todas.find((r) => r.ticker === ticker) })).filter((x) => x.empresa);
+    return { dias: 7, vistas: lista, seguidas: [], compras: [] };
+  }
+  if (p.endsWith("/tambien")) return [];
   if (p === "/buscar") {
     const texto = (q.get("q") ?? "").trim().toLowerCase();
     let lista = (await resumenes()).map((r) => ({ r, m: texto ? coincide(r, texto) : 1 })).filter((x) => x.m > 0);

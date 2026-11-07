@@ -1,15 +1,58 @@
 /** Formato de números, fechas y nombres. Compartido por la web y el móvil. */
 
-/** $1.626,72 — con separador de miles también en cifras de 4 dígitos (en dinero se lee mejor). */
-export const dinero = (x: number, dec = 2) =>
-  "$" + x.toLocaleString("es", { minimumFractionDigits: dec, maximumFractionDigits: dec, useGrouping: "always" });
+// --- Divisa en la que se muestran los montos -------------------------------------------------
+// Todos los datos están en USD. Las apps eligen la divisa (Configuración) con `establecerDivisa`;
+// los montos se convierten al mostrarlos. El simulador usa siempre USD (`dineroUsd`).
+
+export interface Divisa { codigo: string; simbolo: string; decimales: number; porUsd: number }
+
+export const DIVISAS: Record<string, { nombre: string; simbolo: string; decimales: number }> = {
+  USD: { nombre: "Dólar estadounidense", simbolo: "$", decimales: 2 },
+  CLP: { nombre: "Peso chileno", simbolo: "CLP$", decimales: 0 },
+  EUR: { nombre: "Euro", simbolo: "€", decimales: 2 },
+  MXN: { nombre: "Peso mexicano", simbolo: "MX$", decimales: 2 },
+  BRL: { nombre: "Real brasileño", simbolo: "R$", decimales: 2 },
+  GBP: { nombre: "Libra esterlina", simbolo: "£", decimales: 2 },
+  CAD: { nombre: "Dólar canadiense", simbolo: "CA$", decimales: 2 },
+  CHF: { nombre: "Franco suizo", simbolo: "CHF ", decimales: 2 },
+  JPY: { nombre: "Yen japonés", simbolo: "¥", decimales: 0 },
+};
+
+export const USD: Divisa = { codigo: "USD", simbolo: "$", decimales: 2, porUsd: 1 };
+
+/** La divisa con su tasa del día (unidades por 1 USD). Sin tasa conocida, USD. */
+export function divisa(codigo: string | null | undefined, tasas: Record<string, number> | null | undefined): Divisa {
+  const info = codigo ? DIVISAS[codigo] : undefined;
+  const tasa = codigo ? tasas?.[codigo] : undefined;
+  if (!info || !codigo || codigo === "USD" || !tasa || !(tasa > 0)) return USD;
+  return { codigo, simbolo: info.simbolo, decimales: info.decimales, porUsd: tasa };
+}
+
+let actual: Divisa = USD;
+let proveedor: () => Divisa = () => actual;
+export function establecerDivisa(d: Divisa) { actual = d; }
+/** En el servidor de la web, la divisa de cada petición (no una global compartida). */
+export function registrarProveedorDivisa(f: () => Divisa) { proveedor = f; }
+export const divisaActual = () => proveedor();
+
+const cifras = (x: number, dec: number) =>
+  x.toLocaleString("es", { minimumFractionDigits: dec, maximumFractionDigits: dec, useGrouping: "always" });
+
+/** $1.626,72 en USD, sin convertir (simulador, máquina del tiempo). */
+export const dineroUsd = (x: number, dec = 2) => "$" + cifras(x, dec);
+
+/** $1.626,72 — en la divisa elegida (CLP$1.578.000, €1.456,02…). */
+export const dinero = (x: number, dec = 2) => {
+  const d = divisaActual();
+  return d.simbolo + cifras(x * d.porUsd, d.decimales === 0 ? 0 : dec);
+};
 
 /** Por debajo de medio centavo es cero: evita "−$0,00". */
 const casiCero = (x: number, umbral: number) => Math.abs(x) < umbral;
 
-/** "+$12,30", "−$4,00" o "$0,00". */
+/** "+$12,30", "−$4,00" o "$0,00" (en USD, sin convertir: lo usa el simulador). */
 export const dineroConSigno = (x: number, dec = 2) =>
-  casiCero(x, 0.5 / 10 ** dec) ? dinero(0, dec) : `${x > 0 ? "+" : "−"}${dinero(Math.abs(x), dec)}`;
+  casiCero(x, 0.5 / 10 ** dec) ? dineroUsd(0, dec) : `${x > 0 ? "+" : "−"}${dineroUsd(Math.abs(x), dec)}`;
 
 /** "+12,3 %", "−4,0 %" o "0,0 %" (x en tanto por uno). */
 export const porcentajeConSigno = (x: number, dec = 1) => {
@@ -20,15 +63,16 @@ export const porcentajeConSigno = (x: number, dec = 1) => {
 /** Clase de color para una ganancia: "sube", "baja" o "" si es cero. */
 export const tono = (x: number | null | undefined) => (x === null || x === undefined || casiCero(x, 0.005) ? "" : x > 0 ? "sube" : "baja");
 
-/** 114.500.000.000 -> "$114,5 mil M" */
+/** Montos grandes en la divisa elegida: 114.500.000.000 USD -> "$114,5 mil M". */
 export function grande(x: number): string {
-  const a = Math.abs(x);
+  const d = divisaActual();
+  const a = Math.abs(x * d.porUsd);
   const s = x < 0 ? "−" : "";
-  const n = (v: number, d: number) => v.toLocaleString("es", { maximumFractionDigits: d });
-  if (a >= 1e12) return `${s}$${n(a / 1e12, 1)} B`;
-  if (a >= 1e9) return `${s}$${n(a / 1e9, 1)} mil M`;
-  if (a >= 1e6) return `${s}$${n(a / 1e6, 0)} M`;
-  return `${s}$${n(a, 0)}`;
+  const n = (v: number, dec: number) => v.toLocaleString("es", { maximumFractionDigits: dec });
+  if (a >= 1e12) return `${s}${d.simbolo}${n(a / 1e12, 1)} B`;
+  if (a >= 1e9) return `${s}${d.simbolo}${n(a / 1e9, 1)} mil M`;
+  if (a >= 1e6) return `${s}${d.simbolo}${n(a / 1e6, 0)} M`;
+  return `${s}${d.simbolo}${n(a, 0)}`;
 }
 
 export function fechaLarga(d = new Date()): string {

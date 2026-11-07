@@ -11,19 +11,32 @@ import {
 } from "@ancla/valoracion/metricas";
 import { sectorDe } from "@ancla/valoracion/sectores";
 import { TIPOS } from "@ancla/valoracion/recomendaciones";
-import { api, type Ficha } from "./api";
+import { api, type Ficha, type Resumen } from "./api";
 import type { Estilos } from "./estilos";
 import { Logo } from "./componentes";
 import { MaquinaTiempo, PanelSimular } from "./simulacion";
 import { GraficoValor } from "./GraficoValor";
 import { SobreEmpresa } from "./SobreEmpresa";
 import { useSesion } from "./sesion";
+import { useConfig } from "./config";
+import { Rejilla } from "./componentes";
 import type { Tema } from "./tema";
+
+/** Montos largos (p. ej. en pesos chilenos) en letra más chica para que quepan en la caja. */
+const tamano = (x: number | null) => { const n = x ? dinero(x).length : 0; return n > 12 ? 18 : n > 9 ? 22 : 26; };
 
 const FRASE = { cara: "Está cara.", barata: "Está barata.", rango: "Está dentro de su rango." } as const;
 
 /** Ficha de empresa: precio frente a valor, las 7 métricas clave y las que el usuario añada. */
-export function Detalle({ ticker, s, tema, volver }: { ticker: string; s: Estilos; tema: Tema; volver: () => void }) {
+export function Detalle({ ticker, s, tema, volver, abrir }: {
+  ticker: string; s: Estilos; tema: Tema; volver: () => void; abrir: (t: string) => void;
+}) {
+  const { registrarVista } = useConfig();
+  const [tambien, setTambien] = useState<Resumen[]>([]);
+  useEffect(() => {
+    registrarVista(ticker);
+    api.tambien(ticker).then((x) => setTambien(x.map((t) => t.empresa))).catch(() => setTambien([]));
+  }, [ticker]);
   const [f, setF] = useState<Ficha | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [extra, setExtra] = useState<string[]>(EXTRA_POR_DEFECTO);
@@ -98,11 +111,11 @@ export function Detalle({ ticker, s, tema, volver }: { ticker: string; s: Estilo
             <View style={s.duo}>
               <View style={[s.duoCaja, { backgroundColor: tema.pastel[4] }]}>
                 <Text style={[s.ui, s.cFg, { fontSize: 12, opacity: 0.75 }]}>Precio hoy</Text>
-                <Text style={[s.hd, s.cFg, { fontSize: 26 }]}>{f.precio ? dinero(f.precio) : "—"}</Text>
+                <Text style={[s.hd, s.cFg, { fontSize: tamano(f.precio) }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>{f.precio ? dinero(f.precio) : "—"}</Text>
               </View>
               <View style={[s.duoCaja, { backgroundColor: tema.band }]}>
                 <Text style={[s.ui, s.cFg, { fontSize: 12, opacity: 0.75 }]}>Valor estimado</Text>
-                <Text style={[s.hd, s.cFg, { fontSize: 26 }]}>{f.valor ? dinero(f.valor) : "—"}</Text>
+                <Text style={[s.hd, s.cFg, { fontSize: tamano(f.valor) }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>{f.valor ? dinero(f.valor) : "—"}</Text>
               </View>
             </View>
 
@@ -143,6 +156,13 @@ export function Detalle({ ticker, s, tema, volver }: { ticker: string; s: Estilo
                 <Text key={r} style={[s.ui, s.muted, { fontSize: 12.5 }]}><Text style={{ color: tema.down }}>! </Text>{r}</Text>
               ))}
             </View>
+
+            {tambien.length > 0 && (
+              <>
+                <Cabecera s={s} titulo={`Quienes vieron ${nombreCorto(f.nombre)} también vieron`} extra="últimos 30 días" />
+                <Rejilla s={s} tema={tema} empresas={tambien.slice(0, 4)} abrir={abrir} />
+              </>
+            )}
 
             <SobreEmpresa s={s} tema={tema} nombre={nombreCorto(f.nombre)} perfil={f.perfil} clave={f.clave} />
 

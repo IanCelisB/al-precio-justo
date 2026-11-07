@@ -38,7 +38,7 @@ function BotonGoogle({ s, tema, onError }: { s: Estilos; tema: Tema; onError: (m
   );
 }
 
-export function Perfil({ s, tema }: { s: Estilos; tema: Tema }) {
+export function Perfil({ s, tema, abrirConfig }: { s: Estilos; tema: Tema; abrirConfig: () => void }) {
   const { cargando, yo, entrar, salir, borrarCuenta } = useSesion();
   const [prueba, setPrueba] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +49,13 @@ export function Perfil({ s, tema }: { s: Estilos; tema: Tema }) {
   return (
     <SafeAreaView style={s.pantalla} edges={["top"]}>
       <ScrollView contentContainerStyle={s.contenido}>
-        <Text style={[s.hd, { fontSize: 30 }]}>Perfil</Text>
+        <View style={[s.fila, { alignItems: "center" }]}>
+          <Text style={[s.hd, { fontSize: 30 }]}>Perfil</Text>
+          <Pressable onPress={abrirConfig} accessibilityRole="button" accessibilityLabel="Configuración"
+            style={[s.chip, { flexDirection: "row", alignItems: "center", gap: 6 }]}>
+            <Text style={[s.uiB, { fontSize: 13 }]}>⚙ Configuración</Text>
+          </Pressable>
+        </View>
         {cargando ? <ActivityIndicator color={tema.link} /> : !yo ? (
           <View style={s.caja}>
             <Text style={[s.hd, { fontSize: 22 }]}>Guarda tus empresas</Text>

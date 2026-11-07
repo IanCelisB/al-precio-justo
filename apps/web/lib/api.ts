@@ -1,5 +1,6 @@
 /** Cliente de la API de Al Precio Justo (se usa en el servidor de Next.js). */
 import { cookies } from "next/headers";
+import { preferencias } from "./preferencias";
 import type { DatosClave, Perfil } from "@ancla/valoracion/perfil";
 import type { Estado, Trimestre, Valoracion } from "@ancla/valoracion";
 import type { Tipo } from "@ancla/valoracion/recomendaciones";
@@ -81,6 +82,7 @@ async function sesion(): Promise<string | undefined> {
 }
 
 async function get<T>(ruta: string, conSesion = false): Promise<T> {
+  await preferencias(); // divisa de esta petición (una sola vez por petición)
   const token = conSesion ? await sesion() : undefined;
   const r = await fetch(`${API}${ruta}`, {
     cache: "no-store",
@@ -112,6 +114,10 @@ export const api = {
     ? get<Resumen[]>(`/empresas?tickers=${tickers.map(encodeURIComponent).join(",")}`)
     : Promise.resolve([] as Resumen[]),
   ficha: (ticker: string) => get<Ficha>(`/empresas/${encodeURIComponent(ticker)}`),
+  tendencias: (dias = 7) => get<{ dias: number; vistas: { ticker: string; n: number; empresa: Resumen }[] }>(`/tendencias?dias=${dias}`)
+    .catch(() => ({ dias, vistas: [] })),
+  tambien: (ticker: string) => get<{ ticker: string; n: number; empresa: Resumen }[]>(`/empresas/${encodeURIComponent(ticker)}/tambien`)
+    .catch(() => []),
   recomendaciones: () => get<Recomendaciones>("/recomendaciones"),
   config: () => get<{ google: boolean; prueba: boolean }>("/auth/config"),
   /** Cartera simulada del usuario con sesión, o null. */

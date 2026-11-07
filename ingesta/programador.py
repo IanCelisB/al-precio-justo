@@ -3,6 +3,7 @@
 - Cada `--cada` minutos (60 por defecto): busca 10-Q / 10-K nuevos en el índice de
   EDGAR y los procesa (`actualizar`). La SEC publica el índice de cada día por la
   noche; en temporada de resultados hay decenas de reportes al día.
+- Una vez al día: tipos de cambio (Banco Central Europeo y Banco Central de Chile).
 - De lunes a viernes, después del cierre del mercado (22:30 UTC): actualiza los
   precios de los últimos 5 días (`precios --rango 5d`).
 - Si se indica `--migrar N`, en cada vuelta pasa N empresas más a datos leídos de
@@ -24,7 +25,7 @@ import traceback
 from datetime import datetime, time as hora, timezone
 from pathlib import Path
 
-from . import actualizar, precios, universo
+from . import actualizar, divisas, precios, universo
 from .sec import SecClient
 
 DATA = Path(__file__).resolve().parent.parent / "data"
@@ -47,6 +48,12 @@ def vuelta(db: Path, migrar: int = 0) -> None:
     print(f"Reportes: {r['reportes']} ({r['publicado']} publicados, {r['cuarentena']} en cuarentena, {r['error']} con error)")
     if migrar:
         actualizar.migrar(con, client, empresas, migrar)
+
+    if actualizar.leer_estado(con, "divisas_ultimo_dia") != ahora.date().isoformat():
+        problemas = divisas.actualizar(con)
+        print("Tipos de cambio del día" + (f" (con avisos: {'; '.join(problemas)})" if problemas else ""))
+        if not problemas:
+            actualizar.guardar_estado(con, "divisas_ultimo_dia", ahora.date().isoformat())
 
     if toca_precios(ahora, actualizar.leer_estado(con, "precios_ultimo_dia")):
         print("Precios del día…")

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
-import { dinero, dineroConSigno, leerMonto, MONTO_MAXIMO, porcentajeConSigno, tono } from "@ancla/valoracion/formato";
+import { dineroUsd, dineroConSigno, leerMonto, MONTO_MAXIMO, porcentajeConSigno, tono } from "@ancla/valoracion/formato";
 import { trazosComparados } from "@ancla/valoracion/simulador";
 import { api, type PosicionSim, type Tiempo } from "./api";
 import type { Estilos } from "./estilos";
@@ -91,10 +91,10 @@ export function MaquinaTiempo({ s, tema, ticker, nombre }: { s: Estilos; tema: T
           accessibilityLabel="Monto a invertir en USD" />
       </View>
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-        {IMPORTES.map((i) => chip(monto === i, dinero(i, 0), () => setTexto(String(i))))}
+        {IMPORTES.map((i) => chip(monto === i, dineroUsd(i, 0), () => setTexto(String(i))))}
       </View>
       {montoMalo && (
-        <Text style={[s.ui, { fontSize: 12.5, color: tema.down }]}>Escribe un monto entre $1 y {dinero(MONTO_MAXIMO, 0)}.</Text>
+        <Text style={[s.ui, { fontSize: 12.5, color: tema.down }]}>Escribe un monto entre $1 y {dineroUsd(MONTO_MAXIMO, 0)}.</Text>
       )}
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
         {PERIODOS.map((a) => chip(anios === a, `hace ${a} ${a === 1 ? "año" : "años"}`, () => setAnios(a)))}
@@ -105,13 +105,13 @@ export function MaquinaTiempo({ s, tema, ticker, nombre }: { s: Estilos; tema: T
           <View style={{ flexDirection: "row", gap: 10 }}>
             <View style={{ flex: 1 }}>
               <Text style={[s.ui, s.muted, { fontSize: 11.5 }]}>Hoy tendrías</Text>
-              <Text style={[s.hd, { fontSize: 24, color: colorTono(tema, r.ganancia) }]}>{dinero(r.valorHoy, 0)}</Text>
+              <Text style={[s.hd, { fontSize: 24, color: colorTono(tema, r.ganancia) }]}>{dineroUsd(r.valorHoy, 0)}</Text>
               <Text style={[s.uiB, { fontSize: 13, color: colorTono(tema, r.ganancia) }]}>{pct(r.gananciaPct)}</Text>
             </View>
             {r.referenciaHoy !== null && (
               <View style={{ flex: 1 }}>
                 <Text style={[s.ui, s.muted, { fontSize: 11.5 }]}>En el S&P 500</Text>
-                <Text style={[s.hd, { fontSize: 24 }]}>{dinero(r.referenciaHoy, 0)}</Text>
+                <Text style={[s.hd, { fontSize: 24 }]}>{dineroUsd(r.referenciaHoy, 0)}</Text>
                 <Text style={[s.uiB, s.muted, { fontSize: 13 }]}>{pct(r.referenciaHoy / importe - 1)}</Text>
               </View>
             )}
@@ -171,7 +171,7 @@ export function PanelSimular({ s, tema, ticker, nombre, precio, irAPerfil }: {
     try {
       const r = await f();
       aplicar(r.cartera);
-      setMensaje({ ok: true, texto: `${verbo} ${r.operacion.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acciones por ${dinero(r.operacion.importe)}.` });
+      setMensaje({ ok: true, texto: `${verbo} ${r.operacion.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acciones por ${dineroUsd(r.operacion.importe)}.` });
     } catch (e) {
       setMensaje({ ok: false, texto: (e as Error).message });
     } finally {
@@ -184,7 +184,7 @@ export function PanelSimular({ s, tema, ticker, nombre, precio, irAPerfil }: {
       {posicion && (
         <View style={{ flexDirection: "row", backgroundColor: tema.bg, borderRadius: 14, padding: 10 }}>
           {[["Tienes", `${posicion.acciones.toLocaleString("es", { maximumFractionDigits: 4 })} acc.`, tema.fg],
-            ["Valen", posicion.valor !== null ? dinero(posicion.valor) : "—", tema.fg],
+            ["Valen", posicion.valor !== null ? dineroUsd(posicion.valor) : "—", tema.fg],
             ["Resultado", posicion.ganancia !== null ? dineroConSigno(posicion.ganancia) : "—", colorTono(tema, posicion.ganancia)]]
             .map(([k, v, c]) => (
               <View key={k} style={{ flex: 1 }}>
@@ -202,7 +202,7 @@ export function PanelSimular({ s, tema, ticker, nombre, precio, irAPerfil }: {
       <View style={{ flexDirection: "row", gap: 8 }}>
         {RAPIDOS.map((x) => (
           <Pressable key={x} style={s.chip} onPress={() => setImporte(String(x))} accessibilityRole="button">
-            <Text style={[s.uiB, { fontSize: 13 }]}>{dinero(x, 0)}</Text>
+            <Text style={[s.uiB, { fontSize: 13 }]}>{dineroUsd(x, 0)}</Text>
           </Pressable>
         ))}
         {efectivo !== null && efectivo >= 1 && (
@@ -212,8 +212,8 @@ export function PanelSimular({ s, tema, ticker, nombre, precio, irAPerfil }: {
         )}
       </View>
       <Text style={[s.ui, s.muted, { fontSize: 12.5 }]}>
-        {precio && n > 0 ? `≈ ${(n / precio).toLocaleString("es", { maximumFractionDigits: 4 })} acciones a ${dinero(precio)}. ` : ""}
-        Disponible: {efectivo !== null ? dinero(efectivo) : "—"}.
+        {precio && n > 0 ? `≈ ${(n / precio).toLocaleString("es", { maximumFractionDigits: 4 })} acciones a ${dineroUsd(precio)}. ` : ""}
+        Disponible: {efectivo !== null ? dineroUsd(efectivo) : "—"}.
       </Text>
       <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
         <Pressable style={[s.boton, (ocupado || !(n > 0)) && { opacity: 0.5 }]} disabled={ocupado || !(n > 0)}

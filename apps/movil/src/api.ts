@@ -99,6 +99,15 @@ export interface Tiempo {
   serie: { fecha: string; valor: number; referencia: number | null }[];
 }
 
+export interface Divisas {
+  base: "USD";
+  tasas: Record<string, number>;
+  detalle: { codigo: string; porUsd: number; fecha: string; fuente: string }[];
+}
+
+export interface Tendencia { ticker: string; n: number; previo: number; empresa: Resumen }
+export interface Tendencias { dias: number; vistas: Tendencia[]; seguidas: Tendencia[]; compras: Tendencia[] }
+
 export class ErrorApi extends Error {
   codigo: number;
   constructor(codigo: number, mensaje: string) {
@@ -155,6 +164,11 @@ export const api = {
     pedir<{ operacion: { acciones: number; importe: number }; cartera: Cartera }>("/simulador/vender", token,
       { method: "POST", body: JSON.stringify({ ticker, acciones }) }),
   reiniciar: (token: string) => pedir<Cartera>("/simulador/reiniciar", token, { method: "POST" }),
+  divisas: () => pedir<Divisas>("/divisas"),
+  evento: (tipo: "vista", ticker: string, sesion: string) =>
+    pedir<unknown>("/eventos", null, { method: "POST", body: JSON.stringify({ tipo, ticker, sesion }) }),
+  tendencias: (dias = 7) => pedir<Tendencias>(`/tendencias?dias=${dias}`),
+  tambien: (ticker: string) => pedir<{ ticker: string; n: number; empresa: Resumen }[]>(`/empresas/${encodeURIComponent(ticker)}/tambien`),
   tiempo: (ticker: string, importe: number, desde: string) =>
     pedir<Tiempo>(`/simulador/tiempo?ticker=${encodeURIComponent(ticker)}&importe=${importe}&desde=${desde}`),
 };

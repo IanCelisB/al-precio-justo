@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { dinero, leerMonto, MONTO_MAXIMO, porcentajeConSigno, tono } from "@ancla/valoracion/formato";
+import { dineroUsd, leerMonto, MONTO_MAXIMO, porcentajeConSigno, tono } from "@ancla/valoracion/formato";
 import { Comparado } from "./Comparado";
 
 const API = process.env.NEXT_PUBLIC_ANCLA_API ?? "http://localhost:4000";
@@ -60,11 +60,11 @@ export function MaquinaTiempo({ ticker, nombre }: { ticker: string; nombre: stri
       <div className="filtros">
         {IMPORTES.map((i) => (
           <button key={i} className={monto === i ? "chip on" : "chip"} onClick={() => setTexto(String(i))} aria-pressed={monto === i}>
-            {dinero(i, 0)}
+            {dineroUsd(i, 0)}
           </button>
         ))}
       </div>
-      {montoMalo && <p className="nota en-contra">Escribe un monto entre $1 y {dinero(MONTO_MAXIMO, 0)}.</p>}
+      {montoMalo && <p className="nota en-contra">Escribe un monto entre $1 y {dineroUsd(MONTO_MAXIMO, 0)}.</p>}
       <p className="maquina-frase">…hace</p>
       <div className="filtros">
         {PERIODOS.map((p) => (
@@ -79,13 +79,13 @@ export function MaquinaTiempo({ ticker, nombre }: { ticker: string; nombre: stri
           <div className="maquina-resultado">
             <div>
               <small>Hoy tendrías</small>
-              <b className={tono(r.ganancia)}>{dinero(r.valorHoy, 0)}</b>
+              <b className={tono(r.ganancia)}>{dineroUsd(r.valorHoy, 0)}</b>
               <span className={tono(r.ganancia)}>{pct(r.gananciaPct)}</span>
             </div>
             {r.referenciaHoy !== null && (
               <div>
                 <small>En el S&P 500</small>
-                <b>{dinero(r.referenciaHoy, 0)}</b>
+                <b>{dineroUsd(r.referenciaHoy, 0)}</b>
                 <span className="muted">{pct(r.referenciaHoy / importe - 1)}</span>
               </div>
             )}

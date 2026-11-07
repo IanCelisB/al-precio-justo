@@ -3,7 +3,7 @@
   "private": true,
   "workspaces": ["packages/*", "apps/*"],
   "scripts": {
-    "test": "node --test packages/valoracion/test/",
+    "test": "node --test packages/valoracion/test/ apps/api/test/",
     "api": "npm run dev -w @ancla/api",
     "web": "npm run dev -w @ancla/web",
     "movil": "npm run start -w @ancla/movil"
