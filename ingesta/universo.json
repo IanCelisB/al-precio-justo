@@ -1,0 +1,6799 @@
+[
+{
+"ticker": "MMM",
+"name": "3M",
+"sector": "Industrials",
+"cik": 66740,
+"indice": "S&P 500"
+},
+{
+"ticker": "AOS",
+"name": "A. O. Smith",
+"sector": "Industrials",
+"cik": 91142,
+"indice": "S&P 500"
+},
+{
+"ticker": "ABT",
+"name": "Abbott Laboratories",
+"sector": "Health Care",
+"cik": 1800,
+"indice": "S&P 500"
+},
+{
+"ticker": "ABBV",
+"name": "AbbVie",
+"sector": "Health Care",
+"cik": 1551152,
+"indice": "S&P 500"
+},
+{
+"ticker": "ACN",
+"name": "Accenture",
+"sector": "Information Technology",
+"cik": 1467373,
+"indice": "S&P 500"
+},
+{
+"ticker": "ADBE",
+"name": "Adobe Inc.",
+"sector": "Information Technology",
+"cik": 796343,
+"indice": "S&P 500"
+},
+{
+"ticker": "AMD",
+"name": "Advanced Micro Devices",
+"sector": "Information Technology",
+"cik": 2488,
+"indice": "S&P 500"
+},
+{
+"ticker": "AES",
+"name": "AES Corporation",
+"sector": "Utilities",
+"cik": 874761,
+"indice": "S&P 500"
+},
+{
+"ticker": "AFL",
+"name": "Aflac",
+"sector": "Financials",
+"cik": 4977,
+"indice": "S&P 500"
+},
+{
+"ticker": "A",
+"name": "Agilent Technologies",
+"sector": "Health Care",
+"cik": 1090872,
+"indice": "S&P 500"
+},
+{
+"ticker": "APD",
+"name": "Air Products",
+"sector": "Materials",
+"cik": 2969,
+"indice": "S&P 500"
+},
+{
+"ticker": "ABNB",
+"name": "Airbnb",
+"sector": "Consumer Discretionary",
+"cik": 1559720,
+"indice": "S&P 500"
+},
+{
+"ticker": "AKAM",
+"name": "Akamai Technologies",
+"sector": "Information Technology",
+"cik": 1086222,
+"indice": "S&P 500"
+},
+{
+"ticker": "ALB",
+"name": "Albemarle Corporation",
+"sector": "Materials",
+"cik": 915913,
+"indice": "S&P 500"
+},
+{
+"ticker": "ARE",
+"name": "Alexandria Real Estate Equities",
+"sector": "Real Estate",
+"cik": 1035443,
+"indice": "S&P 500"
+},
+{
+"ticker": "ALGN",
+"name": "Align Technology",
+"sector": "Health Care",
+"cik": 1097149,
+"indice": "S&P 500"
+},
+{
+"ticker": "ALLE",
+"name": "Allegion",
+"sector": "Industrials",
+"cik": 1579241,
+"indice": "S&P 500"
+},
+{
+"ticker": "LNT",
+"name": "Alliant Energy",
+"sector": "Utilities",
+"cik": 352541,
+"indice": "S&P 500"
+},
+{
+"ticker": "ALL",
+"name": "Allstate",
+"sector": "Financials",
+"cik": 899051,
+"indice": "S&P 500"
+},
+{
+"ticker": "GOOGL",
+"name": "Alphabet Inc. (Class A)",
+"sector": "Communication Services",
+"cik": 1652044,
+"indice": "S&P 500"
+},
+{
+"ticker": "GOOG",
+"name": "Alphabet Inc. (Class C)",
+"sector": "Communication Services",
+"cik": 1652044,
+"indice": "S&P 500"
+},
+{
+"ticker": "MO",
+"name": "Altria",
+"sector": "Consumer Staples",
+"cik": 764180,
+"indice": "S&P 500"
+},
+{
+"ticker": "AMZN",
+"name": "Amazon",
+"sector": "Consumer Discretionary",
+"cik": 1018724,
+"indice": "S&P 500"
+},
+{
+"ticker": "AMCR",
+"name": "Amcor",
+"sector": "Materials",
+"cik": 1748790,
+"indice": "S&P 500"
+},
+{
+"ticker": "AEE",
+"name": "Ameren",
+"sector": "Utilities",
+"cik": 1002910,
+"indice": "S&P 500"
+},
+{
+"ticker": "AEP",
+"name": "American Electric Power",
+"sector": "Utilities",
+"cik": 4904,
+"indice": "S&P 500"
+},
+{
+"ticker": "AXP",
+"name": "American Express",
+"sector": "Financials",
+"cik": 4962,
+"indice": "S&P 500"
+},
+{
+"ticker": "AIG",
+"name": "American International Group",
+"sector": "Financials",
+"cik": 5272,
+"indice": "S&P 500"
+},
+{
+"ticker": "AMT",
+"name": "American Tower",
+"sector": "Real Estate",
+"cik": 1053507,
+"indice": "S&P 500"
+},
+{
+"ticker": "AWK",
+"name": "American Water Works",
+"sector": "Utilities",
+"cik": 1410636,
+"indice": "S&P 500"
+},
+{
+"ticker": "AMP",
+"name": "Ameriprise Financial",
+"sector": "Financials",
+"cik": 820027,
+"indice": "S&P 500"
+},
+{
+"ticker": "AME",
+"name": "Ametek",
+"sector": "Industrials",
+"cik": 1037868,
+"indice": "S&P 500"
+},
+{
+"ticker": "AMGN",
+"name": "Amgen",
+"sector": "Health Care",
+"cik": 318154,
+"indice": "S&P 500"
+},
+{
+"ticker": "APH",
+"name": "Amphenol",
+"sector": "Information Technology",
+"cik": 820313,
+"indice": "S&P 500"
+},
+{
+"ticker": "ADI",
+"name": "Analog Devices",
+"sector": "Information Technology",
+"cik": 6281,
+"indice": "S&P 500"
+},
+{
+"ticker": "AON",
+"name": "Aon plc",
+"sector": "Financials",
+"cik": 315293,
+"indice": "S&P 500"
+},
+{
+"ticker": "APA",
+"name": "APA Corporation",
+"sector": "Energy",
+"cik": 1841666,
+"indice": "S&P 500"
+},
+{
+"ticker": "APO",
+"name": "Apollo Global Management",
+"sector": "Financials",
+"cik": 1858681,
+"indice": "S&P 500"
+},
+{
+"ticker": "AAPL",
+"name": "Apple Inc.",
+"sector": "Information Technology",
+"cik": 320193,
+"indice": "S&P 500"
+},
+{
+"ticker": "AMAT",
+"name": "Applied Materials",
+"sector": "Information Technology",
+"cik": 6951,
+"indice": "S&P 500"
+},
+{
+"ticker": "APP",
+"name": "AppLovin",
+"sector": "Communication Services",
+"cik": 1751008,
+"indice": "S&P 500"
+},
+{
+"ticker": "APTV",
+"name": "Aptiv",
+"sector": "Consumer Discretionary",
+"cik": 1521332,
+"indice": "S&P 500"
+},
+{
+"ticker": "ACGL",
+"name": "Arch Capital Group",
+"sector": "Financials",
+"cik": 947484,
+"indice": "S&P 500"
+},
+{
+"ticker": "ADM",
+"name": "Archer Daniels Midland",
+"sector": "Consumer Staples",
+"cik": 7084,
+"indice": "S&P 500"
+},
+{
+"ticker": "ARES",
+"name": "Ares Management",
+"sector": "Financials",
+"cik": 1176948,
+"indice": "S&P 500"
+},
+{
+"ticker": "ANET",
+"name": "Arista Networks",
+"sector": "Information Technology",
+"cik": 1596532,
+"indice": "S&P 500"
+},
+{
+"ticker": "AJG",
+"name": "Arthur J. Gallagher & Co.",
+"sector": "Financials",
+"cik": 354190,
+"indice": "S&P 500"
+},
+{
+"ticker": "AIZ",
+"name": "Assurant",
+"sector": "Financials",
+"cik": 1267238,
+"indice": "S&P 500"
+},
+{
+"ticker": "T",
+"name": "AT&T",
+"sector": "Communication Services",
+"cik": 732717,
+"indice": "S&P 500"
+},
+{
+"ticker": "ATO",
+"name": "Atmos Energy",
+"sector": "Utilities",
+"cik": 731802,
+"indice": "S&P 500"
+},
+{
+"ticker": "ADSK",
+"name": "Autodesk",
+"sector": "Information Technology",
+"cik": 769397,
+"indice": "S&P 500"
+},
+{
+"ticker": "ADP",
+"name": "Automatic Data Processing",
+"sector": "Industrials",
+"cik": 8670,
+"indice": "S&P 500"
+},
+{
+"ticker": "AZO",
+"name": "AutoZone",
+"sector": "Consumer Discretionary",
+"cik": 866787,
+"indice": "S&P 500"
+},
+{
+"ticker": "AVY",
+"name": "Avery Dennison",
+"sector": "Materials",
+"cik": 8818,
+"indice": "S&P 500"
+},
+{
+"ticker": "AXON",
+"name": "Axon Enterprise",
+"sector": "Industrials",
+"cik": 1069183,
+"indice": "S&P 500"
+},
+{
+"ticker": "BKR",
+"name": "Baker Hughes",
+"sector": "Energy",
+"cik": 1701605,
+"indice": "S&P 500"
+},
+{
+"ticker": "BALL",
+"name": "Ball Corporation",
+"sector": "Materials",
+"cik": 9389,
+"indice": "S&P 500"
+},
+{
+"ticker": "BAC",
+"name": "Bank of America",
+"sector": "Financials",
+"cik": 70858,
+"indice": "S&P 500"
+},
+{
+"ticker": "BAX",
+"name": "Baxter International",
+"sector": "Health Care",
+"cik": 10456,
+"indice": "S&P 500"
+},
+{
+"ticker": "BDX",
+"name": "Becton Dickinson",
+"sector": "Health Care",
+"cik": 10795,
+"indice": "S&P 500"
+},
+{
+"ticker": "BRK.B",
+"name": "Berkshire Hathaway",
+"sector": "Financials",
+"cik": 1067983,
+"indice": "S&P 500"
+},
+{
+"ticker": "BBY",
+"name": "Best Buy",
+"sector": "Consumer Discretionary",
+"cik": 764478,
+"indice": "S&P 500"
+},
+{
+"ticker": "TECH",
+"name": "Bio-Techne",
+"sector": "Health Care",
+"cik": 842023,
+"indice": "S&P 500"
+},
+{
+"ticker": "BIIB",
+"name": "Biogen",
+"sector": "Health Care",
+"cik": 875045,
+"indice": "S&P 500"
+},
+{
+"ticker": "BLK",
+"name": "BlackRock",
+"sector": "Financials",
+"cik": 2012383,
+"indice": "S&P 500"
+},
+{
+"ticker": "BX",
+"name": "Blackstone Inc.",
+"sector": "Financials",
+"cik": 1393818,
+"indice": "S&P 500"
+},
+{
+"ticker": "XYZ",
+"name": "Block, Inc.",
+"sector": "Financials",
+"cik": 1512673,
+"indice": "S&P 500"
+},
+{
+"ticker": "BE",
+"name": "Bloom Energy",
+"sector": "Industrials",
+"cik": 1664703,
+"indice": "S&P 500"
+},
+{
+"ticker": "BNY",
+"name": "BNY Mellon",
+"sector": "Financials",
+"cik": 1390777,
+"indice": "S&P 500"
+},
+{
+"ticker": "BA",
+"name": "Boeing",
+"sector": "Industrials",
+"cik": 12927,
+"indice": "S&P 500"
+},
+{
+"ticker": "BKNG",
+"name": "Booking Holdings",
+"sector": "Consumer Discretionary",
+"cik": 1075531,
+"indice": "S&P 500"
+},
+{
+"ticker": "BSX",
+"name": "Boston Scientific",
+"sector": "Health Care",
+"cik": 885725,
+"indice": "S&P 500"
+},
+{
+"ticker": "BMY",
+"name": "Bristol Myers Squibb",
+"sector": "Health Care",
+"cik": 14272,
+"indice": "S&P 500"
+},
+{
+"ticker": "AVGO",
+"name": "Broadcom",
+"sector": "Information Technology",
+"cik": 1730168,
+"indice": "S&P 500"
+},
+{
+"ticker": "BR",
+"name": "Broadridge Financial Solutions",
+"sector": "Industrials",
+"cik": 1383312,
+"indice": "S&P 500"
+},
+{
+"ticker": "BRO",
+"name": "Brown & Brown",
+"sector": "Financials",
+"cik": 79282,
+"indice": "S&P 500"
+},
+{
+"ticker": "BF.B",
+"name": "Brown–Forman",
+"sector": "Consumer Staples",
+"cik": 14693,
+"indice": "S&P 500"
+},
+{
+"ticker": "BG",
+"name": "Bunge Global",
+"sector": "Consumer Staples",
+"cik": 1996862,
+"indice": "S&P 500"
+},
+{
+"ticker": "BXP",
+"name": "BXP, Inc.",
+"sector": "Real Estate",
+"cik": 1037540,
+"indice": "S&P 500"
+},
+{
+"ticker": "CHRW",
+"name": "C.H. Robinson",
+"sector": "Industrials",
+"cik": 1043277,
+"indice": "S&P 500"
+},
+{
+"ticker": "CDNS",
+"name": "Cadence Design Systems",
+"sector": "Information Technology",
+"cik": 813672,
+"indice": "S&P 500"
+},
+{
+"ticker": "CPT",
+"name": "Camden Property Trust",
+"sector": "Real Estate",
+"cik": 906345,
+"indice": "S&P 500"
+},
+{
+"ticker": "COF",
+"name": "Capital One",
+"sector": "Financials",
+"cik": 927628,
+"indice": "S&P 500"
+},
+{
+"ticker": "CAH",
+"name": "Cardinal Health",
+"sector": "Health Care",
+"cik": 721371,
+"indice": "S&P 500"
+},
+{
+"ticker": "CCL",
+"name": "Carnival Corporation",
+"sector": "Consumer Discretionary",
+"cik": 815097,
+"indice": "S&P 500"
+},
+{
+"ticker": "CARR",
+"name": "Carrier Global",
+"sector": "Industrials",
+"cik": 1783180,
+"indice": "S&P 500"
+},
+{
+"ticker": "CVNA",
+"name": "Carvana",
+"sector": "Consumer Discretionary",
+"cik": 1690820,
+"indice": "S&P 500"
+},
+{
+"ticker": "CASY",
+"name": "Casey's",
+"sector": "Consumer Staples",
+"cik": 726958,
+"indice": "S&P 500"
+},
+{
+"ticker": "CAT",
+"name": "Caterpillar Inc.",
+"sector": "Industrials",
+"cik": 18230,
+"indice": "S&P 500"
+},
+{
+"ticker": "CBOE",
+"name": "Cboe Global Markets",
+"sector": "Financials",
+"cik": 1374310,
+"indice": "S&P 500"
+},
+{
+"ticker": "CBRE",
+"name": "CBRE Group",
+"sector": "Real Estate",
+"cik": 1138118,
+"indice": "S&P 500"
+},
+{
+"ticker": "CDW",
+"name": "CDW Corporation",
+"sector": "Information Technology",
+"cik": 1402057,
+"indice": "S&P 500"
+},
+{
+"ticker": "COR",
+"name": "Cencora",
+"sector": "Health Care",
+"cik": 1140859,
+"indice": "S&P 500"
+},
+{
+"ticker": "CNC",
+"name": "Centene Corporation",
+"sector": "Health Care",
+"cik": 1071739,
+"indice": "S&P 500"
+},
+{
+"ticker": "CNP",
+"name": "CenterPoint Energy",
+"sector": "Utilities",
+"cik": 1130310,
+"indice": "S&P 500"
+},
+{
+"ticker": "CF",
+"name": "CF Industries",
+"sector": "Materials",
+"cik": 1324404,
+"indice": "S&P 500"
+},
+{
+"ticker": "CRL",
+"name": "Charles River Laboratories",
+"sector": "Health Care",
+"cik": 1100682,
+"indice": "S&P 500"
+},
+{
+"ticker": "SCHW",
+"name": "Charles Schwab Corporation",
+"sector": "Financials",
+"cik": 316709,
+"indice": "S&P 500"
+},
+{
+"ticker": "CHTR",
+"name": "Charter Communications",
+"sector": "Communication Services",
+"cik": 1091667,
+"indice": "S&P 500"
+},
+{
+"ticker": "CVX",
+"name": "Chevron Corporation",
+"sector": "Energy",
+"cik": 93410,
+"indice": "S&P 500"
+},
+{
+"ticker": "CMG",
+"name": "Chipotle Mexican Grill",
+"sector": "Consumer Discretionary",
+"cik": 1058090,
+"indice": "S&P 500"
+},
+{
+"ticker": "CB",
+"name": "Chubb Limited",
+"sector": "Financials",
+"cik": 896159,
+"indice": "S&P 500"
+},
+{
+"ticker": "CHD",
+"name": "Church & Dwight",
+"sector": "Consumer Staples",
+"cik": 313927,
+"indice": "S&P 500"
+},
+{
+"ticker": "CIEN",
+"name": "Ciena",
+"sector": "Information Technology",
+"cik": 936395,
+"indice": "S&P 500"
+},
+{
+"ticker": "CI",
+"name": "Cigna",
+"sector": "Health Care",
+"cik": 1739940,
+"indice": "S&P 500"
+},
+{
+"ticker": "CINF",
+"name": "Cincinnati Financial",
+"sector": "Financials",
+"cik": 20286,
+"indice": "S&P 500"
+},
+{
+"ticker": "CTAS",
+"name": "Cintas",
+"sector": "Industrials",
+"cik": 723254,
+"indice": "S&P 500"
+},
+{
+"ticker": "CSCO",
+"name": "Cisco",
+"sector": "Information Technology",
+"cik": 858877,
+"indice": "S&P 500"
+},
+{
+"ticker": "C",
+"name": "Citigroup",
+"sector": "Financials",
+"cik": 831001,
+"indice": "S&P 500"
+},
+{
+"ticker": "CFG",
+"name": "Citizens Financial Group",
+"sector": "Financials",
+"cik": 759944,
+"indice": "S&P 500"
+},
+{
+"ticker": "CLX",
+"name": "Clorox",
+"sector": "Consumer Staples",
+"cik": 21076,
+"indice": "S&P 500"
+},
+{
+"ticker": "CME",
+"name": "CME Group",
+"sector": "Financials",
+"cik": 1156375,
+"indice": "S&P 500"
+},
+{
+"ticker": "CMS",
+"name": "CMS Energy",
+"sector": "Utilities",
+"cik": 811156,
+"indice": "S&P 500"
+},
+{
+"ticker": "KO",
+"name": "Coca-Cola Company (The)",
+"sector": "Consumer Staples",
+"cik": 21344,
+"indice": "S&P 500"
+},
+{
+"ticker": "CTSH",
+"name": "Cognizant",
+"sector": "Information Technology",
+"cik": 1058290,
+"indice": "S&P 500"
+},
+{
+"ticker": "COHR",
+"name": "Coherent Corp.",
+"sector": "Information Technology",
+"cik": 820318,
+"indice": "S&P 500"
+},
+{
+"ticker": "COIN",
+"name": "Coinbase",
+"sector": "Financials",
+"cik": 1679788,
+"indice": "S&P 500"
+},
+{
+"ticker": "CL",
+"name": "Colgate-Palmolive",
+"sector": "Consumer Staples",
+"cik": 21665,
+"indice": "S&P 500"
+},
+{
+"ticker": "CMCSA",
+"name": "Comcast",
+"sector": "Communication Services",
+"cik": 1166691,
+"indice": "S&P 500"
+},
+{
+"ticker": "FIX",
+"name": "Comfort Systems USA",
+"sector": "Industrials",
+"cik": 1035983,
+"indice": "S&P 500"
+},
+{
+"ticker": "COP",
+"name": "ConocoPhillips",
+"sector": "Energy",
+"cik": 1163165,
+"indice": "S&P 500"
+},
+{
+"ticker": "ED",
+"name": "Consolidated Edison",
+"sector": "Utilities",
+"cik": 1047862,
+"indice": "S&P 500"
+},
+{
+"ticker": "STZ",
+"name": "Constellation Brands",
+"sector": "Consumer Staples",
+"cik": 16918,
+"indice": "S&P 500"
+},
+{
+"ticker": "CEG",
+"name": "Constellation Energy",
+"sector": "Utilities",
+"cik": 1868275,
+"indice": "S&P 500"
+},
+{
+"ticker": "COO",
+"name": "Cooper Companies (The)",
+"sector": "Health Care",
+"cik": 711404,
+"indice": "S&P 500"
+},
+{
+"ticker": "CPRT",
+"name": "Copart",
+"sector": "Industrials",
+"cik": 900075,
+"indice": "S&P 500"
+},
+{
+"ticker": "GLW",
+"name": "Corning Inc.",
+"sector": "Information Technology",
+"cik": 24741,
+"indice": "S&P 500"
+},
+{
+"ticker": "CPAY",
+"name": "Corpay",
+"sector": "Financials",
+"cik": 1175454,
+"indice": "S&P 500"
+},
+{
+"ticker": "CSGP",
+"name": "CoStar Group",
+"sector": "Real Estate",
+"cik": 1057352,
+"indice": "S&P 500"
+},
+{
+"ticker": "COST",
+"name": "Costco",
+"sector": "Consumer Staples",
+"cik": 909832,
+"indice": "S&P 500"
+},
+{
+"ticker": "CRH",
+"name": "CRH plc",
+"sector": "Materials",
+"cik": 849395,
+"indice": "S&P 500"
+},
+{
+"ticker": "CRWD",
+"name": "CrowdStrike",
+"sector": "Information Technology",
+"cik": 1535527,
+"indice": "S&P 500"
+},
+{
+"ticker": "CCI",
+"name": "Crown Castle",
+"sector": "Real Estate",
+"cik": 1051470,
+"indice": "S&P 500"
+},
+{
+"ticker": "CSX",
+"name": "CSX Corporation",
+"sector": "Industrials",
+"cik": 277948,
+"indice": "S&P 500"
+},
+{
+"ticker": "CMI",
+"name": "Cummins",
+"sector": "Industrials",
+"cik": 26172,
+"indice": "S&P 500"
+},
+{
+"ticker": "CVS",
+"name": "CVS Health",
+"sector": "Health Care",
+"cik": 64803,
+"indice": "S&P 500"
+},
+{
+"ticker": "DHR",
+"name": "Danaher Corporation",
+"sector": "Health Care",
+"cik": 313616,
+"indice": "S&P 500"
+},
+{
+"ticker": "DRI",
+"name": "Darden Restaurants",
+"sector": "Consumer Discretionary",
+"cik": 940944,
+"indice": "S&P 500"
+},
+{
+"ticker": "DDOG",
+"name": "Datadog",
+"sector": "Information Technology",
+"cik": 1561550,
+"indice": "S&P 500"
+},
+{
+"ticker": "DVA",
+"name": "DaVita",
+"sector": "Health Care",
+"cik": 927066,
+"indice": "S&P 500"
+},
+{
+"ticker": "DECK",
+"name": "Deckers Brands",
+"sector": "Consumer Discretionary",
+"cik": 910521,
+"indice": "S&P 500"
+},
+{
+"ticker": "DE",
+"name": "Deere & Company",
+"sector": "Industrials",
+"cik": 315189,
+"indice": "S&P 500"
+},
+{
+"ticker": "DELL",
+"name": "Dell Technologies",
+"sector": "Information Technology",
+"cik": 1571996,
+"indice": "S&P 500"
+},
+{
+"ticker": "DAL",
+"name": "Delta Air Lines",
+"sector": "Industrials",
+"cik": 27904,
+"indice": "S&P 500"
+},
+{
+"ticker": "DVN",
+"name": "Devon Energy",
+"sector": "Energy",
+"cik": 1090012,
+"indice": "S&P 500"
+},
+{
+"ticker": "DXCM",
+"name": "Dexcom",
+"sector": "Health Care",
+"cik": 1093557,
+"indice": "S&P 500"
+},
+{
+"ticker": "FANG",
+"name": "Diamondback Energy",
+"sector": "Energy",
+"cik": 1539838,
+"indice": "S&P 500"
+},
+{
+"ticker": "DLR",
+"name": "Digital Realty",
+"sector": "Real Estate",
+"cik": 1297996,
+"indice": "S&P 500"
+},
+{
+"ticker": "DG",
+"name": "Dollar General",
+"sector": "Consumer Staples",
+"cik": 29534,
+"indice": "S&P 500"
+},
+{
+"ticker": "DLTR",
+"name": "Dollar Tree",
+"sector": "Consumer Staples",
+"cik": 935703,
+"indice": "S&P 500"
+},
+{
+"ticker": "D",
+"name": "Dominion Energy",
+"sector": "Utilities",
+"cik": 715957,
+"indice": "S&P 500"
+},
+{
+"ticker": "DPZ",
+"name": "Domino's",
+"sector": "Consumer Discretionary",
+"cik": 1286681,
+"indice": "S&P 500"
+},
+{
+"ticker": "DASH",
+"name": "DoorDash",
+"sector": "Consumer Discretionary",
+"cik": 1792789,
+"indice": "S&P 500"
+},
+{
+"ticker": "DOV",
+"name": "Dover Corporation",
+"sector": "Industrials",
+"cik": 29905,
+"indice": "S&P 500"
+},
+{
+"ticker": "DOW",
+"name": "Dow Inc.",
+"sector": "Materials",
+"cik": 1751788,
+"indice": "S&P 500"
+},
+{
+"ticker": "DHI",
+"name": "D. R. Horton",
+"sector": "Consumer Discretionary",
+"cik": 882184,
+"indice": "S&P 500"
+},
+{
+"ticker": "DTE",
+"name": "DTE Energy",
+"sector": "Utilities",
+"cik": 936340,
+"indice": "S&P 500"
+},
+{
+"ticker": "DUK",
+"name": "Duke Energy",
+"sector": "Utilities",
+"cik": 1326160,
+"indice": "S&P 500"
+},
+{
+"ticker": "DD",
+"name": "DuPont",
+"sector": "Industrials",
+"cik": 1666700,
+"indice": "S&P 500"
+},
+{
+"ticker": "ETN",
+"name": "Eaton Corporation",
+"sector": "Industrials",
+"cik": 1551182,
+"indice": "S&P 500"
+},
+{
+"ticker": "EBAY",
+"name": "eBay Inc.",
+"sector": "Consumer Discretionary",
+"cik": 1065088,
+"indice": "S&P 500"
+},
+{
+"ticker": "ECHO",
+"name": "EchoStar",
+"sector": "Communication Services",
+"cik": 1415404,
+"indice": "S&P 500"
+},
+{
+"ticker": "ECL",
+"name": "Ecolab",
+"sector": "Materials",
+"cik": 31462,
+"indice": "S&P 500"
+},
+{
+"ticker": "EIX",
+"name": "Edison International",
+"sector": "Utilities",
+"cik": 827052,
+"indice": "S&P 500"
+},
+{
+"ticker": "EW",
+"name": "Edwards Lifesciences",
+"sector": "Health Care",
+"cik": 1099800,
+"indice": "S&P 500"
+},
+{
+"ticker": "ELV",
+"name": "Elevance Health",
+"sector": "Health Care",
+"cik": 1156039,
+"indice": "S&P 500"
+},
+{
+"ticker": "EME",
+"name": "Emcor",
+"sector": "Industrials",
+"cik": 105634,
+"indice": "S&P 500"
+},
+{
+"ticker": "EMR",
+"name": "Emerson Electric",
+"sector": "Industrials",
+"cik": 32604,
+"indice": "S&P 500"
+},
+{
+"ticker": "ETR",
+"name": "Entergy",
+"sector": "Utilities",
+"cik": 65984,
+"indice": "S&P 500"
+},
+{
+"ticker": "EOG",
+"name": "EOG Resources",
+"sector": "Energy",
+"cik": 821189,
+"indice": "S&P 500"
+},
+{
+"ticker": "EQT",
+"name": "EQT Corporation",
+"sector": "Energy",
+"cik": 33213,
+"indice": "S&P 500"
+},
+{
+"ticker": "EFX",
+"name": "Equifax",
+"sector": "Industrials",
+"cik": 33185,
+"indice": "S&P 500"
+},
+{
+"ticker": "EQIX",
+"name": "Equinix",
+"sector": "Real Estate",
+"cik": 1101239,
+"indice": "S&P 500"
+},
+{
+"ticker": "ERIE",
+"name": "Erie Indemnity",
+"sector": "Financials",
+"cik": 922621,
+"indice": "S&P 500"
+},
+{
+"ticker": "ESS",
+"name": "Essex Property Trust",
+"sector": "Real Estate",
+"cik": 920522,
+"indice": "S&P 500"
+},
+{
+"ticker": "EL",
+"name": "Estée Lauder Companies (The)",
+"sector": "Consumer Staples",
+"cik": 1001250,
+"indice": "S&P 500"
+},
+{
+"ticker": "EG",
+"name": "Everest Group",
+"sector": "Financials",
+"cik": 1095073,
+"indice": "S&P 500"
+},
+{
+"ticker": "EVRG",
+"name": "Evergy",
+"sector": "Utilities",
+"cik": 1711269,
+"indice": "S&P 500"
+},
+{
+"ticker": "P",
+"name": "Everpure",
+"sector": "Information Technology",
+"cik": 1474432,
+"indice": "S&P 500"
+},
+{
+"ticker": "ES",
+"name": "Eversource Energy",
+"sector": "Utilities",
+"cik": 72741,
+"indice": "S&P 500"
+},
+{
+"ticker": "EXC",
+"name": "Exelon",
+"sector": "Utilities",
+"cik": 1109357,
+"indice": "S&P 500"
+},
+{
+"ticker": "EXE",
+"name": "Expand Energy",
+"sector": "Energy",
+"cik": 895126,
+"indice": "S&P 500"
+},
+{
+"ticker": "EXPE",
+"name": "Expedia Group",
+"sector": "Consumer Discretionary",
+"cik": 1324424,
+"indice": "S&P 500"
+},
+{
+"ticker": "EXPD",
+"name": "Expeditors International",
+"sector": "Industrials",
+"cik": 746515,
+"indice": "S&P 500"
+},
+{
+"ticker": "EXR",
+"name": "Extra Space Storage",
+"sector": "Real Estate",
+"cik": 1289490,
+"indice": "S&P 500"
+},
+{
+"ticker": "XOM",
+"name": "ExxonMobil",
+"sector": "Energy",
+"cik": 2115436,
+"indice": "S&P 500"
+},
+{
+"ticker": "FFIV",
+"name": "F5, Inc.",
+"sector": "Information Technology",
+"cik": 1048695,
+"indice": "S&P 500"
+},
+{
+"ticker": "FDS",
+"name": "FactSet",
+"sector": "Financials",
+"cik": 1013237,
+"indice": "S&P 500"
+},
+{
+"ticker": "FICO",
+"name": "Fair Isaac",
+"sector": "Information Technology",
+"cik": 814547,
+"indice": "S&P 500"
+},
+{
+"ticker": "FAST",
+"name": "Fastenal",
+"sector": "Industrials",
+"cik": 815556,
+"indice": "S&P 500"
+},
+{
+"ticker": "FRT",
+"name": "Federal Realty Investment Trust",
+"sector": "Real Estate",
+"cik": 34903,
+"indice": "S&P 500"
+},
+{
+"ticker": "FDX",
+"name": "FedEx",
+"sector": "Industrials",
+"cik": 1048911,
+"indice": "S&P 500"
+},
+{
+"ticker": "FDXF",
+"name": "FedEx Freight",
+"sector": "Industrials",
+"cik": 2082247,
+"indice": "S&P 500"
+},
+{
+"ticker": "FERG",
+"name": "Ferguson Enterprises",
+"sector": "Industrials",
+"cik": 2011641,
+"indice": "S&P 500"
+},
+{
+"ticker": "FIS",
+"name": "Fidelity National Information Services",
+"sector": "Financials",
+"cik": 1136893,
+"indice": "S&P 500"
+},
+{
+"ticker": "FITB",
+"name": "Fifth Third Bancorp",
+"sector": "Financials",
+"cik": 35527,
+"indice": "S&P 500"
+},
+{
+"ticker": "FSLR",
+"name": "First Solar",
+"sector": "Information Technology",
+"cik": 1274494,
+"indice": "S&P 500"
+},
+{
+"ticker": "FE",
+"name": "FirstEnergy",
+"sector": "Utilities",
+"cik": 1031296,
+"indice": "S&P 500"
+},
+{
+"ticker": "FISV",
+"name": "Fiserv",
+"sector": "Financials",
+"cik": 798354,
+"indice": "S&P 500"
+},
+{
+"ticker": "FLEX",
+"name": "Flex Ltd.",
+"sector": "Information Technology",
+"cik": 866374,
+"indice": "S&P 500"
+},
+{
+"ticker": "F",
+"name": "Ford Motor Company",
+"sector": "Consumer Discretionary",
+"cik": 37996,
+"indice": "S&P 500"
+},
+{
+"ticker": "FTNT",
+"name": "Fortinet",
+"sector": "Information Technology",
+"cik": 1262039,
+"indice": "S&P 500"
+},
+{
+"ticker": "FTV",
+"name": "Fortive",
+"sector": "Industrials",
+"cik": 1659166,
+"indice": "S&P 500"
+},
+{
+"ticker": "FOXA",
+"name": "Fox Corporation (Class A)",
+"sector": "Communication Services",
+"cik": 1754301,
+"indice": "S&P 500"
+},
+{
+"ticker": "FOX",
+"name": "Fox Corporation (Class B)",
+"sector": "Communication Services",
+"cik": 1754301,
+"indice": "S&P 500"
+},
+{
+"ticker": "BEN",
+"name": "Franklin Resources",
+"sector": "Financials",
+"cik": 38777,
+"indice": "S&P 500"
+},
+{
+"ticker": "FCX",
+"name": "Freeport-McMoRan",
+"sector": "Materials",
+"cik": 831259,
+"indice": "S&P 500"
+},
+{
+"ticker": "GRMN",
+"name": "Garmin",
+"sector": "Consumer Discretionary",
+"cik": 1121788,
+"indice": "S&P 500"
+},
+{
+"ticker": "IT",
+"name": "Gartner",
+"sector": "Information Technology",
+"cik": 749251,
+"indice": "S&P 500"
+},
+{
+"ticker": "GE",
+"name": "GE Aerospace",
+"sector": "Industrials",
+"cik": 40545,
+"indice": "S&P 500"
+},
+{
+"ticker": "GEHC",
+"name": "GE HealthCare",
+"sector": "Health Care",
+"cik": 1932393,
+"indice": "S&P 500"
+},
+{
+"ticker": "GEV",
+"name": "GE Vernova",
+"sector": "Industrials",
+"cik": 1996810,
+"indice": "S&P 500"
+},
+{
+"ticker": "GEN",
+"name": "Gen Digital",
+"sector": "Information Technology",
+"cik": 849399,
+"indice": "S&P 500"
+},
+{
+"ticker": "GNRC",
+"name": "Generac",
+"sector": "Industrials",
+"cik": 1474735,
+"indice": "S&P 500"
+},
+{
+"ticker": "GD",
+"name": "General Dynamics",
+"sector": "Industrials",
+"cik": 40533,
+"indice": "S&P 500"
+},
+{
+"ticker": "GIS",
+"name": "General Mills",
+"sector": "Consumer Staples",
+"cik": 40704,
+"indice": "S&P 500"
+},
+{
+"ticker": "GM",
+"name": "General Motors",
+"sector": "Consumer Discretionary",
+"cik": 1467858,
+"indice": "S&P 500"
+},
+{
+"ticker": "GPC",
+"name": "Genuine Parts Company",
+"sector": "Consumer Discretionary",
+"cik": 40987,
+"indice": "S&P 500"
+},
+{
+"ticker": "GILD",
+"name": "Gilead Sciences",
+"sector": "Health Care",
+"cik": 882095,
+"indice": "S&P 500"
+},
+{
+"ticker": "GPN",
+"name": "Global Payments",
+"sector": "Financials",
+"cik": 1123360,
+"indice": "S&P 500"
+},
+{
+"ticker": "GL",
+"name": "Globe Life",
+"sector": "Financials",
+"cik": 320335,
+"indice": "S&P 500"
+},
+{
+"ticker": "GDDY",
+"name": "GoDaddy",
+"sector": "Information Technology",
+"cik": 1609711,
+"indice": "S&P 500"
+},
+{
+"ticker": "GS",
+"name": "Goldman Sachs",
+"sector": "Financials",
+"cik": 886982,
+"indice": "S&P 500"
+},
+{
+"ticker": "HAL",
+"name": "Halliburton",
+"sector": "Energy",
+"cik": 45012,
+"indice": "S&P 500"
+},
+{
+"ticker": "HIG",
+"name": "Hartford (The)",
+"sector": "Financials",
+"cik": 874766,
+"indice": "S&P 500"
+},
+{
+"ticker": "HAS",
+"name": "Hasbro",
+"sector": "Consumer Discretionary",
+"cik": 46080,
+"indice": "S&P 500"
+},
+{
+"ticker": "HCA",
+"name": "HCA Healthcare",
+"sector": "Health Care",
+"cik": 860730,
+"indice": "S&P 500"
+},
+{
+"ticker": "DOC",
+"name": "Healthpeak Properties",
+"sector": "Real Estate",
+"cik": 765880,
+"indice": "S&P 500"
+},
+{
+"ticker": "HSIC",
+"name": "Henry Schein",
+"sector": "Health Care",
+"cik": 1000228,
+"indice": "S&P 500"
+},
+{
+"ticker": "HSY",
+"name": "Hershey Company (The)",
+"sector": "Consumer Staples",
+"cik": 47111,
+"indice": "S&P 500"
+},
+{
+"ticker": "HPE",
+"name": "Hewlett Packard Enterprise",
+"sector": "Information Technology",
+"cik": 1645590,
+"indice": "S&P 500"
+},
+{
+"ticker": "HLT",
+"name": "Hilton Worldwide",
+"sector": "Consumer Discretionary",
+"cik": 1585689,
+"indice": "S&P 500"
+},
+{
+"ticker": "HD",
+"name": "Home Depot (The)",
+"sector": "Consumer Discretionary",
+"cik": 354950,
+"indice": "S&P 500"
+},
+{
+"ticker": "HONA",
+"name": "Honeywell Aerospace",
+"sector": "Industrials",
+"cik": 2089271,
+"indice": "S&P 500"
+},
+{
+"ticker": "HON",
+"name": "Honeywell Technologies",
+"sector": "Industrials",
+"cik": 773840,
+"indice": "S&P 500"
+},
+{
+"ticker": "HRL",
+"name": "Hormel Foods",
+"sector": "Consumer Staples",
+"cik": 48465,
+"indice": "S&P 500"
+},
+{
+"ticker": "HST",
+"name": "Host Hotels & Resorts",
+"sector": "Real Estate",
+"cik": 1070750,
+"indice": "S&P 500"
+},
+{
+"ticker": "HWM",
+"name": "Howmet Aerospace",
+"sector": "Industrials",
+"cik": 4281,
+"indice": "S&P 500"
+},
+{
+"ticker": "HPQ",
+"name": "HP Inc.",
+"sector": "Information Technology",
+"cik": 47217,
+"indice": "S&P 500"
+},
+{
+"ticker": "HUBB",
+"name": "Hubbell Incorporated",
+"sector": "Industrials",
+"cik": 48898,
+"indice": "S&P 500"
+},
+{
+"ticker": "HUM",
+"name": "Humana",
+"sector": "Health Care",
+"cik": 49071,
+"indice": "S&P 500"
+},
+{
+"ticker": "HBAN",
+"name": "Huntington Bancshares",
+"sector": "Financials",
+"cik": 49196,
+"indice": "S&P 500"
+},
+{
+"ticker": "HII",
+"name": "Huntington Ingalls Industries",
+"sector": "Industrials",
+"cik": 1501585,
+"indice": "S&P 500"
+},
+{
+"ticker": "IBM",
+"name": "IBM",
+"sector": "Information Technology",
+"cik": 51143,
+"indice": "S&P 500"
+},
+{
+"ticker": "IEX",
+"name": "IDEX Corporation",
+"sector": "Industrials",
+"cik": 832101,
+"indice": "S&P 500"
+},
+{
+"ticker": "IDXX",
+"name": "Idexx Laboratories",
+"sector": "Health Care",
+"cik": 874716,
+"indice": "S&P 500"
+},
+{
+"ticker": "ITW",
+"name": "Illinois Tool Works",
+"sector": "Industrials",
+"cik": 49826,
+"indice": "S&P 500"
+},
+{
+"ticker": "ILMN",
+"name": "Illumina, Inc.",
+"sector": "Health Care",
+"cik": 1110803,
+"indice": "S&P 500"
+},
+{
+"ticker": "INCY",
+"name": "Incyte",
+"sector": "Health Care",
+"cik": 879169,
+"indice": "S&P 500"
+},
+{
+"ticker": "IR",
+"name": "Ingersoll Rand",
+"sector": "Industrials",
+"cik": 1699150,
+"indice": "S&P 500"
+},
+{
+"ticker": "PODD",
+"name": "Insulet Corporation",
+"sector": "Health Care",
+"cik": 1145197,
+"indice": "S&P 500"
+},
+{
+"ticker": "INTC",
+"name": "Intel",
+"sector": "Information Technology",
+"cik": 50863,
+"indice": "S&P 500"
+},
+{
+"ticker": "IBKR",
+"name": "Interactive Brokers",
+"sector": "Financials",
+"cik": 1381197,
+"indice": "S&P 500"
+},
+{
+"ticker": "ICE",
+"name": "Intercontinental Exchange",
+"sector": "Financials",
+"cik": 1571949,
+"indice": "S&P 500"
+},
+{
+"ticker": "IFF",
+"name": "International Flavors & Fragrances",
+"sector": "Materials",
+"cik": 51253,
+"indice": "S&P 500"
+},
+{
+"ticker": "IP",
+"name": "International Paper",
+"sector": "Materials",
+"cik": 51434,
+"indice": "S&P 500"
+},
+{
+"ticker": "INTU",
+"name": "Intuit",
+"sector": "Information Technology",
+"cik": 896878,
+"indice": "S&P 500"
+},
+{
+"ticker": "ISRG",
+"name": "Intuitive Surgical",
+"sector": "Health Care",
+"cik": 1035267,
+"indice": "S&P 500"
+},
+{
+"ticker": "IVZ",
+"name": "Invesco",
+"sector": "Financials",
+"cik": 914208,
+"indice": "S&P 500"
+},
+{
+"ticker": "INVH",
+"name": "Invitation Homes",
+"sector": "Real Estate",
+"cik": 1687229,
+"indice": "S&P 500"
+},
+{
+"ticker": "IQV",
+"name": "IQVIA",
+"sector": "Health Care",
+"cik": 1478242,
+"indice": "S&P 500"
+},
+{
+"ticker": "IRM",
+"name": "Iron Mountain",
+"sector": "Real Estate",
+"cik": 1020569,
+"indice": "S&P 500"
+},
+{
+"ticker": "JBHT",
+"name": "J.B. Hunt",
+"sector": "Industrials",
+"cik": 728535,
+"indice": "S&P 500"
+},
+{
+"ticker": "JBL",
+"name": "Jabil",
+"sector": "Information Technology",
+"cik": 898293,
+"indice": "S&P 500"
+},
+{
+"ticker": "JKHY",
+"name": "Jack Henry & Associates",
+"sector": "Financials",
+"cik": 779152,
+"indice": "S&P 500"
+},
+{
+"ticker": "J",
+"name": "Jacobs Solutions",
+"sector": "Industrials",
+"cik": 52988,
+"indice": "S&P 500"
+},
+{
+"ticker": "JNJ",
+"name": "Johnson & Johnson",
+"sector": "Health Care",
+"cik": 200406,
+"indice": "S&P 500"
+},
+{
+"ticker": "JCI",
+"name": "Johnson Controls",
+"sector": "Industrials",
+"cik": 833444,
+"indice": "S&P 500"
+},
+{
+"ticker": "JPM",
+"name": "JPMorgan Chase",
+"sector": "Financials",
+"cik": 19617,
+"indice": "S&P 500"
+},
+{
+"ticker": "KDP",
+"name": "Keurig Dr Pepper",
+"sector": "Consumer Staples",
+"cik": 1418135,
+"indice": "S&P 500"
+},
+{
+"ticker": "KEY",
+"name": "KeyCorp",
+"sector": "Financials",
+"cik": 91576,
+"indice": "S&P 500"
+},
+{
+"ticker": "KEYS",
+"name": "Keysight Technologies",
+"sector": "Information Technology",
+"cik": 1601046,
+"indice": "S&P 500"
+},
+{
+"ticker": "KMB",
+"name": "Kimberly-Clark",
+"sector": "Consumer Staples",
+"cik": 55785,
+"indice": "S&P 500"
+},
+{
+"ticker": "KIM",
+"name": "Kimco Realty",
+"sector": "Real Estate",
+"cik": 879101,
+"indice": "S&P 500"
+},
+{
+"ticker": "KMI",
+"name": "Kinder Morgan",
+"sector": "Energy",
+"cik": 1506307,
+"indice": "S&P 500"
+},
+{
+"ticker": "KKR",
+"name": "KKR & Co.",
+"sector": "Financials",
+"cik": 1404912,
+"indice": "S&P 500"
+},
+{
+"ticker": "KLAC",
+"name": "KLA Corporation",
+"sector": "Information Technology",
+"cik": 319201,
+"indice": "S&P 500"
+},
+{
+"ticker": "KHC",
+"name": "Kraft Heinz",
+"sector": "Consumer Staples",
+"cik": 1637459,
+"indice": "S&P 500"
+},
+{
+"ticker": "KR",
+"name": "Kroger",
+"sector": "Consumer Staples",
+"cik": 56873,
+"indice": "S&P 500"
+},
+{
+"ticker": "LHX",
+"name": "L3Harris",
+"sector": "Industrials",
+"cik": 202058,
+"indice": "S&P 500"
+},
+{
+"ticker": "LH",
+"name": "Labcorp",
+"sector": "Health Care",
+"cik": 920148,
+"indice": "S&P 500"
+},
+{
+"ticker": "LRCX",
+"name": "Lam Research",
+"sector": "Information Technology",
+"cik": 707549,
+"indice": "S&P 500"
+},
+{
+"ticker": "LVS",
+"name": "Las Vegas Sands",
+"sector": "Consumer Discretionary",
+"cik": 1300514,
+"indice": "S&P 500"
+},
+{
+"ticker": "LDOS",
+"name": "Leidos",
+"sector": "Industrials",
+"cik": 1336920,
+"indice": "S&P 500"
+},
+{
+"ticker": "LEN",
+"name": "Lennar",
+"sector": "Consumer Discretionary",
+"cik": 920760,
+"indice": "S&P 500"
+},
+{
+"ticker": "LII",
+"name": "Lennox International",
+"sector": "Industrials",
+"cik": 1069202,
+"indice": "S&P 500"
+},
+{
+"ticker": "LLY",
+"name": "Lilly (Eli)",
+"sector": "Health Care",
+"cik": 59478,
+"indice": "S&P 500"
+},
+{
+"ticker": "LIN",
+"name": "Linde plc",
+"sector": "Materials",
+"cik": 1707925,
+"indice": "S&P 500"
+},
+{
+"ticker": "LYV",
+"name": "Live Nation Entertainment",
+"sector": "Communication Services",
+"cik": 1335258,
+"indice": "S&P 500"
+},
+{
+"ticker": "LMT",
+"name": "Lockheed Martin",
+"sector": "Industrials",
+"cik": 936468,
+"indice": "S&P 500"
+},
+{
+"ticker": "L",
+"name": "Loews Corporation",
+"sector": "Financials",
+"cik": 60086,
+"indice": "S&P 500"
+},
+{
+"ticker": "LOW",
+"name": "Lowe's",
+"sector": "Consumer Discretionary",
+"cik": 60667,
+"indice": "S&P 500"
+},
+{
+"ticker": "LULU",
+"name": "Lululemon Athletica",
+"sector": "Consumer Discretionary",
+"cik": 1397187,
+"indice": "S&P 500"
+},
+{
+"ticker": "LITE",
+"name": "Lumentum",
+"sector": "Information Technology",
+"cik": 1633978,
+"indice": "S&P 500"
+},
+{
+"ticker": "LYB",
+"name": "LyondellBasell",
+"sector": "Materials",
+"cik": 1489393,
+"indice": "S&P 500"
+},
+{
+"ticker": "MTB",
+"name": "M&T Bank",
+"sector": "Financials",
+"cik": 36270,
+"indice": "S&P 500"
+},
+{
+"ticker": "MPC",
+"name": "Marathon Petroleum",
+"sector": "Energy",
+"cik": 1510295,
+"indice": "S&P 500"
+},
+{
+"ticker": "MAR",
+"name": "Marriott International",
+"sector": "Consumer Discretionary",
+"cik": 1048286,
+"indice": "S&P 500"
+},
+{
+"ticker": "MRSH",
+"name": "Marsh McLennan",
+"sector": "Financials",
+"cik": 62709,
+"indice": "S&P 500"
+},
+{
+"ticker": "MLM",
+"name": "Martin Marietta Materials",
+"sector": "Materials",
+"cik": 916076,
+"indice": "S&P 500"
+},
+{
+"ticker": "MRVL",
+"name": "Marvell Technology",
+"sector": "Information Technology",
+"cik": 1835632,
+"indice": "S&P 500"
+},
+{
+"ticker": "MAS",
+"name": "Masco",
+"sector": "Industrials",
+"cik": 62996,
+"indice": "S&P 500"
+},
+{
+"ticker": "MA",
+"name": "Mastercard",
+"sector": "Financials",
+"cik": 1141391,
+"indice": "S&P 500"
+},
+{
+"ticker": "MKC",
+"name": "McCormick & Company",
+"sector": "Consumer Staples",
+"cik": 63754,
+"indice": "S&P 500"
+},
+{
+"ticker": "MCD",
+"name": "McDonald's",
+"sector": "Consumer Discretionary",
+"cik": 63908,
+"indice": "S&P 500"
+},
+{
+"ticker": "MCK",
+"name": "McKesson",
+"sector": "Health Care",
+"cik": 927653,
+"indice": "S&P 500"
+},
+{
+"ticker": "MDT",
+"name": "Medtronic",
+"sector": "Health Care",
+"cik": 1613103,
+"indice": "S&P 500"
+},
+{
+"ticker": "MRK",
+"name": "Merck & Co.",
+"sector": "Health Care",
+"cik": 310158,
+"indice": "S&P 500"
+},
+{
+"ticker": "META",
+"name": "Meta Platforms",
+"sector": "Communication Services",
+"cik": 1326801,
+"indice": "S&P 500"
+},
+{
+"ticker": "MET",
+"name": "MetLife",
+"sector": "Financials",
+"cik": 1099219,
+"indice": "S&P 500"
+},
+{
+"ticker": "MTD",
+"name": "Mettler Toledo",
+"sector": "Health Care",
+"cik": 1037646,
+"indice": "S&P 500"
+},
+{
+"ticker": "MGM",
+"name": "MGM Resorts",
+"sector": "Consumer Discretionary",
+"cik": 789570,
+"indice": "S&P 500"
+},
+{
+"ticker": "MCHP",
+"name": "Microchip Technology",
+"sector": "Information Technology",
+"cik": 827054,
+"indice": "S&P 500"
+},
+{
+"ticker": "MU",
+"name": "Micron Technology",
+"sector": "Information Technology",
+"cik": 723125,
+"indice": "S&P 500"
+},
+{
+"ticker": "MSFT",
+"name": "Microsoft",
+"sector": "Information Technology",
+"cik": 789019,
+"indice": "S&P 500"
+},
+{
+"ticker": "MAA",
+"name": "Mid-America Apartment Communities",
+"sector": "Real Estate",
+"cik": 912595,
+"indice": "S&P 500"
+},
+{
+"ticker": "MRNA",
+"name": "Moderna",
+"sector": "Health Care",
+"cik": 1682852,
+"indice": "S&P 500"
+},
+{
+"ticker": "MDLZ",
+"name": "Mondelez International",
+"sector": "Consumer Staples",
+"cik": 1103982,
+"indice": "S&P 500"
+},
+{
+"ticker": "MPWR",
+"name": "Monolithic Power Systems",
+"sector": "Information Technology",
+"cik": 1280452,
+"indice": "S&P 500"
+},
+{
+"ticker": "MNST",
+"name": "Monster Beverage",
+"sector": "Consumer Staples",
+"cik": 865752,
+"indice": "S&P 500"
+},
+{
+"ticker": "MCO",
+"name": "Moody's Corporation",
+"sector": "Financials",
+"cik": 1059556,
+"indice": "S&P 500"
+},
+{
+"ticker": "MS",
+"name": "Morgan Stanley",
+"sector": "Financials",
+"cik": 895421,
+"indice": "S&P 500"
+},
+{
+"ticker": "MOS",
+"name": "Mosaic Company (The)",
+"sector": "Materials",
+"cik": 1285785,
+"indice": "S&P 500"
+},
+{
+"ticker": "MSI",
+"name": "Motorola Solutions",
+"sector": "Information Technology",
+"cik": 68505,
+"indice": "S&P 500"
+},
+{
+"ticker": "MSCI",
+"name": "MSCI",
+"sector": "Financials",
+"cik": 1408198,
+"indice": "S&P 500"
+},
+{
+"ticker": "NDAQ",
+"name": "Nasdaq, Inc.",
+"sector": "Financials",
+"cik": 1120193,
+"indice": "S&P 500"
+},
+{
+"ticker": "NTAP",
+"name": "NetApp",
+"sector": "Information Technology",
+"cik": 1002047,
+"indice": "S&P 500"
+},
+{
+"ticker": "NFLX",
+"name": "Netflix",
+"sector": "Communication Services",
+"cik": 1065280,
+"indice": "S&P 500"
+},
+{
+"ticker": "NEM",
+"name": "Newmont",
+"sector": "Materials",
+"cik": 1164727,
+"indice": "S&P 500"
+},
+{
+"ticker": "NWSA",
+"name": "News Corp (Class A)",
+"sector": "Communication Services",
+"cik": 1564708,
+"indice": "S&P 500"
+},
+{
+"ticker": "NWS",
+"name": "News Corp (Class B)",
+"sector": "Communication Services",
+"cik": 1564708,
+"indice": "S&P 500"
+},
+{
+"ticker": "NEE",
+"name": "NextEra Energy",
+"sector": "Utilities",
+"cik": 753308,
+"indice": "S&P 500"
+},
+{
+"ticker": "NKE",
+"name": "Nike, Inc.",
+"sector": "Consumer Discretionary",
+"cik": 320187,
+"indice": "S&P 500"
+},
+{
+"ticker": "NI",
+"name": "NiSource",
+"sector": "Utilities",
+"cik": 1111711,
+"indice": "S&P 500"
+},
+{
+"ticker": "NDSN",
+"name": "Nordson Corporation",
+"sector": "Industrials",
+"cik": 72331,
+"indice": "S&P 500"
+},
+{
+"ticker": "NSC",
+"name": "Norfolk Southern",
+"sector": "Industrials",
+"cik": 702165,
+"indice": "S&P 500"
+},
+{
+"ticker": "NTRS",
+"name": "Northern Trust",
+"sector": "Financials",
+"cik": 73124,
+"indice": "S&P 500"
+},
+{
+"ticker": "NOC",
+"name": "Northrop Grumman",
+"sector": "Industrials",
+"cik": 1133421,
+"indice": "S&P 500"
+},
+{
+"ticker": "NCLH",
+"name": "Norwegian Cruise Line Holdings",
+"sector": "Consumer Discretionary",
+"cik": 1513761,
+"indice": "S&P 500"
+},
+{
+"ticker": "NRG",
+"name": "NRG Energy",
+"sector": "Utilities",
+"cik": 1013871,
+"indice": "S&P 500"
+},
+{
+"ticker": "NUE",
+"name": "Nucor",
+"sector": "Materials",
+"cik": 73309,
+"indice": "S&P 500"
+},
+{
+"ticker": "NVDA",
+"name": "Nvidia",
+"sector": "Information Technology",
+"cik": 1045810,
+"indice": "S&P 500"
+},
+{
+"ticker": "NVR",
+"name": "NVR, Inc.",
+"sector": "Consumer Discretionary",
+"cik": 906163,
+"indice": "S&P 500"
+},
+{
+"ticker": "NXPI",
+"name": "NXP Semiconductors",
+"sector": "Information Technology",
+"cik": 1413447,
+"indice": "S&P 500"
+},
+{
+"ticker": "ORLY",
+"name": "O'Reilly Automotive",
+"sector": "Consumer Discretionary",
+"cik": 898173,
+"indice": "S&P 500"
+},
+{
+"ticker": "OXY",
+"name": "Occidental Petroleum",
+"sector": "Energy",
+"cik": 797468,
+"indice": "S&P 500"
+},
+{
+"ticker": "OKTA",
+"name": "Okta, Inc.",
+"sector": "Information Technology",
+"cik": 1660134,
+"indice": "S&P 500"
+},
+{
+"ticker": "ODFL",
+"name": "Old Dominion",
+"sector": "Industrials",
+"cik": 878927,
+"indice": "S&P 500"
+},
+{
+"ticker": "OMC",
+"name": "Omnicom Group",
+"sector": "Communication Services",
+"cik": 29989,
+"indice": "S&P 500"
+},
+{
+"ticker": "ON",
+"name": "ON Semiconductor",
+"sector": "Information Technology",
+"cik": 1097864,
+"indice": "S&P 500"
+},
+{
+"ticker": "OKE",
+"name": "Oneok",
+"sector": "Energy",
+"cik": 1039684,
+"indice": "S&P 500"
+},
+{
+"ticker": "ORCL",
+"name": "Oracle Corporation",
+"sector": "Information Technology",
+"cik": 1341439,
+"indice": "S&P 500"
+},
+{
+"ticker": "OTIS",
+"name": "Otis Worldwide",
+"sector": "Industrials",
+"cik": 1781335,
+"indice": "S&P 500"
+},
+{
+"ticker": "PCAR",
+"name": "Paccar",
+"sector": "Industrials",
+"cik": 75362,
+"indice": "S&P 500"
+},
+{
+"ticker": "PKG",
+"name": "Packaging Corporation of America",
+"sector": "Materials",
+"cik": 75677,
+"indice": "S&P 500"
+},
+{
+"ticker": "PLTR",
+"name": "Palantir Technologies",
+"sector": "Information Technology",
+"cik": 1321655,
+"indice": "S&P 500"
+},
+{
+"ticker": "PANW",
+"name": "Palo Alto Networks",
+"sector": "Information Technology",
+"cik": 1327567,
+"indice": "S&P 500"
+},
+{
+"ticker": "PH",
+"name": "Parker Hannifin",
+"sector": "Industrials",
+"cik": 76334,
+"indice": "S&P 500"
+},
+{
+"ticker": "PAYX",
+"name": "Paychex",
+"sector": "Industrials",
+"cik": 723531,
+"indice": "S&P 500"
+},
+{
+"ticker": "PYPL",
+"name": "PayPal",
+"sector": "Financials",
+"cik": 1633917,
+"indice": "S&P 500"
+},
+{
+"ticker": "PNR",
+"name": "Pentair",
+"sector": "Industrials",
+"cik": 77360,
+"indice": "S&P 500"
+},
+{
+"ticker": "PEP",
+"name": "PepsiCo",
+"sector": "Consumer Staples",
+"cik": 77476,
+"indice": "S&P 500"
+},
+{
+"ticker": "PFE",
+"name": "Pfizer",
+"sector": "Health Care",
+"cik": 78003,
+"indice": "S&P 500"
+},
+{
+"ticker": "PCG",
+"name": "PG&E Corporation",
+"sector": "Utilities",
+"cik": 1004980,
+"indice": "S&P 500"
+},
+{
+"ticker": "PM",
+"name": "Philip Morris International",
+"sector": "Consumer Staples",
+"cik": 1413329,
+"indice": "S&P 500"
+},
+{
+"ticker": "PSX",
+"name": "Phillips 66",
+"sector": "Energy",
+"cik": 1534701,
+"indice": "S&P 500"
+},
+{
+"ticker": "PNW",
+"name": "Pinnacle West Capital",
+"sector": "Utilities",
+"cik": 764622,
+"indice": "S&P 500"
+},
+{
+"ticker": "PNC",
+"name": "PNC Financial Services",
+"sector": "Financials",
+"cik": 713676,
+"indice": "S&P 500"
+},
+{
+"ticker": "PPG",
+"name": "PPG Industries",
+"sector": "Materials",
+"cik": 79879,
+"indice": "S&P 500"
+},
+{
+"ticker": "PPL",
+"name": "PPL Corporation",
+"sector": "Utilities",
+"cik": 922224,
+"indice": "S&P 500"
+},
+{
+"ticker": "PFG",
+"name": "Principal Financial Group",
+"sector": "Financials",
+"cik": 1126328,
+"indice": "S&P 500"
+},
+{
+"ticker": "PG",
+"name": "Procter & Gamble",
+"sector": "Consumer Staples",
+"cik": 80424,
+"indice": "S&P 500"
+},
+{
+"ticker": "PGR",
+"name": "Progressive Corporation",
+"sector": "Financials",
+"cik": 80661,
+"indice": "S&P 500"
+},
+{
+"ticker": "PLD",
+"name": "Prologis",
+"sector": "Real Estate",
+"cik": 1045609,
+"indice": "S&P 500"
+},
+{
+"ticker": "PRU",
+"name": "Prudential Financial",
+"sector": "Financials",
+"cik": 1137774,
+"indice": "S&P 500"
+},
+{
+"ticker": "PTC",
+"name": "PTC Inc.",
+"sector": "Information Technology",
+"cik": 857005,
+"indice": "S&P 500"
+},
+{
+"ticker": "PEG",
+"name": "Public Service Enterprise Group",
+"sector": "Utilities",
+"cik": 788784,
+"indice": "S&P 500"
+},
+{
+"ticker": "PSA",
+"name": "Public Storage",
+"sector": "Real Estate",
+"cik": 1393311,
+"indice": "S&P 500"
+},
+{
+"ticker": "PHM",
+"name": "PulteGroup",
+"sector": "Consumer Discretionary",
+"cik": 822416,
+"indice": "S&P 500"
+},
+{
+"ticker": "Q",
+"name": "Qnity Electronics",
+"sector": "Information Technology",
+"cik": 2058873,
+"indice": "S&P 500"
+},
+{
+"ticker": "QCOM",
+"name": "Qualcomm",
+"sector": "Information Technology",
+"cik": 804328,
+"indice": "S&P 500"
+},
+{
+"ticker": "PWR",
+"name": "Quanta Services",
+"sector": "Industrials",
+"cik": 1050915,
+"indice": "S&P 500"
+},
+{
+"ticker": "DGX",
+"name": "Quest Diagnostics",
+"sector": "Health Care",
+"cik": 1022079,
+"indice": "S&P 500"
+},
+{
+"ticker": "RL",
+"name": "Ralph Lauren Corporation",
+"sector": "Consumer Discretionary",
+"cik": 1037038,
+"indice": "S&P 500"
+},
+{
+"ticker": "RJF",
+"name": "Raymond James Financial",
+"sector": "Financials",
+"cik": 720005,
+"indice": "S&P 500"
+},
+{
+"ticker": "RDDT",
+"name": "Reddit",
+"sector": "Communication Services",
+"cik": 1713445,
+"indice": "S&P 500"
+},
+{
+"ticker": "O",
+"name": "Realty Income",
+"sector": "Real Estate",
+"cik": 726728,
+"indice": "S&P 500"
+},
+{
+"ticker": "REG",
+"name": "Regency Centers",
+"sector": "Real Estate",
+"cik": 910606,
+"indice": "S&P 500"
+},
+{
+"ticker": "REGN",
+"name": "Regeneron Pharmaceuticals",
+"sector": "Health Care",
+"cik": 872589,
+"indice": "S&P 500"
+},
+{
+"ticker": "RF",
+"name": "Regions Financial Corporation",
+"sector": "Financials",
+"cik": 1281761,
+"indice": "S&P 500"
+},
+{
+"ticker": "RSG",
+"name": "Republic Services",
+"sector": "Industrials",
+"cik": 1060391,
+"indice": "S&P 500"
+},
+{
+"ticker": "RMD",
+"name": "ResMed",
+"sector": "Health Care",
+"cik": 943819,
+"indice": "S&P 500"
+},
+{
+"ticker": "RVTY",
+"name": "Revvity",
+"sector": "Health Care",
+"cik": 31791,
+"indice": "S&P 500"
+},
+{
+"ticker": "HOOD",
+"name": "Robinhood Markets",
+"sector": "Financials",
+"cik": 1783879,
+"indice": "S&P 500"
+},
+{
+"ticker": "ROK",
+"name": "Rockwell Automation",
+"sector": "Industrials",
+"cik": 1024478,
+"indice": "S&P 500"
+},
+{
+"ticker": "ROL",
+"name": "Rollins, Inc.",
+"sector": "Industrials",
+"cik": 84839,
+"indice": "S&P 500"
+},
+{
+"ticker": "ROP",
+"name": "Roper Technologies",
+"sector": "Information Technology",
+"cik": 882835,
+"indice": "S&P 500"
+},
+{
+"ticker": "ROST",
+"name": "Ross Stores",
+"sector": "Consumer Discretionary",
+"cik": 745732,
+"indice": "S&P 500"
+},
+{
+"ticker": "RCL",
+"name": "Royal Caribbean Group",
+"sector": "Consumer Discretionary",
+"cik": 884887,
+"indice": "S&P 500"
+},
+{
+"ticker": "RTX",
+"name": "RTX Corporation",
+"sector": "Industrials",
+"cik": 101829,
+"indice": "S&P 500"
+},
+{
+"ticker": "SPGI",
+"name": "S&P Global",
+"sector": "Financials",
+"cik": 64040,
+"indice": "S&P 500"
+},
+{
+"ticker": "CRM",
+"name": "Salesforce",
+"sector": "Information Technology",
+"cik": 1108524,
+"indice": "S&P 500"
+},
+{
+"ticker": "SNDK",
+"name": "Sandisk",
+"sector": "Information Technology",
+"cik": 2023554,
+"indice": "S&P 500"
+},
+{
+"ticker": "SBAC",
+"name": "SBA Communications",
+"sector": "Real Estate",
+"cik": 1034054,
+"indice": "S&P 500"
+},
+{
+"ticker": "SLB",
+"name": "Schlumberger",
+"sector": "Energy",
+"cik": 87347,
+"indice": "S&P 500"
+},
+{
+"ticker": "STX",
+"name": "Seagate Technology",
+"sector": "Information Technology",
+"cik": 1137789,
+"indice": "S&P 500"
+},
+{
+"ticker": "SRE",
+"name": "Sempra",
+"sector": "Utilities",
+"cik": 1032208,
+"indice": "S&P 500"
+},
+{
+"ticker": "NOW",
+"name": "ServiceNow",
+"sector": "Information Technology",
+"cik": 1373715,
+"indice": "S&P 500"
+},
+{
+"ticker": "SHW",
+"name": "Sherwin-Williams",
+"sector": "Materials",
+"cik": 89800,
+"indice": "S&P 500"
+},
+{
+"ticker": "SPG",
+"name": "Simon Property Group",
+"sector": "Real Estate",
+"cik": 1063761,
+"indice": "S&P 500"
+},
+{
+"ticker": "SKYD",
+"name": "Skydance",
+"sector": "Communication Services",
+"cik": 2041610,
+"indice": "S&P 500"
+},
+{
+"ticker": "SWKS",
+"name": "Skyworks Solutions",
+"sector": "Information Technology",
+"cik": 4127,
+"indice": "S&P 500"
+},
+{
+"ticker": "SJM",
+"name": "J.M. Smucker Company (The)",
+"sector": "Consumer Staples",
+"cik": 91419,
+"indice": "S&P 500"
+},
+{
+"ticker": "SW",
+"name": "Smurfit Westrock",
+"sector": "Materials",
+"cik": 2005951,
+"indice": "S&P 500"
+},
+{
+"ticker": "SNA",
+"name": "Snap-on",
+"sector": "Industrials",
+"cik": 91440,
+"indice": "S&P 500"
+},
+{
+"ticker": "SOLV",
+"name": "Solventum",
+"sector": "Health Care",
+"cik": 1964738,
+"indice": "S&P 500"
+},
+{
+"ticker": "SO",
+"name": "Southern Company",
+"sector": "Utilities",
+"cik": 92122,
+"indice": "S&P 500"
+},
+{
+"ticker": "LUV",
+"name": "Southwest Airlines",
+"sector": "Industrials",
+"cik": 92380,
+"indice": "S&P 500"
+},
+{
+"ticker": "SWK",
+"name": "Stanley Black & Decker",
+"sector": "Industrials",
+"cik": 93556,
+"indice": "S&P 500"
+},
+{
+"ticker": "SBUX",
+"name": "Starbucks",
+"sector": "Consumer Discretionary",
+"cik": 829224,
+"indice": "S&P 500"
+},
+{
+"ticker": "STT",
+"name": "State Street Corporation",
+"sector": "Financials",
+"cik": 93751,
+"indice": "S&P 500"
+},
+{
+"ticker": "STLD",
+"name": "Steel Dynamics",
+"sector": "Materials",
+"cik": 1022671,
+"indice": "S&P 500"
+},
+{
+"ticker": "STE",
+"name": "Steris",
+"sector": "Health Care",
+"cik": 1757898,
+"indice": "S&P 500"
+},
+{
+"ticker": "SYK",
+"name": "Stryker Corporation",
+"sector": "Health Care",
+"cik": 310764,
+"indice": "S&P 500"
+},
+{
+"ticker": "SMCI",
+"name": "Supermicro",
+"sector": "Information Technology",
+"cik": 1375365,
+"indice": "S&P 500"
+},
+{
+"ticker": "SYF",
+"name": "Synchrony Financial",
+"sector": "Financials",
+"cik": 1601712,
+"indice": "S&P 500"
+},
+{
+"ticker": "SNPS",
+"name": "Synopsys",
+"sector": "Information Technology",
+"cik": 883241,
+"indice": "S&P 500"
+},
+{
+"ticker": "SYY",
+"name": "Sysco",
+"sector": "Consumer Staples",
+"cik": 96021,
+"indice": "S&P 500"
+},
+{
+"ticker": "TMUS",
+"name": "T-Mobile US",
+"sector": "Communication Services",
+"cik": 1283699,
+"indice": "S&P 500"
+},
+{
+"ticker": "TROW",
+"name": "T. Rowe Price",
+"sector": "Financials",
+"cik": 1113169,
+"indice": "S&P 500"
+},
+{
+"ticker": "TTWO",
+"name": "Take-Two Interactive",
+"sector": "Communication Services",
+"cik": 946581,
+"indice": "S&P 500"
+},
+{
+"ticker": "TPR",
+"name": "Tapestry, Inc.",
+"sector": "Consumer Discretionary",
+"cik": 1116132,
+"indice": "S&P 500"
+},
+{
+"ticker": "TRGP",
+"name": "Targa Resources",
+"sector": "Energy",
+"cik": 1389170,
+"indice": "S&P 500"
+},
+{
+"ticker": "TGT",
+"name": "Target Corporation",
+"sector": "Consumer Staples",
+"cik": 27419,
+"indice": "S&P 500"
+},
+{
+"ticker": "TEL",
+"name": "TE Connectivity",
+"sector": "Information Technology",
+"cik": 1385157,
+"indice": "S&P 500"
+},
+{
+"ticker": "TDY",
+"name": "Teledyne Technologies",
+"sector": "Information Technology",
+"cik": 1094285,
+"indice": "S&P 500"
+},
+{
+"ticker": "TER",
+"name": "Teradyne",
+"sector": "Information Technology",
+"cik": 97210,
+"indice": "S&P 500"
+},
+{
+"ticker": "TSLA",
+"name": "Tesla, Inc.",
+"sector": "Consumer Discretionary",
+"cik": 1318605,
+"indice": "S&P 500"
+},
+{
+"ticker": "TXN",
+"name": "Texas Instruments",
+"sector": "Information Technology",
+"cik": 97476,
+"indice": "S&P 500"
+},
+{
+"ticker": "TPL",
+"name": "Texas Pacific Land Corporation",
+"sector": "Energy",
+"cik": 1811074,
+"indice": "S&P 500"
+},
+{
+"ticker": "TXT",
+"name": "Textron",
+"sector": "Industrials",
+"cik": 217346,
+"indice": "S&P 500"
+},
+{
+"ticker": "TMO",
+"name": "Thermo Fisher Scientific",
+"sector": "Health Care",
+"cik": 97745,
+"indice": "S&P 500"
+},
+{
+"ticker": "TJX",
+"name": "TJX Companies",
+"sector": "Consumer Discretionary",
+"cik": 109198,
+"indice": "S&P 500"
+},
+{
+"ticker": "TKO",
+"name": "TKO Group Holdings",
+"sector": "Communication Services",
+"cik": 1973266,
+"indice": "S&P 500"
+},
+{
+"ticker": "TSCO",
+"name": "Tractor Supply",
+"sector": "Consumer Discretionary",
+"cik": 916365,
+"indice": "S&P 500"
+},
+{
+"ticker": "TT",
+"name": "Trane Technologies",
+"sector": "Industrials",
+"cik": 1466258,
+"indice": "S&P 500"
+},
+{
+"ticker": "TDG",
+"name": "TransDigm Group",
+"sector": "Industrials",
+"cik": 1260221,
+"indice": "S&P 500"
+},
+{
+"ticker": "TRV",
+"name": "Travelers Companies (The)",
+"sector": "Financials",
+"cik": 86312,
+"indice": "S&P 500"
+},
+{
+"ticker": "TRMB",
+"name": "Trimble Inc.",
+"sector": "Information Technology",
+"cik": 864749,
+"indice": "S&P 500"
+},
+{
+"ticker": "TFC",
+"name": "Truist Financial",
+"sector": "Financials",
+"cik": 92230,
+"indice": "S&P 500"
+},
+{
+"ticker": "TWLO",
+"name": "Twilio",
+"sector": "Information Technology",
+"cik": 1447669,
+"indice": "S&P 500"
+},
+{
+"ticker": "TYL",
+"name": "Tyler Technologies",
+"sector": "Information Technology",
+"cik": 860731,
+"indice": "S&P 500"
+},
+{
+"ticker": "TSN",
+"name": "Tyson Foods",
+"sector": "Consumer Staples",
+"cik": 100493,
+"indice": "S&P 500"
+},
+{
+"ticker": "USB",
+"name": "U.S. Bancorp",
+"sector": "Financials",
+"cik": 36104,
+"indice": "S&P 500"
+},
+{
+"ticker": "UBER",
+"name": "Uber",
+"sector": "Industrials",
+"cik": 1543151,
+"indice": "S&P 500"
+},
+{
+"ticker": "UDR",
+"name": "UDR, Inc.",
+"sector": "Real Estate",
+"cik": 74208,
+"indice": "S&P 500"
+},
+{
+"ticker": "ULTA",
+"name": "Ulta Beauty",
+"sector": "Consumer Discretionary",
+"cik": 1403568,
+"indice": "S&P 500"
+},
+{
+"ticker": "UNP",
+"name": "Union Pacific Corporation",
+"sector": "Industrials",
+"cik": 100885,
+"indice": "S&P 500"
+},
+{
+"ticker": "UAL",
+"name": "United Airlines Holdings",
+"sector": "Industrials",
+"cik": 100517,
+"indice": "S&P 500"
+},
+{
+"ticker": "UPS",
+"name": "United Parcel Service",
+"sector": "Industrials",
+"cik": 1090727,
+"indice": "S&P 500"
+},
+{
+"ticker": "URI",
+"name": "United Rentals",
+"sector": "Industrials",
+"cik": 1067701,
+"indice": "S&P 500"
+},
+{
+"ticker": "UNH",
+"name": "UnitedHealth Group",
+"sector": "Health Care",
+"cik": 731766,
+"indice": "S&P 500"
+},
+{
+"ticker": "UHS",
+"name": "Universal Health Services",
+"sector": "Health Care",
+"cik": 352915,
+"indice": "S&P 500"
+},
+{
+"ticker": "VLO",
+"name": "Valero Energy",
+"sector": "Energy",
+"cik": 1035002,
+"indice": "S&P 500"
+},
+{
+"ticker": "VEEV",
+"name": "Veeva Systems",
+"sector": "Health Care",
+"cik": 1393052,
+"indice": "S&P 500"
+},
+{
+"ticker": "VTR",
+"name": "Ventas",
+"sector": "Real Estate",
+"cik": 740260,
+"indice": "S&P 500"
+},
+{
+"ticker": "VLTO",
+"name": "Veralto",
+"sector": "Industrials",
+"cik": 1967680,
+"indice": "S&P 500"
+},
+{
+"ticker": "VRSN",
+"name": "Verisign",
+"sector": "Information Technology",
+"cik": 1014473,
+"indice": "S&P 500"
+},
+{
+"ticker": "VRSK",
+"name": "Verisk Analytics",
+"sector": "Industrials",
+"cik": 1442145,
+"indice": "S&P 500"
+},
+{
+"ticker": "VZ",
+"name": "Verizon",
+"sector": "Communication Services",
+"cik": 732712,
+"indice": "S&P 500"
+},
+{
+"ticker": "VRTX",
+"name": "Vertex Pharmaceuticals",
+"sector": "Health Care",
+"cik": 875320,
+"indice": "S&P 500"
+},
+{
+"ticker": "VRT",
+"name": "Vertiv",
+"sector": "Industrials",
+"cik": 1674101,
+"indice": "S&P 500"
+},
+{
+"ticker": "VTRS",
+"name": "Viatris",
+"sector": "Health Care",
+"cik": 1792044,
+"indice": "S&P 500"
+},
+{
+"ticker": "VICI",
+"name": "Vici Properties",
+"sector": "Real Estate",
+"cik": 1705696,
+"indice": "S&P 500"
+},
+{
+"ticker": "V",
+"name": "Visa Inc.",
+"sector": "Financials",
+"cik": 1403161,
+"indice": "S&P 500"
+},
+{
+"ticker": "VST",
+"name": "Vistra Corp.",
+"sector": "Utilities",
+"cik": 1692819,
+"indice": "S&P 500"
+},
+{
+"ticker": "VMRK",
+"name": "Vivmark Residential",
+"sector": "Real Estate",
+"cik": 906107,
+"indice": "S&P 500"
+},
+{
+"ticker": "VMC",
+"name": "Vulcan Materials Company",
+"sector": "Materials",
+"cik": 1396009,
+"indice": "S&P 500"
+},
+{
+"ticker": "VYLR",
+"name": "Vylor",
+"sector": "Consumer Staples",
+"cik": 2128626,
+"indice": "S&P 500"
+},
+{
+"ticker": "WRB",
+"name": "W. R. Berkley Corporation",
+"sector": "Financials",
+"cik": 11544,
+"indice": "S&P 500"
+},
+{
+"ticker": "GWW",
+"name": "W. W. Grainger",
+"sector": "Industrials",
+"cik": 277135,
+"indice": "S&P 500"
+},
+{
+"ticker": "WAB",
+"name": "Wabtec",
+"sector": "Industrials",
+"cik": 943452,
+"indice": "S&P 500"
+},
+{
+"ticker": "WMT",
+"name": "Walmart",
+"sector": "Consumer Staples",
+"cik": 104169,
+"indice": "S&P 500"
+},
+{
+"ticker": "DIS",
+"name": "Walt Disney Company (The)",
+"sector": "Communication Services",
+"cik": 1744489,
+"indice": "S&P 500"
+},
+{
+"ticker": "WM",
+"name": "Waste Management",
+"sector": "Industrials",
+"cik": 823768,
+"indice": "S&P 500"
+},
+{
+"ticker": "WAT",
+"name": "Waters Corporation",
+"sector": "Health Care",
+"cik": 1000697,
+"indice": "S&P 500"
+},
+{
+"ticker": "WEC",
+"name": "WEC Energy Group",
+"sector": "Utilities",
+"cik": 783325,
+"indice": "S&P 500"
+},
+{
+"ticker": "WFC",
+"name": "Wells Fargo",
+"sector": "Financials",
+"cik": 72971,
+"indice": "S&P 500"
+},
+{
+"ticker": "WELL",
+"name": "Welltower",
+"sector": "Real Estate",
+"cik": 766704,
+"indice": "S&P 500"
+},
+{
+"ticker": "WST",
+"name": "West Pharmaceutical Services",
+"sector": "Health Care",
+"cik": 105770,
+"indice": "S&P 500"
+},
+{
+"ticker": "WDC",
+"name": "Western Digital",
+"sector": "Information Technology",
+"cik": 106040,
+"indice": "S&P 500"
+},
+{
+"ticker": "WY",
+"name": "Weyerhaeuser",
+"sector": "Real Estate",
+"cik": 106535,
+"indice": "S&P 500"
+},
+{
+"ticker": "WSM",
+"name": "Williams-Sonoma, Inc.",
+"sector": "Consumer Discretionary",
+"cik": 719955,
+"indice": "S&P 500"
+},
+{
+"ticker": "WMB",
+"name": "Williams Companies",
+"sector": "Energy",
+"cik": 107263,
+"indice": "S&P 500"
+},
+{
+"ticker": "WTW",
+"name": "Willis Towers Watson",
+"sector": "Financials",
+"cik": 1140536,
+"indice": "S&P 500"
+},
+{
+"ticker": "WDAY",
+"name": "Workday, Inc.",
+"sector": "Information Technology",
+"cik": 1327811,
+"indice": "S&P 500"
+},
+{
+"ticker": "WYNN",
+"name": "Wynn Resorts",
+"sector": "Consumer Discretionary",
+"cik": 1174922,
+"indice": "S&P 500"
+},
+{
+"ticker": "XEL",
+"name": "Xcel Energy",
+"sector": "Utilities",
+"cik": 72903,
+"indice": "S&P 500"
+},
+{
+"ticker": "XYL",
+"name": "Xylem Inc.",
+"sector": "Industrials",
+"cik": 1524472,
+"indice": "S&P 500"
+},
+{
+"ticker": "YUM",
+"name": "Yum! Brands",
+"sector": "Consumer Discretionary",
+"cik": 1041061,
+"indice": "S&P 500"
+},
+{
+"ticker": "ZBRA",
+"name": "Zebra Technologies",
+"sector": "Information Technology",
+"cik": 877212,
+"indice": "S&P 500"
+},
+{
+"ticker": "ZBH",
+"name": "Zimmer Biomet",
+"sector": "Health Care",
+"cik": 1136869,
+"indice": "S&P 500"
+},
+{
+"ticker": "ZTS",
+"name": "Zoetis",
+"sector": "Health Care",
+"cik": 1555280,
+"indice": "S&P 500"
+},
+{
+"ticker": "AA",
+"name": "Alcoa",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 1675149
+},
+{
+"ticker": "AAL",
+"name": "American Airlines Group",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 6201
+},
+{
+"ticker": "AAON",
+"name": "AAON",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 824142
+},
+{
+"ticker": "ACI",
+"name": "Albertsons",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 1646972
+},
+{
+"ticker": "ACM",
+"name": "AECOM",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 868857
+},
+{
+"ticker": "ADC",
+"name": "Agree Realty",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 917251
+},
+{
+"ticker": "AEIS",
+"name": "Advanced Energy",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 927003
+},
+{
+"ticker": "AFG",
+"name": "American Financial Group",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1042046
+},
+{
+"ticker": "AGCO",
+"name": "AGCO",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 880266
+},
+{
+"ticker": "AGNC",
+"name": "AGNC Investment",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1423689
+},
+{
+"ticker": "AHR",
+"name": "American Healthcare REIT",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1632970
+},
+{
+"ticker": "AIT",
+"name": "Applied Industrial Technologies",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 109563
+},
+{
+"ticker": "ALGM",
+"name": "Allegro MicroSystems",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 866291
+},
+{
+"ticker": "ALK",
+"name": "Alaska Air Group",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 766421
+},
+{
+"ticker": "ALLY",
+"name": "Ally Financial",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 40729
+},
+{
+"ticker": "ALSN",
+"name": "Allison Transmission",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1411207
+},
+{
+"ticker": "ALV",
+"name": "Autoliv",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1034670
+},
+{
+"ticker": "AM",
+"name": "Antero Midstream",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1623925
+},
+{
+"ticker": "AMG",
+"name": "Affiliated Managers Group",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1004434
+},
+{
+"ticker": "AMH",
+"name": "American Homes 4 Rent",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1562401
+},
+{
+"ticker": "AMKR",
+"name": "Amkor Technology",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1047127
+},
+{
+"ticker": "AN",
+"name": "AutoNation",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 350698
+},
+{
+"ticker": "ANF",
+"name": "Abercrombie & Fitch",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1018840
+},
+{
+"ticker": "APG",
+"name": "APi Group",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1796209
+},
+{
+"ticker": "APPF",
+"name": "AppFolio",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1433195
+},
+{
+"ticker": "AR",
+"name": "Antero Resources",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1433270
+},
+{
+"ticker": "ARMK",
+"name": "Aramark",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1584509
+},
+{
+"ticker": "ARW",
+"name": "Arrow Electronics",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 7536
+},
+{
+"ticker": "ARWR",
+"name": "Arrowhead Pharmaceuticals",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 879407
+},
+{
+"ticker": "ASB",
+"name": "Associated Bank",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 7789
+},
+{
+"ticker": "ASH",
+"name": "Ashland Global",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 1674862
+},
+{
+"ticker": "ATI",
+"name": "ATI Inc.",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1018963
+},
+{
+"ticker": "ATR",
+"name": "AptarGroup",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 896622
+},
+{
+"ticker": "AVAV",
+"name": "AeroVironment",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1368622
+},
+{
+"ticker": "AVNT",
+"name": "Avient",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 1122976
+},
+{
+"ticker": "AVT",
+"name": "Avnet",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 8858
+},
+{
+"ticker": "AVTR",
+"name": "Avantor",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1722482
+},
+{
+"ticker": "AXTA",
+"name": "Axalta",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 1616862
+},
+{
+"ticker": "AYI",
+"name": "Acuity Brands",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1144215
+},
+{
+"ticker": "BAH",
+"name": "Booz Allen Hamilton",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1443646
+},
+{
+"ticker": "BBWI",
+"name": "Bath & Body Works, Inc.",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 701985
+},
+{
+"ticker": "BC",
+"name": "Brunswick",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 14930
+},
+{
+"ticker": "BCO",
+"name": "Brink's",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 78890
+},
+{
+"ticker": "BDC",
+"name": "Belden Inc.",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 913142
+},
+{
+"ticker": "BHF",
+"name": "Brighthouse Financial",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1685040
+},
+{
+"ticker": "BILL",
+"name": "Bill Holdings",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1786352
+},
+{
+"ticker": "BIO",
+"name": "Bio-Rad Laboratories",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 12208
+},
+{
+"ticker": "BJ",
+"name": "BJ's Wholesale Club",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 1531152
+},
+{
+"ticker": "BKH",
+"name": "Black Hills Corporation",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 1130464
+},
+{
+"ticker": "BMRN",
+"name": "BioMarin Pharmaceutical",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1048477
+},
+{
+"ticker": "BRKR",
+"name": "Bruker",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1109354
+},
+{
+"ticker": "BROS",
+"name": "Dutch Bros Inc.",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1866581
+},
+{
+"ticker": "BRX",
+"name": "Brixmor Property Group",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1581068
+},
+{
+"ticker": "BSY",
+"name": "Bentley Systems",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1031308
+},
+{
+"ticker": "BTSG",
+"name": "BrightSpring Health Services",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1865782
+},
+{
+"ticker": "BURL",
+"name": "Burlington Stores",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1579298
+},
+{
+"ticker": "BWA",
+"name": "BorgWarner",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 908255
+},
+{
+"ticker": "BWXT",
+"name": "BWX Technologies",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1486957
+},
+{
+"ticker": "BYD",
+"name": "Boyd Gaming",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 906553
+},
+{
+"ticker": "CACI",
+"name": "CACI International",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 16058
+},
+{
+"ticker": "CAR",
+"name": "Avis Budget Group",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 723612
+},
+{
+"ticker": "CART",
+"name": "Maplebear Inc.",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 1579091
+},
+{
+"ticker": "CAVA",
+"name": "Cava Group",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1639438
+},
+{
+"ticker": "CBSH",
+"name": "Commerce Bancshares",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 22356
+},
+{
+"ticker": "CBT",
+"name": "Cabot Corp",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 16040
+},
+{
+"ticker": "CCK",
+"name": "Crown Holdings",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 1219601
+},
+{
+"ticker": "CDE",
+"name": "Coeur Mining",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 215466
+},
+{
+"ticker": "CDP",
+"name": "COPT Defense Properties",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 860546
+},
+{
+"ticker": "CELH",
+"name": "Celsius Holdings",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 1341766
+},
+{
+"ticker": "CFR",
+"name": "Frost Bank",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 39263
+},
+{
+"ticker": "CG",
+"name": "Carlyle Group (The)",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1527166
+},
+{
+"ticker": "CGNX",
+"name": "Cognex",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 851205
+},
+{
+"ticker": "CHDN",
+"name": "Churchill Downs Inc.",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 20212
+},
+{
+"ticker": "CHE",
+"name": "Chemed Corp.",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 19584
+},
+{
+"ticker": "CHH",
+"name": "Choice Hotels",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1046311
+},
+{
+"ticker": "CHRD",
+"name": "Chord Energy",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1486159
+},
+{
+"ticker": "CHWY",
+"name": "Chewy",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1766502
+},
+{
+"ticker": "CLF",
+"name": "Cleveland-Cliffs",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 764065
+},
+{
+"ticker": "CLH",
+"name": "Clean Harbors",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 822818
+},
+{
+"ticker": "CMC",
+"name": "Commercial Metals",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 22444
+},
+{
+"ticker": "CNH",
+"name": "CNH Industrial",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1567094
+},
+{
+"ticker": "CNM",
+"name": "Core & Main",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1856525
+},
+{
+"ticker": "CNO",
+"name": "CNO Financial Group",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1224608
+},
+{
+"ticker": "CNX",
+"name": "CNX Resources",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1070412
+},
+{
+"ticker": "COKE",
+"name": "Coca-Cola Consolidated",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 317540
+},
+{
+"ticker": "COLB",
+"name": "Columbia Banking System",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 887343
+},
+{
+"ticker": "COLM",
+"name": "Columbia Sportswear",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1050797
+},
+{
+"ticker": "CORT",
+"name": "Corcept Therapeutics",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1088856
+},
+{
+"ticker": "CR",
+"name": "Crane",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1944013
+},
+{
+"ticker": "CRBG",
+"name": "Corebridge Financial",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1889539
+},
+{
+"ticker": "CROX",
+"name": "Crocs",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1334036
+},
+{
+"ticker": "CRS",
+"name": "Carpenter Technology",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 17843
+},
+{
+"ticker": "CRUS",
+"name": "Cirrus Logic",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 772406
+},
+{
+"ticker": "CSL",
+"name": "Carlisle Companies",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 790051
+},
+{
+"ticker": "CTRE",
+"name": "CareTrust REIT",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1590717
+},
+{
+"ticker": "CTVA",
+"name": "Corteva",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 1755672
+},
+{
+"ticker": "CUBE",
+"name": "CubeSmart",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1298675
+},
+{
+"ticker": "CUZ",
+"name": "Cousins Properties",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 25232
+},
+{
+"ticker": "CVLT",
+"name": "CommVault Systems",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1169561
+},
+{
+"ticker": "CW",
+"name": "Curtiss-Wright",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 26324
+},
+{
+"ticker": "CXT",
+"name": "Crane NXT",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 25445
+},
+{
+"ticker": "CYTK",
+"name": "Cytokinetics",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1061983
+},
+{
+"ticker": "DAR",
+"name": "Darling Ingredients",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 916540
+},
+{
+"ticker": "DBX",
+"name": "Dropbox",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1467623
+},
+{
+"ticker": "DCI",
+"name": "Donaldson Company",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 29644
+},
+{
+"ticker": "DINO",
+"name": "HF Sinclair",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1915657
+},
+{
+"ticker": "DKS",
+"name": "Dick's Sporting Goods",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1089063
+},
+{
+"ticker": "DLB",
+"name": "Dolby",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1308547
+},
+{
+"ticker": "DOCN",
+"name": "DigitalOcean",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1582961
+},
+{
+"ticker": "DOCS",
+"name": "Doximity",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1516513
+},
+{
+"ticker": "DOCU",
+"name": "Docusign",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1261333
+},
+{
+"ticker": "DT",
+"name": "Dynatrace",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1773383
+},
+{
+"ticker": "DTM",
+"name": "DT Midstream",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1842022
+},
+{
+"ticker": "DUOL",
+"name": "Duolingo",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1562088
+},
+{
+"ticker": "DY",
+"name": "Dycom Industries",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 67215
+},
+{
+"ticker": "EAT",
+"name": "Brinker International",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 703351
+},
+{
+"ticker": "EEFT",
+"name": "Euronet Worldwide",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1029199
+},
+{
+"ticker": "EGP",
+"name": "EastGroup Properties",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 49600
+},
+{
+"ticker": "EHC",
+"name": "Encompass Health",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 785161
+},
+{
+"ticker": "ELAN",
+"name": "Elanco",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1739104
+},
+{
+"ticker": "ELF",
+"name": "e.l.f. Beauty",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 1600033
+},
+{
+"ticker": "ELS",
+"name": "Equity Lifestyle Properties",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 895417
+},
+{
+"ticker": "ENS",
+"name": "EnerSys",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1289308
+},
+{
+"ticker": "ENSG",
+"name": "Ensign Group",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1125376
+},
+{
+"ticker": "ENTG",
+"name": "Entegris",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1101302
+},
+{
+"ticker": "EPR",
+"name": "EPR Properties",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1045450
+},
+{
+"ticker": "EQH",
+"name": "Equitable Holdings",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1333986
+},
+{
+"ticker": "ESAB",
+"name": "ESAB",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1877322
+},
+{
+"ticker": "ESNT",
+"name": "Essent Group Ltd.",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1448893
+},
+{
+"ticker": "EVR",
+"name": "Evercore",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1360901
+},
+{
+"ticker": "EWBC",
+"name": "East West Bancorp",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1069157
+},
+{
+"ticker": "EXEL",
+"name": "Exelixis",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 939767
+},
+{
+"ticker": "EXLS",
+"name": "EXL Service",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1297989
+},
+{
+"ticker": "EXP",
+"name": "Eagle Materials",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 918646
+},
+{
+"ticker": "EXPO",
+"name": "Exponent, Inc.",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 851520
+},
+{
+"ticker": "FAF",
+"name": "First American Financial Corporation",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1472787
+},
+{
+"ticker": "FBIN",
+"name": "Fortune Brands Innovations",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1519751
+},
+{
+"ticker": "FCFS",
+"name": "FirstCash",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 840489
+},
+{
+"ticker": "FCN",
+"name": "FTI Consulting",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 887936
+},
+{
+"ticker": "FFIN",
+"name": "First Financial Bankshares",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 36029
+},
+{
+"ticker": "FHI",
+"name": "Federated Hermes",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1056288
+},
+{
+"ticker": "FHN",
+"name": "First Horizon",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 36966
+},
+{
+"ticker": "FIVE",
+"name": "Five Below",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1177609
+},
+{
+"ticker": "FLG",
+"name": "Flagstar Bank",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 910073
+},
+{
+"ticker": "FLR",
+"name": "Fluor",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1124198
+},
+{
+"ticker": "FLS",
+"name": "Flowserve",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 30625
+},
+{
+"ticker": "FN",
+"name": "Fabrinet",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1408710
+},
+{
+"ticker": "FNB",
+"name": "FNB Corporation",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 37808
+},
+{
+"ticker": "FND",
+"name": "Floor & Decor",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1507079
+},
+{
+"ticker": "FNF",
+"name": "Fidelity National Financial",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1331875
+},
+{
+"ticker": "FORM",
+"name": "FormFactor",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1039399
+},
+{
+"ticker": "FOUR",
+"name": "Shift4",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1794669
+},
+{
+"ticker": "FR",
+"name": "First Industrial Realty Trust",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 921825
+},
+{
+"ticker": "FTI",
+"name": "TechnipFMC",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1681459
+},
+{
+"ticker": "G",
+"name": "Genpact",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1398659
+},
+{
+"ticker": "GAP",
+"name": "Gap Inc.",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 39911
+},
+{
+"ticker": "GATX",
+"name": "GATX",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 40211
+},
+{
+"ticker": "GBCI",
+"name": "Glacier Bancorp",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 868671
+},
+{
+"ticker": "GEF",
+"name": "Greif, Inc.",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 43920
+},
+{
+"ticker": "GGG",
+"name": "Graco Inc.",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 42888
+},
+{
+"ticker": "GHC",
+"name": "Graham Holdings",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 104889
+},
+{
+"ticker": "GKOS",
+"name": "Glaukos",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1192448
+},
+{
+"ticker": "GLPI",
+"name": "Gaming and Leisure Properties",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1575965
+},
+{
+"ticker": "GME",
+"name": "GameStop",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1326380
+},
+{
+"ticker": "GMED",
+"name": "Globus Medical",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1237831
+},
+{
+"ticker": "GNTX",
+"name": "Gentex",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 355811
+},
+{
+"ticker": "GPK",
+"name": "Graphic Packaging",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 1408075
+},
+{
+"ticker": "GWRE",
+"name": "Guidewire Software",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1528396
+},
+{
+"ticker": "GXO",
+"name": "GXO Logistics",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1852244
+},
+{
+"ticker": "H",
+"name": "Hyatt",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1468174
+},
+{
+"ticker": "HAE",
+"name": "Haemonetics",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 313143
+},
+{
+"ticker": "HALO",
+"name": "Halozyme",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1159036
+},
+{
+"ticker": "HGV",
+"name": "Hilton Grand Vacations",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1674168
+},
+{
+"ticker": "HIMS",
+"name": "Hims & Hers Health",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1773751
+},
+{
+"ticker": "HL",
+"name": "Hecla Mining",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 719413
+},
+{
+"ticker": "HLI",
+"name": "Houlihan Lokey",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1302215
+},
+{
+"ticker": "HLNE",
+"name": "Hamilton Lane",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1433642
+},
+{
+"ticker": "HOG",
+"name": "Harley-Davidson",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 793952
+},
+{
+"ticker": "HOMB",
+"name": "Home BancShares",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1331520
+},
+{
+"ticker": "HQY",
+"name": "HealthEquity",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1428336
+},
+{
+"ticker": "HR",
+"name": "Healthcare Realty Trust",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1360604
+},
+{
+"ticker": "HRB",
+"name": "H&R Block",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 12659
+},
+{
+"ticker": "HUBS",
+"name": "HubSpot",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1404655
+},
+{
+"ticker": "HWC",
+"name": "Hancock Whitney",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 750577
+},
+{
+"ticker": "HXL",
+"name": "Hexcel",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 717605
+},
+{
+"ticker": "IBOC",
+"name": "Intl Bancshares Corp",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 315709
+},
+{
+"ticker": "IDA",
+"name": "Idacorp",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 1057877
+},
+{
+"ticker": "IDCC",
+"name": "InterDigital",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1405495
+},
+{
+"ticker": "IESC",
+"name": "IES Holdings",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1048268
+},
+{
+"ticker": "INGR",
+"name": "Ingredion",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 1046257
+},
+{
+"ticker": "IPGP",
+"name": "IPG Photonics",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1111928
+},
+{
+"ticker": "IRT",
+"name": "Independence Realty Trust",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1466085
+},
+{
+"ticker": "ITT",
+"name": "ITT Inc.",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 216228
+},
+{
+"ticker": "JAZZ",
+"name": "Jazz Pharmaceuticals",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1232524
+},
+{
+"ticker": "JLL",
+"name": "Jones Lang LaSalle",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1037976
+},
+{
+"ticker": "KBH",
+"name": "KB Home",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 795266
+},
+{
+"ticker": "KBR",
+"name": "KBR, Inc.",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1357615
+},
+{
+"ticker": "KD",
+"name": "Kyndryl",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1867072
+},
+{
+"ticker": "KEX",
+"name": "Kirby Corporation",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 56047
+},
+{
+"ticker": "KNF",
+"name": "Knife River Corporation",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 1955520
+},
+{
+"ticker": "KNSL",
+"name": "Kinsale Capital Group",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1669162
+},
+{
+"ticker": "KNX",
+"name": "Knight-Swift",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1492691
+},
+{
+"ticker": "KRC",
+"name": "Kilroy Realty Corp",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1025996
+},
+{
+"ticker": "KRG",
+"name": "Kite Realty Group Trust",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1286043
+},
+{
+"ticker": "KRYS",
+"name": "Krystal Biotech",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1711279
+},
+{
+"ticker": "KTOS",
+"name": "Kratos Defense & Security Solutions",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1069258
+},
+{
+"ticker": "LAD",
+"name": "Lithia Motors",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1023128
+},
+{
+"ticker": "LAMR",
+"name": "Lamar Advertising Company",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1090425
+},
+{
+"ticker": "LEA",
+"name": "Lear",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 842162
+},
+{
+"ticker": "LECO",
+"name": "Lincoln Electric",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 59527
+},
+{
+"ticker": "LFUS",
+"name": "Littelfuse",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 889331
+},
+{
+"ticker": "LIVN",
+"name": "LivaNova",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1639691
+},
+{
+"ticker": "LNTH",
+"name": "Lantheus Holdings",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1521036
+},
+{
+"ticker": "LOPE",
+"name": "Grand Canyon Education",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1434588
+},
+{
+"ticker": "LPX",
+"name": "Louisiana-Pacific",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 60519
+},
+{
+"ticker": "LSCC",
+"name": "Lattice Semiconductor",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 855658
+},
+{
+"ticker": "LSTR",
+"name": "Landstar System",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 853816
+},
+{
+"ticker": "M",
+"name": "Macy's",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 794367
+},
+{
+"ticker": "MANH",
+"name": "Manhattan Associates",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1056696
+},
+{
+"ticker": "MAT",
+"name": "Mattel",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 63276
+},
+{
+"ticker": "MEDP",
+"name": "Medpace",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1668397
+},
+{
+"ticker": "MIDD",
+"name": "Middleby",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 769520
+},
+{
+"ticker": "MKSI",
+"name": "MKS Instruments",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1049502
+},
+{
+"ticker": "MLI",
+"name": "Mueller Industries",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 89439
+},
+{
+"ticker": "MMS",
+"name": "Maximus Inc.",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1032220
+},
+{
+"ticker": "MOG.A",
+"name": "Moog Inc.",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 67887
+},
+{
+"ticker": "MOH",
+"name": "Molina Healthcare",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1179929
+},
+{
+"ticker": "MORN",
+"name": "Morningstar, Inc.",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1289419
+},
+{
+"ticker": "MP",
+"name": "MP Materials",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 1801368
+},
+{
+"ticker": "MSA",
+"name": "MSA Safety",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 66570
+},
+{
+"ticker": "MSM",
+"name": "MSC Industrial Direct",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1003078
+},
+{
+"ticker": "MTDR",
+"name": "Matador Resources",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1520006
+},
+{
+"ticker": "MTG",
+"name": "MGIC Investment Corporation",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 876437
+},
+{
+"ticker": "MTN",
+"name": "Vail Resorts",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 812011
+},
+{
+"ticker": "MTSI",
+"name": "MACOM Technology Solutions",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1493594
+},
+{
+"ticker": "MTZ",
+"name": "MasTec",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 15615
+},
+{
+"ticker": "MUR",
+"name": "Murphy Oil",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 717423
+},
+{
+"ticker": "MUSA",
+"name": "Murphy USA",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1573516
+},
+{
+"ticker": "MZTI",
+"name": "The Marzetti Company",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 57515
+},
+{
+"ticker": "NBIX",
+"name": "Neurocrine Biosciences",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 914475
+},
+{
+"ticker": "NEU",
+"name": "NewMarket Corporation",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 1282637
+},
+{
+"ticker": "NFG",
+"name": "National Fuel Gas",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 70145
+},
+{
+"ticker": "NJR",
+"name": "New Jersey Resources",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 356309
+},
+{
+"ticker": "NLY",
+"name": "Annaly Capital Management",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1043219
+},
+{
+"ticker": "NNN",
+"name": "NNN Reit",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 751364
+},
+{
+"ticker": "NOV",
+"name": "NOV Inc.",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1021860
+},
+{
+"ticker": "NOVT",
+"name": "Novanta",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1076930
+},
+{
+"ticker": "NTNX",
+"name": "Nutanix",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1618732
+},
+{
+"ticker": "NVST",
+"name": "Envista Holdings",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1757073
+},
+{
+"ticker": "NVT",
+"name": "nVent Electric plc",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1720635
+},
+{
+"ticker": "NWE",
+"name": "NorthWestern Energy",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 1993004
+},
+{
+"ticker": "NXST",
+"name": "Nexstar Media Group",
+"sector": "Communication Services",
+"indice": "S&P 400",
+"cik": 1142417
+},
+{
+"ticker": "NXT",
+"name": "Nextpower",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1852131
+},
+{
+"ticker": "NYT",
+"name": "New York Times Company",
+"sector": "Communication Services",
+"indice": "S&P 400",
+"cik": 71691
+},
+{
+"ticker": "OC",
+"name": "Owens Corning",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1370946
+},
+{
+"ticker": "OGE",
+"name": "OGE Energy",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 1021635
+},
+{
+"ticker": "OGS",
+"name": "One Gas",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 1587732
+},
+{
+"ticker": "OHI",
+"name": "Omega Healthcare Investors",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 888491
+},
+{
+"ticker": "OLED",
+"name": "Universal Display",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1005284
+},
+{
+"ticker": "OLLI",
+"name": "Ollie's Bargain Outlet",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1639300
+},
+{
+"ticker": "ONB",
+"name": "Old National Bank",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 707179
+},
+{
+"ticker": "ONTO",
+"name": "Onto Innovation",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 704532
+},
+{
+"ticker": "OPCH",
+"name": "Option Care Health",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1014739
+},
+{
+"ticker": "ORA",
+"name": "Ormat Technologies",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 1296445
+},
+{
+"ticker": "ORI",
+"name": "Old Republic International",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 74260
+},
+{
+"ticker": "OSK",
+"name": "Oshkosh",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 775158
+},
+{
+"ticker": "OVV",
+"name": "Ovintiv",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1792580
+},
+{
+"ticker": "PAG",
+"name": "Penske Automotive Group",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1019849
+},
+{
+"ticker": "PATH",
+"name": "UiPath",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1734722
+},
+{
+"ticker": "PB",
+"name": "Prosperity Bancshares",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1068851
+},
+{
+"ticker": "PBF",
+"name": "PBF Energy",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1534504
+},
+{
+"ticker": "PCTY",
+"name": "Paylocity",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1591698
+},
+{
+"ticker": "PEGA",
+"name": "Pegasystems",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1013857
+},
+{
+"ticker": "PEN",
+"name": "Penumbra, Inc.",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1321732
+},
+{
+"ticker": "PFGC",
+"name": "Performance Food Group",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 1618673
+},
+{
+"ticker": "PII",
+"name": "Polaris",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 931015
+},
+{
+"ticker": "PINS",
+"name": "Pinterest",
+"sector": "Communication Services",
+"indice": "S&P 400",
+"cik": 1506293
+},
+{
+"ticker": "PK",
+"name": "Park Hotels & Resorts",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1617406
+},
+{
+"ticker": "PLNT",
+"name": "Planet Fitness",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1637207
+},
+{
+"ticker": "PNFP",
+"name": "Pinnacle Financial Partners",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 2082866
+},
+{
+"ticker": "POR",
+"name": "Portland General Electric",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 784977
+},
+{
+"ticker": "POST",
+"name": "Post Holdings",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 1530950
+},
+{
+"ticker": "PPC",
+"name": "Pilgrim's Pride",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 802481
+},
+{
+"ticker": "PR",
+"name": "Permian Resources",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1658566
+},
+{
+"ticker": "PRI",
+"name": "Primerica",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1475922
+},
+{
+"ticker": "PSN",
+"name": "Parsons Corporation",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 275880
+},
+{
+"ticker": "PVH",
+"name": "PVH Corp.",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 78239
+},
+{
+"ticker": "QLYS",
+"name": "Qualys",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1107843
+},
+{
+"ticker": "R",
+"name": "Ryder",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 85961
+},
+{
+"ticker": "RBA",
+"name": "RB Global",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1046102
+},
+{
+"ticker": "RBC",
+"name": "RBC Bearings",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1324948
+},
+{
+"ticker": "REXR",
+"name": "Rexford Industrial Realty",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1571283
+},
+{
+"ticker": "RGA",
+"name": "Reinsurance Group of America",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 898174
+},
+{
+"ticker": "RGEN",
+"name": "Repligen",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 730272
+},
+{
+"ticker": "RGLD",
+"name": "Royal Gold",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 85535
+},
+{
+"ticker": "RH",
+"name": "RH",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1528849
+},
+{
+"ticker": "RLI",
+"name": "RLI Corp.",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 84246
+},
+{
+"ticker": "RMBS",
+"name": "Rambus",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 917273
+},
+{
+"ticker": "RNR",
+"name": "RenaissanceRe",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 913144
+},
+{
+"ticker": "ROIV",
+"name": "Roivant Sciences",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1635088
+},
+{
+"ticker": "ROKU",
+"name": "Roku, Inc.",
+"sector": "Communication Services",
+"indice": "S&P 400",
+"cik": 1428439
+},
+{
+"ticker": "RPM",
+"name": "RPM International",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 110621
+},
+{
+"ticker": "RRC",
+"name": "Range Resources",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 315852
+},
+{
+"ticker": "RRX",
+"name": "Regal Rexnord",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 82811
+},
+{
+"ticker": "RS",
+"name": "Reliance, Inc.",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 861884
+},
+{
+"ticker": "RYAN",
+"name": "Ryan Specialty",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1849253
+},
+{
+"ticker": "RYN",
+"name": "Rayonier",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 52827
+},
+{
+"ticker": "SAIA",
+"name": "Saia",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1177702
+},
+{
+"ticker": "SAIC",
+"name": "Science Applications Intl Corp",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1571123
+},
+{
+"ticker": "SANM",
+"name": "Sanmina Corporation",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 897723
+},
+{
+"ticker": "SARO",
+"name": "StandardAero",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 2025410
+},
+{
+"ticker": "SBRA",
+"name": "Sabra Health Care REIT",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1492298
+},
+{
+"ticker": "SCI",
+"name": "Service Corp Intl",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 89089
+},
+{
+"ticker": "SEIC",
+"name": "SEI Investments Company",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 350894
+},
+{
+"ticker": "SF",
+"name": "Stifel",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 720672
+},
+{
+"ticker": "SFM",
+"name": "Sprouts Farmers Market",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 1575515
+},
+{
+"ticker": "SGI",
+"name": "Somnigroup International",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1206264
+},
+{
+"ticker": "SHC",
+"name": "Sotera Health",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1822479
+},
+{
+"ticker": "SIGI",
+"name": "Selective Insurance Group",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 230557
+},
+{
+"ticker": "SIRI",
+"name": "SiriusXM",
+"sector": "Communication Services",
+"indice": "S&P 400",
+"cik": 908937
+},
+{
+"ticker": "SITM",
+"name": "SiTime",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1451809
+},
+{
+"ticker": "SLAB",
+"name": "Silicon Labs",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1038074
+},
+{
+"ticker": "SLGN",
+"name": "Silgan Holdings",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 849869
+},
+{
+"ticker": "SLM",
+"name": "SLM Corp",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1032033
+},
+{
+"ticker": "SMG",
+"name": "Scotts Miracle-Gro Company",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 825542
+},
+{
+"ticker": "SMTC",
+"name": "Semtech",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 88941
+},
+{
+"ticker": "SN",
+"name": "SharkNinja",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1957132
+},
+{
+"ticker": "SNX",
+"name": "TD Synnex",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1177394
+},
+{
+"ticker": "SOLS",
+"name": "Solstice Advanced Materials",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 2064953
+},
+{
+"ticker": "SON",
+"name": "Sonoco",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 91767
+},
+{
+"ticker": "SPXC",
+"name": "SPX Technologies",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 88205
+},
+{
+"ticker": "SR",
+"name": "Spire",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 1126956
+},
+{
+"ticker": "SSB",
+"name": "South State Bank",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 764038
+},
+{
+"ticker": "SSD",
+"name": "Simpson Manufacturing",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 920371
+},
+{
+"ticker": "ST",
+"name": "Sensata Technologies",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1477294
+},
+{
+"ticker": "STAG",
+"name": "STAG Industrial",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1479094
+},
+{
+"ticker": "STRL",
+"name": "Sterling Infrastructure",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 874238
+},
+{
+"ticker": "STWD",
+"name": "Starwood Property Trust",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1465128
+},
+{
+"ticker": "SUI",
+"name": "Sun Communities",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 912593
+},
+{
+"ticker": "SWX",
+"name": "Southwest Gas Corp",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 1692115
+},
+{
+"ticker": "SYNA",
+"name": "Synaptics",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 817720
+},
+{
+"ticker": "TCBI",
+"name": "Texas Capital Bancshares",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1077428
+},
+{
+"ticker": "TEX",
+"name": "Terex",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 97216
+},
+{
+"ticker": "THC",
+"name": "Tenet Health",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 70318
+},
+{
+"ticker": "THG",
+"name": "Hanover Insurance",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 944695
+},
+{
+"ticker": "THO",
+"name": "Thor Industries",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 730263
+},
+{
+"ticker": "TKR",
+"name": "Timken",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 98362
+},
+{
+"ticker": "TLN",
+"name": "Talen Energy",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 1622536
+},
+{
+"ticker": "TNL",
+"name": "Travel + Leisure Co.",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1361658
+},
+{
+"ticker": "TOL",
+"name": "Toll Brothers",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 794170
+},
+{
+"ticker": "TOST",
+"name": "Toast, Inc.",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1650164
+},
+{
+"ticker": "TREX",
+"name": "Trex",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1069878
+},
+{
+"ticker": "TRU",
+"name": "TransUnion",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1552033
+},
+{
+"ticker": "TTC",
+"name": "Toro",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 737758
+},
+{
+"ticker": "TTEK",
+"name": "Tetra Tech",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 831641
+},
+{
+"ticker": "TTMI",
+"name": "TTM Technologies",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1116942
+},
+{
+"ticker": "TXNM",
+"name": "TXNM Energy",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 1108426
+},
+{
+"ticker": "TXRH",
+"name": "Texas Roadhouse",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1289460
+},
+{
+"ticker": "UBSI",
+"name": "United Bankshares",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 729986
+},
+{
+"ticker": "UFPI",
+"name": "UFP Industries",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 912767
+},
+{
+"ticker": "UGI",
+"name": "UGI Corp",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 884614
+},
+{
+"ticker": "ULS",
+"name": "UL Solutions",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1901440
+},
+{
+"ticker": "UMBF",
+"name": "UMB Financial Corp.",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 101382
+},
+{
+"ticker": "UNM",
+"name": "Unum",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 5513
+},
+{
+"ticker": "USFD",
+"name": "US Foods",
+"sector": "Consumer Staples",
+"indice": "S&P 400",
+"cik": 1665918
+},
+{
+"ticker": "UTHR",
+"name": "United Therapeutics",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 1082554
+},
+{
+"ticker": "VAL",
+"name": "Valaris",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 314808
+},
+{
+"ticker": "VC",
+"name": "Visteon",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1111335
+},
+{
+"ticker": "VFC",
+"name": "VF Corporation",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 103379
+},
+{
+"ticker": "VIAV",
+"name": "Viavi Solutions",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 912093
+},
+{
+"ticker": "VICR",
+"name": "Vicor Corporation",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 751978
+},
+{
+"ticker": "VLY",
+"name": "Valley Bank",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 714310
+},
+{
+"ticker": "VMI",
+"name": "Valmont Industries",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 102729
+},
+{
+"ticker": "VNO",
+"name": "Vornado Realty Trust",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 899689
+},
+{
+"ticker": "VNOM",
+"name": "Viper Energy",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 2074176
+},
+{
+"ticker": "VNT",
+"name": "Vontier",
+"sector": "Information Technology",
+"indice": "S&P 400",
+"cik": 1786842
+},
+{
+"ticker": "VOYA",
+"name": "Voya Financial",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1535929
+},
+{
+"ticker": "VVV",
+"name": "Valvoline",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1674910
+},
+{
+"ticker": "WAL",
+"name": "Western Alliance Bancorporation",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1212545
+},
+{
+"ticker": "WCC",
+"name": "WESCO International",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 929008
+},
+{
+"ticker": "WEX",
+"name": "WEX Inc.",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1309108
+},
+{
+"ticker": "WFRD",
+"name": "Weatherford International",
+"sector": "Energy",
+"indice": "S&P 400",
+"cik": 1603923
+},
+{
+"ticker": "WH",
+"name": "Wyndham Hotels & Resorts",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1722684
+},
+{
+"ticker": "WHR",
+"name": "Whirlpool Corporation",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 106640
+},
+{
+"ticker": "WING",
+"name": "Wingstop",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1636222
+},
+{
+"ticker": "WLK",
+"name": "Westlake Corporation",
+"sector": "Materials",
+"indice": "S&P 400",
+"cik": 1262823
+},
+{
+"ticker": "WMG",
+"name": "Warner Music Group",
+"sector": "Communication Services",
+"indice": "S&P 400",
+"cik": 1319161
+},
+{
+"ticker": "WMS",
+"name": "Advanced Drainage Systems",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1604028
+},
+{
+"ticker": "WPC",
+"name": "W. P. Carey",
+"sector": "Real Estate",
+"indice": "S&P 400",
+"cik": 1025378
+},
+{
+"ticker": "WSO",
+"name": "Watsco",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 105016
+},
+{
+"ticker": "WTFC",
+"name": "Wintrust Financial",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 1015328
+},
+{
+"ticker": "WTRG",
+"name": "Essential Utilities",
+"sector": "Utilities",
+"indice": "S&P 400",
+"cik": 78128
+},
+{
+"ticker": "WTS",
+"name": "Watts Water Technologies",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 795403
+},
+{
+"ticker": "WWD",
+"name": "Woodward, Inc.",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 108312
+},
+{
+"ticker": "XPO",
+"name": "XPO, Inc.",
+"sector": "Industrials",
+"indice": "S&P 400",
+"cik": 1166003
+},
+{
+"ticker": "XRAY",
+"name": "Dentsply Sirona",
+"sector": "Health Care",
+"indice": "S&P 400",
+"cik": 818479
+},
+{
+"ticker": "YETI",
+"name": "Yeti Holdings",
+"sector": "Consumer Discretionary",
+"indice": "S&P 400",
+"cik": 1670592
+},
+{
+"ticker": "ZION",
+"name": "Zions Bancorporation",
+"sector": "Financials",
+"indice": "S&P 400",
+"cik": 109380
+},
+{
+"ticker": "MELI",
+"name": "MERCADOLIBRE INC",
+"sector": "Consumer Discretionary",
+"indice": "Popular",
+"cik": 1099590
+},
+{
+"ticker": "SNOW",
+"name": "Snowflake Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1640147
+},
+{
+"ticker": "NET",
+"name": "Cloudflare, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1477333
+},
+{
+"ticker": "RBLX",
+"name": "Roblox Corp",
+"sector": "Communication Services",
+"indice": "Popular",
+"cik": 1315098
+},
+{
+"ticker": "RIVN",
+"name": "Rivian Automotive, Inc. / DE",
+"sector": "Consumer Discretionary",
+"indice": "Popular",
+"cik": 1874178
+},
+{
+"ticker": "LCID",
+"name": "Lucid Group, Inc.",
+"sector": "Consumer Discretionary",
+"indice": "Popular",
+"cik": 1811210
+},
+{
+"ticker": "SOFI",
+"name": "SoFi Technologies, Inc.",
+"sector": "Financials",
+"indice": "Popular",
+"cik": 1818874
+},
+{
+"ticker": "AFRM",
+"name": "Affirm Holdings, Inc.",
+"sector": "Financials",
+"indice": "Popular",
+"cik": 1820953
+},
+{
+"ticker": "U",
+"name": "Unity Software Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1810806
+},
+{
+"ticker": "SNAP",
+"name": "Snap Inc",
+"sector": "Communication Services",
+"indice": "Popular",
+"cik": 1564408
+},
+{
+"ticker": "ZM",
+"name": "Zoom Communications, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1585521
+},
+{
+"ticker": "MDB",
+"name": "MongoDB, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1441816
+},
+{
+"ticker": "TEAM",
+"name": "Atlassian Corp",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1650372
+},
+{
+"ticker": "ZS",
+"name": "Zscaler, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1713683
+},
+{
+"ticker": "AMC",
+"name": "AMC ENTERTAINMENT HOLDINGS, INC.",
+"sector": "Communication Services",
+"indice": "Popular",
+"cik": 1411579
+},
+{
+"ticker": "BYND",
+"name": "BEYOND MEAT, INC.",
+"sector": "Consumer Staples",
+"indice": "Popular",
+"cik": 1655210
+},
+{
+"ticker": "ETSY",
+"name": "ETSY INC",
+"sector": "Consumer Discretionary",
+"indice": "Popular",
+"cik": 1370637
+},
+{
+"ticker": "W",
+"name": "Wayfair Inc.",
+"sector": "Consumer Discretionary",
+"indice": "Popular",
+"cik": 1616707
+},
+{
+"ticker": "LYFT",
+"name": "Lyft, Inc.",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 1759509
+},
+{
+"ticker": "UPST",
+"name": "Upstart Holdings, Inc.",
+"sector": "Financials",
+"indice": "Popular",
+"cik": 1647639
+},
+{
+"ticker": "MSTR",
+"name": "Strategy Inc",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1050446
+},
+{
+"ticker": "MARA",
+"name": "MARA Holdings, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1507605
+},
+{
+"ticker": "RIOT",
+"name": "Riot Platforms, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1167419
+},
+{
+"ticker": "CLSK",
+"name": "CLEANSPARK, INC.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 827876
+},
+{
+"ticker": "IONQ",
+"name": "IonQ, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1824920
+},
+{
+"ticker": "RKLB",
+"name": "Rocket Lab Corp",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 1819994
+},
+{
+"ticker": "ASTS",
+"name": "AST SpaceMobile, Inc.",
+"sector": "Communication Services",
+"indice": "Popular",
+"cik": 1780312
+},
+{
+"ticker": "SMR",
+"name": "NUSCALE POWER Corp",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 1822966
+},
+{
+"ticker": "OKLO",
+"name": "Oklo Inc.",
+"sector": "Utilities",
+"indice": "Popular",
+"cik": 1849056
+},
+{
+"ticker": "SOUN",
+"name": "SOUNDHOUND AI, INC.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1840856
+},
+{
+"ticker": "BBAI",
+"name": "BigBear.ai Holdings, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1836981
+},
+{
+"ticker": "QS",
+"name": "QuantumScape Corp",
+"sector": "Consumer Discretionary",
+"indice": "Popular",
+"cik": 1811414
+},
+{
+"ticker": "PLUG",
+"name": "PLUG POWER INC",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 1093691
+},
+{
+"ticker": "FCEL",
+"name": "FUELCELL ENERGY INC",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 886128
+},
+{
+"ticker": "RUN",
+"name": "Sunrun Inc.",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 1469367
+},
+{
+"ticker": "ENPH",
+"name": "Enphase Energy, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1463101
+},
+{
+"ticker": "OPEN",
+"name": "Opendoor Technologies Inc.",
+"sector": "Real Estate",
+"indice": "Popular",
+"cik": 1801169
+},
+{
+"ticker": "Z",
+"name": "ZILLOW GROUP, INC.",
+"sector": "Real Estate",
+"indice": "Popular",
+"cik": 1617640
+},
+{
+"ticker": "DKNG",
+"name": "DraftKings Inc.",
+"sector": "Communication Services",
+"indice": "Popular",
+"cik": 1883685
+},
+{
+"ticker": "GTLB",
+"name": "Gitlab Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1653482
+},
+{
+"ticker": "S",
+"name": "SentinelOne, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1583708
+},
+{
+"ticker": "ESTC",
+"name": "Elastic N.V.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1707753
+},
+{
+"ticker": "FROG",
+"name": "JFrog Ltd",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1800667
+},
+{
+"ticker": "FSLY",
+"name": "Fastly, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1517413
+},
+{
+"ticker": "AI",
+"name": "C3.ai, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1577526
+},
+{
+"ticker": "SG",
+"name": "Sweetgreen, Inc.",
+"sector": "Consumer Discretionary",
+"indice": "Popular",
+"cik": 1477815
+},
+{
+"ticker": "WRBY",
+"name": "Warby Parker Inc.",
+"sector": "Consumer Discretionary",
+"indice": "Popular",
+"cik": 1504776
+},
+{
+"ticker": "FIGS",
+"name": "FIGS, Inc.",
+"sector": "Consumer Discretionary",
+"indice": "Popular",
+"cik": 1846576
+},
+{
+"ticker": "PTON",
+"name": "PELOTON INTERACTIVE, INC.",
+"sector": "Consumer Discretionary",
+"indice": "Popular",
+"cik": 1639825
+},
+{
+"ticker": "TDOC",
+"name": "Teladoc Health, Inc.",
+"sector": "Health Care",
+"indice": "Popular",
+"cik": 1477449
+},
+{
+"ticker": "NVAX",
+"name": "NOVAVAX INC",
+"sector": "Health Care",
+"indice": "Popular",
+"cik": 1000694
+},
+{
+"ticker": "ACHR",
+"name": "Archer Aviation Inc.",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 1824502
+},
+{
+"ticker": "JOBY",
+"name": "Joby Aviation, Inc.",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 1819848
+},
+{
+"ticker": "LUNR",
+"name": "Intuitive Machines, Inc.",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 1844452
+},
+{
+"ticker": "RDW",
+"name": "Redwire Corp",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 1819810
+},
+{
+"ticker": "SPCE",
+"name": "Virgin Galactic Holdings, Inc",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 1706946
+},
+{
+"ticker": "CHPT",
+"name": "ChargePoint Holdings, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1777393
+},
+{
+"ticker": "BLNK",
+"name": "Blink Charging Co.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1429764
+},
+{
+"ticker": "EVGO",
+"name": "EVgo Inc.",
+"sector": "Industrials",
+"indice": "Popular",
+"cik": 1821159
+},
+{
+"ticker": "ARRY",
+"name": "Array Technologies, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1820721
+},
+{
+"ticker": "SEDG",
+"name": "SOLAREDGE TECHNOLOGIES, INC.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1419612
+},
+{
+"ticker": "ALAB",
+"name": "Astera Labs, Inc.",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1736297
+},
+{
+"ticker": "CRDO",
+"name": "Credo Technology Group Holding Ltd",
+"sector": "Information Technology",
+"indice": "Popular",
+"cik": 1807794
+},
+{
+"ticker": "TEM",
+"name": "Tempus AI, Inc.",
+"sector": "Health Care",
+"indice": "Popular",
+"cik": 1717115
+},
+{
+"ticker": "RXRX",
+"name": "RECURSION PHARMACEUTICALS, INC.",
+"sector": "Health Care",
+"indice": "Popular",
+"cik": 1601830
+},
+{
+"ticker": "CRSP",
+"name": "CRISPR Therapeutics AG",
+"sector": "Health Care",
+"indice": "Popular",
+"cik": 1674416
+},
+{
+"ticker": "BEAM",
+"name": "Beam Therapeutics Inc.",
+"sector": "Health Care",
+"indice": "Popular",
+"cik": 1745999
+},
+{
+"ticker": "NTLA",
+"name": "Intellia Therapeutics, Inc.",
+"sector": "Health Care",
+"indice": "Popular",
+"cik": 1652130
+},
+{
+"ticker": "EDIT",
+"name": "Editas Medicine, Inc.",
+"sector": "Health Care",
+"indice": "Popular",
+"cik": 1650664
+},
+{
+"ticker": "VKTX",
+"name": "Viking Therapeutics, Inc.",
+"sector": "Health Care",
+"indice": "Popular",
+"cik": 1607678
+}
+]

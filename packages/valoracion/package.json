@@ -1,0 +1,18 @@
+{
+  "name": "@ancla/valoracion",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Motor de valoración compartido por la API, la web y el móvil",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./formato": "./src/formato.ts",
+    "./metricas": "./src/metricas.ts",
+    "./sectores": "./src/sectores.ts",
+    "./recomendaciones": "./src/recomendaciones.ts",
+    "./simulador": "./src/simulador.ts",
+    "./grafico": "./src/grafico.ts"
+  }
+}
