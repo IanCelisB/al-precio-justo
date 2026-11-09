@@ -16,6 +16,7 @@
     "./grafico": "./src/grafico.ts",
     "./perfil": "./src/perfil.ts",
     "./apariencia": "./src/apariencia.ts",
-    "./portada": "./src/portada.ts"
+    "./portada": "./src/portada.ts",
+    "./avisos": "./src/avisos.ts"
   }
 }

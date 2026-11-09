@@ -558,3 +558,35 @@ a { color: inherit; text-decoration: none; }
 /* Tema claro: el dibujo de la portada en el color de acento, más suave */
 :root[data-theme="light"] .portada-glifo { color: var(--accent); opacity: .28; filter: none; }
 @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .portada-glifo { color: var(--accent); opacity: .28; filter: none; } }
+
+/* --- avisos ---------------------------------------------------------------------------- */
+.nav-icono { position: relative; display: inline-flex; }
+.insignia { position: absolute; top: -8px; right: -6px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px;
+  background: var(--down); color: #fff; font: 700 10.5px/17px var(--f-ui); font-style: normal; text-align: center;
+  box-shadow: 0 0 0 2px var(--bg); }
+.ficha-acciones { flex-wrap: wrap; }
+.ficha-acciones .seguir.objetivo-btn { background: var(--card); color: var(--fg); border: 1px solid var(--line); }
+.ficha-acciones .seguir.objetivo-btn.activo { border-color: var(--link); color: var(--link); }
+.objetivo { flex-basis: 100%; display: flex; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--line);
+  border-radius: 18px; padding: 14px 16px; }
+.objetivo label { display: flex; flex-direction: column; gap: 6px; }
+.objetivo-campo { display: flex; align-items: center; gap: 6px; border: 1.5px solid var(--line); border-radius: 12px; padding: 0 12px; background: var(--bg); }
+.objetivo-campo:focus-within { border-color: var(--link); }
+.objetivo-campo b { color: var(--muted); }
+.objetivo-campo input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--fg); font: 600 20px/44px var(--f-ui); }
+.objetivo-botones { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.objetivo-botones .btn-pri { height: 40px; padding: 0 18px; border: 0; cursor: pointer; }
+.avisos-pagina { display: flex; flex-direction: column; gap: 16px; }
+.avisos-lista { display: flex; flex-direction: column; gap: 8px; }
+.aviso { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 18px; background: var(--card);
+  border: 1px solid var(--line); color: var(--fg); text-decoration: none; }
+.aviso:hover { border-color: var(--link); }
+.aviso.nuevo { background: color-mix(in srgb, var(--accent) 8%, var(--card)); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.aviso-cuerpo { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.aviso-cuerpo b { font-size: 15px; }
+.aviso-cuerpo small { font-size: 13.5px; }
+.aviso-punto { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+.objetivo-fila { align-items: center; cursor: default; }
+.objetivo-fila > span:not(.logo-emp) { flex: 1; }
+.objetivo-fila a { color: var(--fg); }
+.config-interruptor .aviso-nombre { font-family: var(--f-ui); font-size: 15px; }

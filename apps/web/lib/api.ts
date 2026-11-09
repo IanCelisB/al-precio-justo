@@ -4,6 +4,7 @@ import { preferencias } from "./preferencias";
 import type { DatosClave, Perfil } from "@ancla/valoracion/perfil";
 import type { Estado, Trimestre, Valoracion } from "@ancla/valoracion";
 import type { Tipo } from "@ancla/valoracion/recomendaciones";
+import type { AjustesAvisos, TipoAviso } from "@ancla/valoracion/avisos";
 
 export const API = process.env.ANCLA_API ?? "http://localhost:4000";
 export const COOKIE_SESION = "ancla_sesion";
@@ -139,4 +140,27 @@ export const api = {
     if (!(await sesion())) return null;
     try { return await get<Yo>("/yo", true); } catch { return null; }
   },
+  /** Avisos, ajustes y precios objetivo del usuario con sesión (null sin sesión). */
+  avisos: async (): Promise<{ avisos: Aviso[]; sinLeer: number } | null> => {
+    if (!(await sesion())) return null;
+    try { return await get("/yo/avisos", true); } catch { return null; }
+  },
+  ajustesAvisos: async (): Promise<AjustesAvisos | null> => {
+    if (!(await sesion())) return null;
+    try { return await get<AjustesAvisos>("/yo/avisos/ajustes", true); } catch { return null; }
+  },
+  objetivos: async (): Promise<Objetivo[]> => {
+    if (!(await sesion())) return [];
+    try { return await get<Objetivo[]>("/yo/objetivos", true); } catch { return []; }
+  },
 };
+
+export interface Aviso {
+  id: number; ticker: string; nombre: string; sector: string | null;
+  tipo: TipoAviso; titulo: string; texto: string; creado: string; leido: boolean;
+}
+
+export interface Objetivo {
+  ticker: string; nombre: string; sector: string | null; precio: number; direccion: "baja" | "sube";
+  creado: string; cumplido: string | null; precioActual: number | null;
+}

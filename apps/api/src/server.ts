@@ -22,6 +22,12 @@
  *   PUT  /yo/metricas {ids}             métricas adicionales elegidas
  *   DELETE /yo                          borra la cuenta
  *
+ *   GET  /yo/avisos                     avisos (últimos 50) y cuántos sin leer
+ *   PUT  /yo/avisos/leidos {ids?}       marca como leídos (todos si no hay ids)
+ *   GET/PUT /yo/avisos/ajustes          qué avisos quiere el usuario (por defecto, solo precio objetivo)
+ *   GET  /yo/objetivos                  precios objetivo
+ *   PUT/DELETE /yo/objetivos/:ticker {precio}   fijar o quitar el precio objetivo
+ *
  *   GET  /simulador                     cartera simulada (30.000 USD ficticios)
  *   POST /simulador/comprar {ticker, importe} · /vender {ticker, acciones|null} · /reiniciar
  *   GET  /simulador/tiempo?ticker=&importe=&desde=   máquina del tiempo (sin sesión)
@@ -42,12 +48,16 @@ import { Datos, type Cotizacion, type Empresa } from "./datos.ts";
 import { Analitica, TIPOS_EVENTO, type TipoEvento } from "./analitica.ts";
 import { CLIENT_IDS, crearSesion, ErrorAuth, LOGIN_PRUEBA, usuarioDeSesion, verificarGoogle } from "./auth.ts";
 import { Usuarios } from "./usuarios.ts";
+import { abrirBD } from "./bd.ts";
+import { Avisos } from "./avisos.ts";
+import { objetivoValido } from "@ancla/valoracion/avisos";
 import { Logos } from "./logos.ts";
+import { bajarSiCambio, CADA, reemplazar, URL_DATOS } from "./descarga.ts";
 
 const RAIZ = resolve(fileURLToPath(import.meta.url), "../../../..");
 const DB = process.env.ANCLA_DB ?? resolve(RAIZ, "data/ancla.db");
-const DB_USUARIOS = process.env.ANCLA_DB_USUARIOS ?? resolve(RAIZ, "data/usuarios.db");
-const DB_ANALITICA = process.env.ANCLA_DB_ANALITICA ?? resolve(RAIZ, "data/analitica.db");
+// Usuarios, analítica y avisos: Postgres (DATABASE_URL) o, sin ella, PGlite en esta carpeta.
+const DIR_PG = process.env.ANCLA_PG_DIR ?? resolve(RAIZ, "data/pg");
 const PUERTO = Number(process.env.PORT ?? 4000);
 const SEGUIDAS_POR_DEFECTO = ["AAPL", "MSFT", "GOOGL", "NVDA"];
 
@@ -88,14 +98,22 @@ interface Cache {
   analisis: Map<string, Analisis>;
 }
 
-const datos = new Datos(DB);
-const usuarios = new Usuarios(DB_USUARIOS);
-const analitica = new Analitica(DB_ANALITICA);
+// En Render, la base de mercado se descarga de la última publicación (ver descarga.ts).
+if (URL_DATOS) {
+  const nueva = await bajarSiCambio(DB);
+  if (nueva) await reemplazar(nueva, DB);
+}
+let datos = new Datos(DB);
+const bd = await abrirBD({ dir: DIR_PG });
+const usuarios = new Usuarios(bd);
+const analitica = new Analitica(bd);
+const avisos = new Avisos(bd);
+await analitica.limpiar();
 const logos = new Logos(process.env.ANCLA_LOGOS ?? resolve(RAIZ, "data/logos"));
 let cache: Cache | null = null;
 
 /** Valora y analiza todas las empresas (~30 ms; la primera vez ~2 s por la carga de trimestres). */
-function calcular(previo: Cache | null): Cache {
+function calcular(previo: Cache | null, seguidores: Map<string, number>): Cache {
   // Solo se recargan los trimestres de las empresas que la ingesta tocó desde la última vez.
   const marcas = datos.marcas();
   let trimestres: Map<string, Trimestre[]>;
@@ -112,7 +130,6 @@ function calcular(previo: Cache | null): Cache {
   }
   const cotiz = datos.cotizaciones();
   const haceUnAnio = datos.cierreHace(365);
-  const seguidores = usuarios.seguidores();
   const resumenes = new Map<string, Resumen>();
   const valoraciones = new Map<string, Valoracion>();
   const analisis = new Map<string, Analisis>();
@@ -148,15 +165,30 @@ function calcular(previo: Cache | null): Cache {
 
 let version = "";
 let revisado = 0;
+let recalculando: Promise<Cache> | null = null;
+
+/** Recalcula y, con los datos nuevos, revisa los avisos (en segundo plano). */
+async function recalcular(): Promise<Cache> {
+  recalculando ??= (async () => {
+    try {
+      cache = calcular(cache, await usuarios.seguidores());
+      const c = cache;
+      avisos.revisar([...c.resumenes.values()]).catch((e) => app.log.error(e));
+      return c;
+    } finally { recalculando = null; }
+  })();
+  return recalculando;
+}
+
 /** Recalcula cada 5 minutos o en cuanto la ingesta publica algo nuevo (se mira cada 30 s). */
-function actual(): Cache {
+async function actual(): Promise<Cache> {
   const ahora = Date.now();
   if (cache && ahora - revisado > 30_000) {
     revisado = ahora;
     const v = datos.version();
-    if (v !== version) { version = v; cache = calcular(cache); }
+    if (v !== version) { version = v; return recalcular(); }
   }
-  if (!cache || ahora - cache.creado > 5 * 60_000) cache = calcular(cache);
+  if (!cache || ahora - cache.creado > 5 * 60_000) return recalcular();
   return cache;
 }
 
@@ -210,8 +242,8 @@ app.addHook("preHandler", async (req) => {
   req.usuarioId = await usuarioDeSesion(req.headers.authorization);
 });
 
-function exigirUsuario(req: { usuarioId: string | null }): string {
-  if (!req.usuarioId || !usuarios.obtener(req.usuarioId)) throw new ErrorAuth(401, "Inicia sesión para continuar.");
+async function exigirUsuario(req: { usuarioId: string | null }): Promise<string> {
+  if (!req.usuarioId || !(await usuarios.obtener(req.usuarioId))) throw new ErrorAuth(401, "Inicia sesión para continuar.");
   return req.usuarioId;
 }
 
@@ -225,7 +257,7 @@ app.setErrorHandler((err, _req, rep) => {
 app.get("/salud", async () => ({ ok: true }));
 
 app.get<{ Querystring: { limite?: string } }>("/novedades", async (req) => {
-  const c = actual();
+  const c = await actual();
   const limite = Math.min(Number(req.query.limite ?? 20) || 20, 100);
   return datos.novedades(limite).map((n) => {
     const r = c.resumenes.get(n.ticker);
@@ -234,13 +266,13 @@ app.get<{ Querystring: { limite?: string } }>("/novedades", async (req) => {
 });
 
 app.get<{ Querystring: { filtro?: string } }>("/portada", async (req) => {
-  const c = actual();
+  const c = await actual();
   const filtro = (FILTROS.some((f) => f.id === req.query.filtro) ? req.query.filtro : "todo") as FiltroPortada;
   const todas = [...c.resumenes.values()];
   const ctx = {
-    vistas: analitica.ranking("vista", 7, 20).map((x) => x.ticker),
-    compras: analitica.ranking("compra", 30, 20).map((x) => x.ticker),
-    mias: req.usuarioId ? usuarios.seguidas(req.usuarioId) : [],
+    vistas: (await analitica.ranking("vista", 7, 20)).map((x) => x.ticker),
+    compras: (await analitica.ranking("compra", 30, 20)).map((x) => x.ticker),
+    mias: req.usuarioId ? await usuarios.seguidas(req.usuarioId) : [],
     nombreSector: (s: string | null) => sectorDe(s).nombre,
   };
   return { filtro, filtros: FILTROS, destacadas: destacadas(todas, ctx), filas: filas(filtro, todas, ctx) };
@@ -262,40 +294,42 @@ app.post<{ Body: { tipo?: string; ticker?: string; sesion?: string } }>("/evento
   const t = String(req.body?.ticker ?? "").toUpperCase();
   const sesion = String(req.body?.sesion ?? "");
   // Desde la app solo llegan vistas; seguir y comprar se cuentan aquí mismo, en el servidor.
-  if (req.body?.tipo !== "vista" || !actual().resumenes.has(t) || !SESION.test(sesion)) {
+  if (req.body?.tipo !== "vista" || !(await actual()).resumenes.has(t) || !SESION.test(sesion)) {
     return rep.code(400).send({ error: "Evento no válido" });
   }
-  analitica.registrar("vista", t, sesion);
+  await analitica.registrar("vista", t, sesion);
   return rep.code(204).send();
 });
 
-const conResumen = <T extends { ticker: string }>(filas: T[]) =>
-  filas.map((f) => ({ ...f, empresa: actual().resumenes.get(f.ticker) ?? null })).filter((f) => f.empresa);
+const conResumen = async <T extends { ticker: string }>(filas: T[]) => {
+  const c = await actual();
+  return filas.map((f) => ({ ...f, empresa: c.resumenes.get(f.ticker) ?? null })).filter((f) => f.empresa);
+};
 
 app.get<{ Querystring: { dias?: string } }>("/tendencias", async (req) => {
   const dias = Math.min(Math.max(Number(req.query.dias ?? 7) || 7, 1), 90);
-  const r = (tipo: TipoEvento) => conResumen(analitica.ranking(tipo, dias, 10).map((x) => ({ ...x })));
-  return { dias, vistas: r("vista"), seguidas: r("seguir"), compras: r("compra") };
+  const r = async (tipo: TipoEvento) => conResumen(await analitica.ranking(tipo, dias, 10));
+  return { dias, vistas: await r("vista"), seguidas: await r("seguir"), compras: await r("compra") };
 });
 
 app.get<{ Params: { ticker: string } }>("/empresas/:ticker/tambien", async (req) => {
-  return conResumen(analitica.tambienVieron(req.params.ticker.toUpperCase()).map((x) => ({ ...x })));
+  return conResumen(await analitica.tambienVieron(req.params.ticker.toUpperCase()));
 });
 
-app.get("/estado-datos", async () => ({ ...datos.estadoIngesta(), empresas: actual().resumenes.size }));
+app.get("/estado-datos", async () => ({ ...datos.estadoIngesta(), empresas: (await actual()).resumenes.size, base: bd.tipo }));
 
 /** Logo de la empresa (PNG, en caché 7 días). 404 si no hay: las apps muestran la ilustración del sector. */
 app.get<{ Params: { ticker: string } }>("/logos/:ticker", async (req, rep) => {
   const t = req.params.ticker.toUpperCase();
-  if (!actual().resumenes.has(t)) return rep.code(404).send({ error: `No conocemos ${t}` });
+  if (!(await actual()).resumenes.has(t)) return rep.code(404).send({ error: `No conocemos ${t}` });
   const png = await logos.obtener(t);
   if (!png) return rep.code(404).send({ error: "Sin logo" });
   return rep.header("Content-Type", "image/png").header("Cache-Control", "public, max-age=604800").send(png);
 });
 
 app.get<{ Querystring: { seguidas?: string } }>("/inicio", async (req) => {
-  const c = actual();
-  const deUsuario = req.usuarioId ? usuarios.seguidas(req.usuarioId) : [];
+  const c = await actual();
+  const deUsuario = req.usuarioId ? await usuarios.seguidas(req.usuarioId) : [];
   const pedidas = req.query.seguidas
     ? req.query.seguidas.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean)
     : deUsuario.length ? deUsuario : SEGUIDAS_POR_DEFECTO;
@@ -311,7 +345,7 @@ app.get<{ Querystring: { seguidas?: string } }>("/inicio", async (req) => {
 });
 
 app.get<{ Querystring: { q?: string; tickers?: string } }>("/empresas", async (req) => {
-  const c = actual();
+  const c = await actual();
   if (req.query.tickers) {
     return req.query.tickers.split(",").map((t) => c.resumenes.get(t.trim().toUpperCase())).filter(Boolean);
   }
@@ -321,7 +355,7 @@ app.get<{ Querystring: { q?: string; tickers?: string } }>("/empresas", async (r
 });
 
 app.get<{ Params: { ticker: string } }>("/empresas/:ticker", async (req, rep) => {
-  const c = actual();
+  const c = await actual();
   const ticker = req.params.ticker.toUpperCase();
   const resumen = c.resumenes.get(ticker);
   if (!resumen) return rep.code(404).send({ error: `No conocemos ${ticker}` });
@@ -341,7 +375,7 @@ app.get<{ Params: { ticker: string } }>("/empresas/:ticker", async (req, rep) =>
 });
 
 app.get<{ Querystring: { q?: string; tipo?: Tipo; buenPrecio?: string; limite?: string } }>("/buscar", async (req) => {
-  const c = actual();
+  const c = await actual();
   const q = (req.query.q ?? "").trim().toLowerCase();
   const limite = Math.min(Number(req.query.limite ?? 30) || 30, 100);
   let lista = [...c.resumenes.values()].map((r) => ({ r, m: q ? coincide(r, q) : 1 })).filter((x) => x.m > 0);
@@ -352,7 +386,7 @@ app.get<{ Querystring: { q?: string; tipo?: Tipo; buenPrecio?: string; limite?: 
 });
 
 app.get("/recomendaciones", async () => {
-  const c = actual();
+  const c = await actual();
   const conRazones = (r: Resumen) => {
     const a = c.analisis.get(r.ticker)!;
     return { ...r, razones: a.calidad.razones, alertas: a.calidad.alertas };
@@ -373,47 +407,97 @@ app.get("/auth/config", async () => ({ google: CLIENT_IDS.length > 0, prueba: LO
 
 app.post<{ Body: { idToken?: string } }>("/auth/google", async (req, rep) => {
   if (!req.body?.idToken) return rep.code(400).send({ error: "Falta idToken" });
-  const u = usuarios.guardar(await verificarGoogle(req.body.idToken));
+  const u = await usuarios.guardar(await verificarGoogle(req.body.idToken));
   return { token: await crearSesion(u), usuario: u };
 });
 
 if (LOGIN_PRUEBA) {
   // Solo en desarrollo local: un usuario ficticio para probar la app sin Google.
   app.post("/auth/prueba", async () => {
-    const u = usuarios.guardar({ id: "prueba:local", email: "prueba@ancla.local", nombre: "Usuario de prueba", foto: null });
+    const u = await usuarios.guardar({ id: "prueba:local", email: "prueba@ancla.local", nombre: "Usuario de prueba", foto: null });
     return { token: await crearSesion(u), usuario: u };
   });
 }
 
 app.get("/yo", async (req) => {
-  const id = exigirUsuario(req);
-  return { usuario: usuarios.obtener(id), seguidas: usuarios.seguidas(id), metricasExtra: usuarios.metricasExtra(id) };
+  const id = await exigirUsuario(req);
+  const [usuario, seguidas, metricasExtra] = await Promise.all([usuarios.obtener(id), usuarios.seguidas(id), usuarios.metricasExtra(id)]);
+  return { usuario, seguidas, metricasExtra };
 });
 
 app.put<{ Params: { ticker: string } }>("/yo/seguidas/:ticker", async (req, rep) => {
-  const id = exigirUsuario(req);
+  const id = await exigirUsuario(req);
   const t = req.params.ticker.toUpperCase();
-  if (!actual().resumenes.has(t)) return rep.code(404).send({ error: `No conocemos ${t}` });
-  usuarios.seguir(id, t);
-  analitica.registrar("seguir", t);
-  return { seguidas: usuarios.seguidas(id) };
+  if (!(await actual()).resumenes.has(t)) return rep.code(404).send({ error: `No conocemos ${t}` });
+  await usuarios.seguir(id, t);
+  await analitica.registrar("seguir", t);
+  return { seguidas: await usuarios.seguidas(id) };
 });
 
 app.delete<{ Params: { ticker: string } }>("/yo/seguidas/:ticker", async (req) => {
-  const id = exigirUsuario(req);
-  usuarios.dejarDeSeguir(id, req.params.ticker.toUpperCase());
-  return { seguidas: usuarios.seguidas(id) };
+  const id = await exigirUsuario(req);
+  await usuarios.dejarDeSeguir(id, req.params.ticker.toUpperCase());
+  return { seguidas: await usuarios.seguidas(id) };
 });
 
 app.put<{ Body: { ids?: string[] } }>("/yo/metricas", async (req) => {
-  const id = exigirUsuario(req);
+  const id = await exigirUsuario(req);
   const ids = (req.body?.ids ?? []).filter((x) => typeof x === "string" && porId(x));
-  usuarios.guardarMetricasExtra(id, ids);
+  await usuarios.guardarMetricasExtra(id, ids);
   return { metricasExtra: ids };
 });
 
 app.delete("/yo", async (req) => {
-  usuarios.borrar(exigirUsuario(req));
+  await usuarios.borrar(await exigirUsuario(req));
+  return { ok: true };
+});
+
+// --- avisos -------------------------------------------------------------------------
+app.get("/yo/avisos", async (req) => {
+  const id = await exigirUsuario(req);
+  const { avisos: lista, sinLeer } = await avisos.lista(id);
+  const c = await actual();
+  return {
+    sinLeer,
+    avisos: lista.map((a) => {
+      const e = c.resumenes.get(a.ticker);
+      return { ...a, nombre: e?.nombre ?? a.ticker, sector: e?.sector ?? null };
+    }),
+  };
+});
+
+app.put<{ Body: { ids?: number[] } }>("/yo/avisos/leidos", async (req) => {
+  const id = await exigirUsuario(req);
+  const ids = Array.isArray(req.body?.ids) ? req.body.ids.map(Number).filter(Number.isInteger) : undefined;
+  await avisos.marcarLeidos(id, ids);
+  return { sinLeer: await avisos.sinLeer(id) };
+});
+
+app.get("/yo/avisos/ajustes", async (req) => avisos.ajustes(await exigirUsuario(req)));
+app.put("/yo/avisos/ajustes", async (req) => avisos.guardarAjustes(await exigirUsuario(req), req.body));
+
+app.get("/yo/objetivos", async (req) => {
+  const id = await exigirUsuario(req);
+  const c = await actual();
+  return (await avisos.objetivos(id)).map((o) => {
+    const e = c.resumenes.get(o.ticker);
+    return { ...o, nombre: e?.nombre ?? o.ticker, sector: e?.sector ?? null, precioActual: e?.precio ?? null };
+  });
+});
+
+app.put<{ Params: { ticker: string }; Body: { precio?: number } }>("/yo/objetivos/:ticker", async (req, rep) => {
+  const id = await exigirUsuario(req);
+  const t = req.params.ticker.toUpperCase();
+  const e = (await actual()).resumenes.get(t);
+  if (!e) return rep.code(404).send({ error: `No conocemos ${t}` });
+  const precio = Number(req.body?.precio);
+  const error = objetivoValido(precio, e.precio);
+  if (error) return rep.code(400).send({ error });
+  return avisos.fijarObjetivo(id, t, Math.round(precio * 100) / 100, e.precio);
+});
+
+app.delete<{ Params: { ticker: string } }>("/yo/objetivos/:ticker", async (req) => {
+  await avisos.quitarObjetivo(await exigirUsuario(req), req.params.ticker.toUpperCase());
   return { ok: true };
 });
 
@@ -422,9 +506,9 @@ const AVISO_SIMULADOR = "Dinero ficticio con precios reales (con retraso), sin c
   + "Los resultados pasados no garantizan resultados futuros.";
 
 /** Estado completo de la cartera simulada de un usuario. */
-function estadoSimulador(id: string) {
-  const c = actual();
-  const ops = usuarios.operaciones(id);
+async function estadoSimulador(id: string) {
+  const c = await actual();
+  const ops = await usuarios.operaciones(id);
   const precios: Record<string, number | null> = {};
   for (const o of ops) precios[o.ticker] = c.resumenes.get(o.ticker)?.precio ?? null;
   const r = resumen(ops, precios);
@@ -446,42 +530,42 @@ function estadoSimulador(id: string) {
   };
 }
 
-app.get("/simulador", async (req) => estadoSimulador(exigirUsuario(req)));
+app.get("/simulador", async (req) => estadoSimulador(await exigirUsuario(req)));
 
 app.post<{ Body: { ticker?: string; importe?: number } }>("/simulador/comprar", async (req, rep) => {
-  const id = exigirUsuario(req);
+  const id = await exigirUsuario(req);
   const t = String(req.body?.ticker ?? "").toUpperCase();
-  const e = actual().resumenes.get(t);
+  const e = (await actual()).resumenes.get(t);
   if (!e) return rep.code(404).send({ error: `No conocemos ${t}` });
-  const o = prepararCompra(usuarios.operaciones(id), t, Number(req.body?.importe), e.precio, new Date().toISOString());
+  const o = prepararCompra(await usuarios.operaciones(id), t, Number(req.body?.importe), e.precio, new Date().toISOString());
   if (typeof o === "string") return rep.code(400).send({ error: o });
-  usuarios.registrar(id, o);
-  analitica.registrar("compra", t);
-  return { operacion: o, cartera: estadoSimulador(id) };
+  await usuarios.registrar(id, o);
+  await analitica.registrar("compra", t);
+  return { operacion: o, cartera: await estadoSimulador(id) };
 });
 
 app.post<{ Body: { ticker?: string; acciones?: number | null } }>("/simulador/vender", async (req, rep) => {
-  const id = exigirUsuario(req);
+  const id = await exigirUsuario(req);
   const t = String(req.body?.ticker ?? "").toUpperCase();
-  const e = actual().resumenes.get(t);
+  const e = (await actual()).resumenes.get(t);
   const n = req.body?.acciones;
-  const o = prepararVenta(usuarios.operaciones(id), t, n === null || n === undefined ? null : Number(n),
+  const o = prepararVenta(await usuarios.operaciones(id), t, n === null || n === undefined ? null : Number(n),
     e?.precio ?? null, new Date().toISOString());
   if (typeof o === "string") return rep.code(400).send({ error: o });
-  usuarios.registrar(id, o);
-  return { operacion: o, cartera: estadoSimulador(id) };
+  await usuarios.registrar(id, o);
+  return { operacion: o, cartera: await estadoSimulador(id) };
 });
 
 app.post("/simulador/reiniciar", async (req) => {
-  const id = exigirUsuario(req);
-  usuarios.reiniciarSimulador(id);
+  const id = await exigirUsuario(req);
+  await usuarios.reiniciarSimulador(id);
   return estadoSimulador(id);
 });
 
 /** Máquina del tiempo: "si hubieras invertido `importe` en `ticker` el `desde`". No necesita sesión. */
 app.get<{ Querystring: { ticker?: string; importe?: string; desde?: string } }>("/simulador/tiempo", async (req, rep) => {
   const t = String(req.query.ticker ?? "").toUpperCase();
-  if (!actual().resumenes.has(t)) return rep.code(404).send({ error: `No conocemos ${t}` });
+  if (!(await actual()).resumenes.has(t)) return rep.code(404).send({ error: `No conocemos ${t}` });
   const importe = Number(req.query.importe ?? 1000);
   if (!Number.isFinite(importe) || importe <= 0 || importe > MONTO_MAXIMO) {
     return rep.code(400).send({ error: `El monto debe estar entre $1 y $${MONTO_MAXIMO.toLocaleString("es")}.` });
@@ -493,9 +577,29 @@ app.get<{ Querystring: { ticker?: string; importe?: string; desde?: string } }>(
   return { ticker: t, importe, ...r, aviso: AVISO_SIMULADOR };
 });
 
-cache = calcular(null); // precalcula antes de la primera visita (~2 s)
 version = datos.version();
+await recalcular(); // precalcula antes de la primera visita (~2 s) y revisa los avisos
+
+if (URL_DATOS) {
+  // Cada 6 horas mira si GitHub Actions publicó datos nuevos y, si los hay, cambia de base sin reiniciar.
+  setInterval(async () => {
+    try {
+      const nueva = await bajarSiCambio(DB);
+      if (!nueva) return;
+      datos.cerrar();
+      await reemplazar(nueva, DB);
+      datos = new Datos(DB);
+      cache = null;
+      version = datos.version();
+      await recalcular();
+      app.log.warn("Datos de mercado actualizados");
+    } catch (e) {
+      app.log.error(e);
+      try { datos.version(); } catch { datos = new Datos(DB); }
+    }
+  }, CADA).unref();
+}
 // "::" escucha en IPv6 e IPv4: en Windows "localhost" prueba primero ::1 y, si nadie
 // responde ahí, cada petición pierde ~200 ms antes de pasar a 127.0.0.1.
 await app.listen({ port: PUERTO, host: "::" });
-console.log(`API de Al Precio Justo en http://localhost:${PUERTO} (base: ${DB})`);
+console.log(`API de Al Precio Justo en http://localhost:${PUERTO} (mercado: ${DB}; usuarios: ${bd.tipo === "postgres" ? "Postgres" : `PGlite en ${DIR_PG}`})`);

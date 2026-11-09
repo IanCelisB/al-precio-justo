@@ -21,6 +21,7 @@ import { Logo } from "./componentes";
 import { MaquinaTiempo, PanelSimular } from "./simulacion";
 import { GraficoValor } from "./GraficoValor";
 import { SobreEmpresa } from "./SobreEmpresa";
+import { BotonObjetivo } from "./Avisos";
 import { useSesion } from "./sesion";
 import { useConfig } from "./config";
 import { Rejilla } from "./componentes";
@@ -152,6 +153,7 @@ export function Detalle({ ticker, s, tema, volver, abrir }: {
                     <Text style={[s.uiB, { fontSize: 15, color: seguida ? "#04221A" : tema.onAcc }]}>{seguida ? "✓ En mi lista" : "+ Mi lista"}</Text>
                   </Pressable>
                 )}
+                <BotonObjetivo s={s} tema={tema} ticker={f.ticker} precioActual={f.precio} />
               </View>
             </View>
 

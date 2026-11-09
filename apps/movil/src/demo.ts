@@ -15,6 +15,10 @@ import {
 import { MONTO_MAXIMO } from "@ancla/valoracion/formato";
 import { destacadas, filas, FILTROS, type FiltroPortada } from "@ancla/valoracion/portada";
 import { sectorDe } from "@ancla/valoracion/sectores";
+import {
+  AJUSTES_AVISOS_POR_DEFECTO, avisoObjetivo, cumpleObjetivo, direccionObjetivo, leerAjustesAvisos, objetivoValido,
+  type AjustesAvisos, type Direccion,
+} from "@ancla/valoracion/avisos";
 
 export const DEMO = process.env.EXPO_PUBLIC_ANCLA_DEMO === "1";
 /** Ruta base del sitio (p. ej. "/ancla" en GitHub Pages). */
@@ -92,6 +96,73 @@ async function cartera(e: Estado) {
   };
 }
 
+// --- avisos en el navegador (los datos son una foto fija: solo el precio objetivo puede cumplirse) ------
+interface EstadoAvisos {
+  ajustes: AjustesAvisos;
+  objetivos: { ticker: string; precio: number; direccion: Direccion; creado: string; cumplido: string | null }[];
+  avisos: { id: number; ticker: string; tipo: "objetivo"; titulo: string; texto: string; creado: string; leido: boolean }[];
+}
+const CLAVE_AVISOS = "ancla.demo.avisos";
+function leerAvisos(): EstadoAvisos {
+  try {
+    const g = JSON.parse(globalThis.localStorage?.getItem(CLAVE_AVISOS) ?? "null");
+    if (g && typeof g === "object") {
+      return { ajustes: leerAjustesAvisos(g.ajustes), objetivos: g.objetivos ?? [], avisos: g.avisos ?? [] };
+    }
+  } catch { /* sin almacenamiento */ }
+  return { ajustes: { ...AJUSTES_AVISOS_POR_DEFECTO }, objetivos: [], avisos: [] };
+}
+function guardarAvisos(a: EstadoAvisos) {
+  try { globalThis.localStorage?.setItem(CLAVE_AVISOS, JSON.stringify(a)); } catch { /* sin almacenamiento */ }
+}
+
+async function rutasAvisos(p: string, metodo: string, cuerpo: any): Promise<unknown> {
+  const a = leerAvisos();
+  const todas = await resumenes();
+  const por = new Map(todas.map((r) => [r.ticker, r]));
+  if (p === "/yo/avisos") {
+    // Revisa los precios objetivo pendientes contra la foto de precios.
+    const ahora = new Date().toISOString();
+    for (const o of a.objetivos) {
+      const r = por.get(o.ticker);
+      if (o.cumplido || !a.ajustes.objetivo || !r || !cumpleObjetivo(o, r.precio)) continue;
+      const n = avisoObjetivo({ ...r, precioFecha: null, ultimoTrimestre: null }, o);
+      a.avisos.unshift({ id: Date.now() + a.avisos.length, ticker: n.ticker, tipo: "objetivo", titulo: n.titulo, texto: n.texto, creado: ahora, leido: false });
+      o.cumplido = ahora;
+    }
+    guardarAvisos(a);
+    return {
+      sinLeer: a.avisos.filter((x) => !x.leido).length,
+      avisos: a.avisos.slice(0, 50).map((x) => ({ ...x, nombre: por.get(x.ticker)?.nombre ?? x.ticker, sector: por.get(x.ticker)?.sector ?? null })),
+    };
+  }
+  if (p === "/yo/avisos/leidos") {
+    a.avisos = a.avisos.map((x) => ({ ...x, leido: true }));
+    guardarAvisos(a);
+    return { sinLeer: 0 };
+  }
+  if (p === "/yo/avisos/ajustes") {
+    if (metodo === "PUT") { a.ajustes = leerAjustesAvisos(cuerpo, a.ajustes); guardarAvisos(a); }
+    return a.ajustes;
+  }
+  if (p === "/yo/objetivos") {
+    return a.objetivos.map((o) => ({ ...o, nombre: por.get(o.ticker)?.nombre ?? o.ticker, sector: por.get(o.ticker)?.sector ?? null,
+      precioActual: por.get(o.ticker)?.precio ?? null }));
+  }
+  const t = decodeURIComponent(p.slice("/yo/objetivos/".length)).toUpperCase();
+  a.objetivos = a.objetivos.filter((o) => o.ticker !== t);
+  if (metodo === "DELETE") { guardarAvisos(a); return { ok: true }; }
+  const r = por.get(t);
+  if (!r) throw new ErrorDemo(404, `No conocemos ${t}`);
+  const precio = Number(cuerpo.precio);
+  const error = objetivoValido(precio, r.precio);
+  if (error) throw new ErrorDemo(400, error);
+  const o = { ticker: t, precio: Math.round(precio * 100) / 100, direccion: direccionObjetivo(precio, r.precio), creado: new Date().toISOString(), cumplido: null };
+  a.objetivos.unshift(o);
+  guardarAvisos(a);
+  return o;
+}
+
 // --- rutas ------------------------------------------------------------------------------------------
 export async function responder(ruta: string, init: RequestInit = {}): Promise<unknown> {
   const url = new URL(ruta, "http://demo");
@@ -166,7 +237,11 @@ export async function responder(ruta: string, init: RequestInit = {}): Promise<u
   // Desde aquí, todo necesita la sesión de invitado.
   if (!e.sesion) throw new ErrorDemo(401, "Inicia sesión como invitado.");
   if (p === "/yo") {
-    if (metodo === "DELETE") { guardar({ sesion: false, seguidas: [], metricasExtra: [], operaciones: [] }); return { ok: true }; }
+    if (metodo === "DELETE") {
+      guardar({ sesion: false, seguidas: [], metricasExtra: [], operaciones: [] });
+      try { globalThis.localStorage?.removeItem(CLAVE_AVISOS); } catch { /* sin almacenamiento */ }
+      return { ok: true };
+    }
     return { usuario: USUARIO, seguidas: e.seguidas, metricasExtra: e.metricasExtra };
   }
   if (p.startsWith("/yo/seguidas/")) {
@@ -176,6 +251,7 @@ export async function responder(ruta: string, init: RequestInit = {}): Promise<u
     return { seguidas };
   }
   if (p === "/yo/metricas") { guardar({ ...e, metricasExtra: cuerpo.ids ?? [] }); return { metricasExtra: cuerpo.ids ?? [] }; }
+  if (p.startsWith("/yo/avisos") || p.startsWith("/yo/objetivos")) return rutasAvisos(p, metodo, cuerpo);
   if (p === "/simulador") return cartera(e);
   if (p === "/simulador/reiniciar") { const n = { ...e, operaciones: [] }; guardar(n); return cartera(n); }
   if (p === "/simulador/comprar" || p === "/simulador/vender") {

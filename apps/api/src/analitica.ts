@@ -7,87 +7,75 @@
  * - Los eventos se guardan 180 días; los totales sirven para tendencias,
  *   "quienes vieron X también vieron Y" y análisis propios (ver README).
  */
-import { DatabaseSync } from "node:sqlite";
+import type { BD } from "./bd.ts";
 
 export type TipoEvento = "vista" | "seguir" | "compra";
 export const TIPOS_EVENTO: TipoEvento[] = ["vista", "seguir", "compra"];
 const RETENCION_DIAS = 180;
 const VISTA_REPETIDA_MIN = 30;   // la misma sesión viendo la misma empresa cuenta una vez cada 30 min
 
-const ESQUEMA = `
-CREATE TABLE IF NOT EXISTS eventos (
-  id      INTEGER PRIMARY KEY AUTOINCREMENT,
-  ts      TEXT NOT NULL,
-  dia     TEXT NOT NULL,
-  tipo    TEXT NOT NULL CHECK (tipo IN ('vista', 'seguir', 'compra')),
-  ticker  TEXT NOT NULL,
-  sesion  TEXT
-);
-CREATE INDEX IF NOT EXISTS ix_eventos_tipo ON eventos (tipo, dia, ticker);
-CREATE INDEX IF NOT EXISTS ix_eventos_sesion ON eventos (sesion, ticker);
-`;
-
 export interface Conteo { ticker: string; n: number; previo: number }
 
 export class Analitica {
-  private db: DatabaseSync;
+  private bd: BD;
+  constructor(bd: BD) { this.bd = bd; }
 
-  constructor(ruta: string) {
-    this.db = new DatabaseSync(ruta);
-    this.db.exec("PRAGMA journal_mode = WAL;");
-    this.db.exec(ESQUEMA);
-    this.limpiar();
-  }
-
-  limpiar(dias = RETENCION_DIAS) {
+  async limpiar(dias = RETENCION_DIAS) {
     const limite = new Date(Date.now() - dias * 86_400_000).toISOString();
-    this.db.prepare("DELETE FROM eventos WHERE ts < ?").run(limite);
+    await this.bd.q("DELETE FROM eventos WHERE ts < $1", [limite]);
   }
 
   /** Devuelve false si se ignoró (vista repetida de la misma sesión). */
-  registrar(tipo: TipoEvento, ticker: string, sesion: string | null = null, ahora = new Date()): boolean {
+  async registrar(tipo: TipoEvento, ticker: string, sesion: string | null = null, ahora = new Date()): Promise<boolean> {
     if (tipo === "vista" && sesion) {
       const desde = new Date(ahora.getTime() - VISTA_REPETIDA_MIN * 60_000).toISOString();
-      const ya = this.db.prepare("SELECT 1 FROM eventos WHERE tipo='vista' AND sesion=? AND ticker=? AND ts>=? LIMIT 1")
-        .get(sesion, ticker, desde);
-      if (ya) return false;
+      const ya = await this.bd.q(
+        "SELECT 1 FROM eventos WHERE tipo = 'vista' AND sesion = $1 AND ticker = $2 AND ts >= $3 LIMIT 1",
+        [sesion, ticker, desde],
+      );
+      if (ya.length) return false;
     }
     const ts = ahora.toISOString();
-    this.db.prepare("INSERT INTO eventos (ts, dia, tipo, ticker, sesion) VALUES (?, ?, ?, ?, ?)")
-      .run(ts, ts.slice(0, 10), tipo, ticker, sesion);
+    await this.bd.q("INSERT INTO eventos (ts, dia, tipo, ticker, sesion) VALUES ($1, $2, $3, $4, $5)",
+      [ts, ts.slice(0, 10), tipo, ticker, sesion]);
     return true;
   }
 
   /** Las más vistas / seguidas / compradas en los últimos `dias`, con el periodo anterior para comparar. */
-  ranking(tipo: TipoEvento, dias = 7, limite = 10, ahora = new Date()): Conteo[] {
+  async ranking(tipo: TipoEvento, dias = 7, limite = 10, ahora = new Date()): Promise<Conteo[]> {
     const d = (n: number) => new Date(ahora.getTime() - n * 86_400_000).toISOString();
     // Vistas: sesiones distintas (una persona curiosa no infla el ranking).
     const [n, previo] = tipo === "vista"
-      ? ["COUNT(DISTINCT CASE WHEN ts >= ? THEN COALESCE(sesion, id) END)", "COUNT(DISTINCT CASE WHEN ts < ? THEN COALESCE(sesion, id) END)"]
-      : ["SUM(ts >= ?)", "SUM(ts < ?)"];
-    return this.db.prepare(
-      `SELECT ticker, ${n} AS n, ${previo} AS previo
-       FROM eventos WHERE tipo = ? AND ts >= ?
-       GROUP BY ticker HAVING n > 0 ORDER BY n DESC, ticker LIMIT ?`,
-    ).all(d(dias), d(dias), tipo, d(2 * dias), limite) as any;
+      ? ["COUNT(DISTINCT CASE WHEN ts >= $1 THEN COALESCE(sesion, id::text) END)", "COUNT(DISTINCT CASE WHEN ts < $1 THEN COALESCE(sesion, id::text) END)"]
+      : ["COUNT(*) FILTER (WHERE ts >= $1)", "COUNT(*) FILTER (WHERE ts < $1)"];
+    const filas = await this.bd.q<Conteo>(
+      `SELECT ticker, n::int AS n, previo::int AS previo FROM (
+         SELECT ticker, ${n} AS n, ${previo} AS previo
+         FROM eventos WHERE tipo = $2 AND ts >= $3
+         GROUP BY ticker) x
+       WHERE n > 0 ORDER BY n DESC, ticker LIMIT $4`,
+      [d(dias), tipo, d(2 * dias), limite],
+    );
+    return filas.map((f) => ({ ticker: f.ticker, n: Number(f.n), previo: Number(f.previo) }));
   }
 
   /** Quienes vieron `ticker` también vieron… (sesiones distintas, mínimo `soporte`). */
-  tambienVieron(ticker: string, dias = 30, limite = 6, soporte = 2, ahora = new Date()): { ticker: string; n: number }[] {
+  async tambienVieron(ticker: string, dias = 30, limite = 6, soporte = 2, ahora = new Date()): Promise<{ ticker: string; n: number }[]> {
     const desde = new Date(ahora.getTime() - dias * 86_400_000).toISOString();
-    return this.db.prepare(
-      `SELECT e.ticker, COUNT(DISTINCT e.sesion) AS n
+    const filas = await this.bd.q<{ ticker: string; n: number }>(
+      `SELECT e.ticker, COUNT(DISTINCT e.sesion)::int AS n
        FROM eventos e
-       WHERE e.tipo = 'vista' AND e.ts >= ? AND e.ticker <> ? AND e.sesion IN (
-         SELECT sesion FROM eventos WHERE tipo = 'vista' AND ticker = ? AND ts >= ? AND sesion IS NOT NULL)
-       GROUP BY e.ticker HAVING n >= ? ORDER BY n DESC, e.ticker LIMIT ?`,
-    ).all(desde, ticker, ticker, desde, soporte, limite) as any;
+       WHERE e.tipo = 'vista' AND e.ts >= $1 AND e.ticker <> $2 AND e.sesion IN (
+         SELECT sesion FROM eventos WHERE tipo = 'vista' AND ticker = $2 AND ts >= $1 AND sesion IS NOT NULL)
+       GROUP BY e.ticker HAVING COUNT(DISTINCT e.sesion) >= $3 ORDER BY n DESC, e.ticker LIMIT $4`,
+      [desde, ticker, soporte, limite],
+    );
+    return filas.map((f) => ({ ticker: f.ticker, n: Number(f.n) }));
   }
 
   /** Totales por día y tipo (para análisis y gráficos de uso). */
-  resumenDiario(dias = 30): { dia: string; tipo: TipoEvento; n: number }[] {
+  async resumenDiario(dias = 30): Promise<{ dia: string; tipo: TipoEvento; n: number }[]> {
     const desde = new Date(Date.now() - dias * 86_400_000).toISOString().slice(0, 10);
-    return this.db.prepare("SELECT dia, tipo, COUNT(*) AS n FROM eventos WHERE dia >= ? GROUP BY dia, tipo ORDER BY dia")
-      .all(desde) as any;
+    return this.bd.q("SELECT dia, tipo, COUNT(*)::int AS n FROM eventos WHERE dia >= $1 GROUP BY dia, tipo ORDER BY dia", [desde]);
   }
 }

@@ -39,6 +39,10 @@ export class Datos {
     this.db = new DatabaseSync(ruta, { readOnly: true });
   }
 
+  cerrar() {
+    this.db.close();
+  }
+
   empresas(): Empresa[] {
     return this.db.prepare("SELECT ticker, name AS nombre, sector, indice FROM companies ORDER BY ticker").all() as any;
   }

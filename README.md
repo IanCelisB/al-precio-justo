@@ -57,8 +57,10 @@ py -m ingesta.precios --todas         # 10 años de precios diarios (~15 min)
 npm run api                           # http://localhost:4000
 npm run web                           # http://localhost:3000
 npm run movil                         # Expo: escanea el QR con Expo Go, o pulsa "w" para web
-npm test                              # pruebas del motor de valoración
+npm test                              # pruebas del motor de valoración, la API y los avisos
 ```
+
+La API guarda usuarios y avisos en Postgres; sin `DATABASE_URL` usa PGlite en `data/pg` (ver «Base de datos»).
 
 En un teléfono, `localhost` es el propio teléfono: arranca el móvil con
 `EXPO_PUBLIC_ANCLA_API=http://<IP de tu ordenador>:4000`.
@@ -109,7 +111,7 @@ Web (`/configuracion`, cookie `apj_pref`) y móvil (Perfil → Configuración, g
 
 ### Uso anónimo y tendencias
 
-`apps/api/src/analitica.ts` guarda en `data/analitica.db` qué empresas se **ven** (enviado por la app con un número aleatorio por dispositivo, sin usuario ni email), se **siguen** y se **compran** en el simulador (contados en el servidor, sin sesión). Se puede desactivar en Configuración y los eventos se borran a los 180 días.
+`apps/api/src/analitica.ts` guarda en la base Postgres (tabla `eventos`) qué empresas se **ven** (enviado por la app con un número aleatorio por dispositivo, sin usuario ni email), se **siguen** y se **compran** en el simulador (contados en el servidor, sin sesión). Se puede desactivar en Configuración y los eventos se borran a los 180 días.
 
 - `GET /tendencias?dias=7`: las más vistas (sesiones distintas), seguidas y compradas, con el periodo anterior para ver si suben. La app muestra «Lo más visto esta semana».
 - `GET /empresas/:ticker/tambien`: «quienes vieron X también vieron…» (mínimo 2 sesiones en 30 días).
@@ -117,9 +119,9 @@ Web (`/configuracion`, cookie `apj_pref`) y móvil (Perfil → Configuración, g
 Para analizar los datos:
 
 ```sql
--- sqlite3 data/analitica.db
+-- psql "$DATABASE_URL"  (o el editor SQL del panel de Neon)
 SELECT ticker, COUNT(DISTINCT sesion) AS personas FROM eventos
-WHERE tipo = 'vista' AND dia >= date('now', '-30 day') GROUP BY ticker ORDER BY personas DESC LIMIT 20;
+WHERE tipo = 'vista' AND dia >= to_char(now() - interval '30 days', 'YYYY-MM-DD') GROUP BY ticker ORDER BY personas DESC LIMIT 20;
 
 -- De lo visto a lo comprado: qué empresas pasan de la curiosidad al simulador
 SELECT v.ticker, v.n AS vistas, COALESCE(c.n, 0) AS compras, ROUND(1.0 * COALESCE(c.n, 0) / v.n, 3) AS conversion
@@ -148,12 +150,12 @@ Son reglas fijas, iguales para todos, con sus razones a la vista. No es asesorí
 
 ## Cuentas con Google
 
-La web y el móvil obtienen un *ID token* de Google y la API lo verifica (firma y destinatario) antes de crear la sesión. La API guarda solo nombre, email, foto, empresas seguidas y métricas elegidas (`data/usuarios.db`). El usuario puede borrar su cuenta desde Perfil.
+La web y el móvil obtienen un *ID token* de Google y la API lo verifica (firma y destinatario) antes de crear la sesión. La API guarda solo nombre, email, foto, empresas seguidas, métricas elegidas y avisos (base Postgres, ver más abajo). El usuario puede borrar su cuenta desde Perfil.
 
 Para activarlo:
 
 1. En [Google Cloud Console](https://console.cloud.google.com/apis/credentials) crea un proyecto y una pantalla de consentimiento OAuth.
-2. Crea IDs de cliente OAuth: uno **Web** (orígenes autorizados: `http://localhost:3000` y tu dominio), uno **iOS** (bundle `app.alpreciojusto`) y uno **Android** (paquete `app.alpreciojusto` + huella SHA-1).
+2. Crea IDs de cliente OAuth: uno **Web** (orígenes autorizados: `http://localhost:3000`, `http://localhost:8081` y `https://iancelisb.github.io`; URI de redirección: `https://iancelisb.github.io/al-precio-justo`), uno **iOS** (bundle `app.alpreciojusto`) y uno **Android** (paquete `app.alpreciojusto` + huella SHA-1).
 3. Configura las variables:
 
 | Dónde | Variable | Valor |
@@ -171,7 +173,47 @@ En desarrollo, `ANCLA_LOGIN_PRUEBA=1` en la API añade un botón «Entrar con un
 
 - **Cartera simulada**: cada usuario con sesión empieza con 30.000 USD ficticios. Compra por importe (acciones fraccionadas) y vende acciones al precio del momento, sin comisiones. La ganancia se calcula por coste medio y separa lo ya ganado al vender de lo que sigue en cartera. Se compara cada día con lo que habría valido la misma cantidad en el S&P 500 (SPY). Se puede reiniciar.
 - **Máquina del tiempo**: «si hubieras invertido $X hace N años», con los cierres reales de los últimos 10 años y la comparación con el S&P 500. No necesita sesión.
-- El precio lo pone siempre la API (el cliente no puede elegirlo). Las operaciones se guardan en `data/usuarios.db` (tabla `operaciones`) y se borran con la cuenta.
+- El precio lo pone siempre la API (el cliente no puede elegirlo). Las operaciones se guardan en Postgres (tabla `operaciones`) y se borran con la cuenta.
+
+## Avisos dentro de la app
+
+`packages/valoracion/src/avisos.ts` (tipos, ajustes y textos) y `apps/api/src/avisos.ts` (detector y tablas). Cada usuario elige qué avisos quiere en la pantalla **Avisos** (campana en la barra de la web y arriba en el inicio del móvil):
+
+| Aviso | Cuándo | Por defecto |
+|---|---|---|
+| Precio objetivo | la acción llega al precio que fijaste en la ficha («🔔 Avisarme») | **activado** |
+| Cambio de estado | una empresa que sigues pasa a barata, justa o cara | apagado |
+| Nuevo reporte | una empresa que sigues publica un trimestre nuevo | apagado |
+| Movimiento fuerte | una empresa que sigues sube o baja ±3, 5 o 10 % en el día | apagado |
+
+La API revisa cada vez que recalcula las empresas (nuevos precios o reportes, como mínimo cada 5 minutos): compara con la última foto de cada empresa (`foto_empresas`) y crea los avisos con una clave única por usuario, así que nunca se repiten. Un precio objetivo se cumple una vez y queda como «cumplido». Se guardan los últimos 200 avisos por usuario.
+
+Rutas: `GET /yo/avisos`, `PUT /yo/avisos/leidos`, `GET|PUT /yo/avisos/ajustes`, `GET /yo/objetivos`, `PUT|DELETE /yo/objetivos/:ticker`. En la demo de GitHub Pages se guardan en el navegador y, como los precios son una foto fija, solo puede cumplirse un precio objetivo.
+
+## Base de datos (Postgres)
+
+Usuarios, seguidas, simulador, preferencias, uso anónimo y avisos viven en **Postgres** (`apps/api/src/bd.ts`, con migraciones numeradas que se aplican solas al arrancar):
+
+- **Producción**: `DATABASE_URL` (Neon u otro Postgres).
+- **Desarrollo y pruebas**: sin `DATABASE_URL` la API usa **PGlite**, el mismo Postgres embebido en el proceso (`data/pg`; en memoria en las pruebas). No hay que instalar nada.
+
+Los datos de mercado (reportes de la SEC y precios) siguen en el SQLite que arma la ingesta, que la API solo lee.
+
+## Publicar la API (Neon + Render + Google)
+
+La página de GitHub funciona sola en modo demo. Para tener cuentas reales, avisos y base de datos, la app necesita la API en internet. Todo en planes gratis:
+
+1. **Neon** (Postgres): crea una cuenta en [neon.tech](https://neon.tech), un proyecto en la región *AWS US East (N. Virginia)* y copia la *connection string* (`postgresql://…?sslmode=require`).
+2. **Render** (API): crea una cuenta en [render.com](https://render.com), conecta GitHub y elige **New → Blueprint** con este repositorio (usa `render.yaml`). Te pedirá:
+   - `DATABASE_URL`: la cadena de Neon.
+   - `GOOGLE_CLIENT_IDS`: los IDs de cliente de Google (ver «Cuentas con Google»).
+   `ANCLA_SECRETO` se genera solo. La API descarga los datos de mercado de la versión [`datos`](https://github.com/IanCelisB/al-precio-justo/releases/tag/datos) que publica GitHub Actions y los vuelve a mirar cada 6 horas. Prueba: `https://<tu-servicio>.onrender.com/estado-datos` debe decir `"base": "postgres"`.
+3. **GitHub** (la página): en *Settings → Secrets and variables → Actions → Variables* crea:
+   - `API_URL` = `https://<tu-servicio>.onrender.com`
+   - `GOOGLE_WEB_CLIENT_ID` = el ID de cliente Web de Google
+   y vuelve a ejecutar el workflow «Demo en GitHub Pages». Con `API_URL` la página deja de ser demo y usa la API real. Para volver a la demo, borra la variable.
+
+En el plan gratis de Render el servidor se duerme tras 15 minutos sin uso: la primera visita después tarda ~1 minuto en despertar (descarga la base de mercado). Neon gratis da 0,5 GB, de sobra para miles de usuarios.
 
 ## Logos
 

@@ -18,6 +18,8 @@ async function reenviar(req: NextRequest, ruta: string[]) {
 }
 
 type Ctx = { params: Promise<{ ruta: string[] }> };
+// Lecturas desde el navegador (p. ej. el contador de avisos de la barra).
+export const GET = async (req: NextRequest, { params }: Ctx) => reenviar(req, (await params).ruta);
 export const PUT = async (req: NextRequest, { params }: Ctx) => reenviar(req, (await params).ruta);
 export const DELETE = async (req: NextRequest, { params }: Ctx) => {
   const { ruta } = await params;

@@ -2,6 +2,7 @@ import type { Estado, Trimestre, Valoracion } from "@ancla/valoracion";
 import type { Tipo } from "@ancla/valoracion/recomendaciones";
 import { BASE, DEMO, ErrorDemo, responder } from "./demo";
 import type { DatosClave, Perfil } from "@ancla/valoracion/perfil";
+import type { AjustesAvisos, TipoAviso } from "@ancla/valoracion/avisos";
 
 /**
  * En un teléfono, "localhost" es el propio teléfono: define EXPO_PUBLIC_ANCLA_API
@@ -181,4 +182,26 @@ export const api = {
   tambien: (ticker: string) => pedir<{ ticker: string; n: number; empresa: Resumen }[]>(`/empresas/${encodeURIComponent(ticker)}/tambien`),
   tiempo: (ticker: string, importe: number, desde: string) =>
     pedir<Tiempo>(`/simulador/tiempo?ticker=${encodeURIComponent(ticker)}&importe=${importe}&desde=${desde}`),
+  // --- avisos ---
+  avisos: (token: string) => pedir<{ avisos: Aviso[]; sinLeer: number }>("/yo/avisos", token),
+  marcarLeidos: (token: string, ids?: number[]) =>
+    pedir<{ sinLeer: number }>("/yo/avisos/leidos", token, { method: "PUT", body: JSON.stringify(ids ? { ids } : {}) }),
+  ajustesAvisos: (token: string) => pedir<AjustesAvisos>("/yo/avisos/ajustes", token),
+  guardarAjustesAvisos: (token: string, cambios: Partial<AjustesAvisos>) =>
+    pedir<AjustesAvisos>("/yo/avisos/ajustes", token, { method: "PUT", body: JSON.stringify(cambios) }),
+  objetivos: (token: string) => pedir<Objetivo[]>("/yo/objetivos", token),
+  fijarObjetivo: (token: string, ticker: string, precio: number) =>
+    pedir<Objetivo>(`/yo/objetivos/${encodeURIComponent(ticker)}`, token, { method: "PUT", body: JSON.stringify({ precio }) }),
+  quitarObjetivo: (token: string, ticker: string) =>
+    pedir<{ ok: boolean }>(`/yo/objetivos/${encodeURIComponent(ticker)}`, token, { method: "DELETE" }),
 };
+
+export interface Aviso {
+  id: number; ticker: string; nombre: string; sector: string | null;
+  tipo: TipoAviso; titulo: string; texto: string; creado: string; leido: boolean;
+}
+
+export interface Objetivo {
+  ticker: string; nombre?: string; sector?: string | null; precio: number; direccion: "baja" | "sube";
+  creado: string; cumplido: string | null; precioActual?: number | null;
+}

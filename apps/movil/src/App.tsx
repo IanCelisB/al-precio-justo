@@ -26,6 +26,7 @@ import { ProveedorSesion, useSesion } from "./sesion";
 import type { Tema } from "./tema";
 import { ProveedorConfig, useConfig } from "./config";
 import { Configuracion } from "./Configuracion";
+import { Campana, PantallaAvisos } from "./Avisos";
 
 type Pestana = "Inicio" | "Buscar" | "Simulador" | "Seguidas" | "Perfil";
 
@@ -47,6 +48,7 @@ interface EstadoNav {
   pestana: Pestana; setPestana: (p: Pestana) => void;
   empresa: string | null; setEmpresa: (t: string | null) => void;
   config: boolean; setConfig: (v: boolean) => void;
+  avisos: boolean; setAvisos: (v: boolean) => void;
 }
 
 function Raiz({ cargadas }: { cargadas: boolean }) {
@@ -54,7 +56,8 @@ function Raiz({ cargadas }: { cargadas: boolean }) {
   const [pestana, setPestana] = useState<Pestana>("Inicio");
   const [empresa, setEmpresa] = useState<string | null>(null);
   const [config, setConfig] = useState(false);
-  const nav: EstadoNav = { pestana, setPestana, empresa, setEmpresa, config, setConfig };
+  const [avisos, setAvisos] = useState(false);
+  const nav: EstadoNav = { pestana, setPestana, empresa, setEmpresa, config, setConfig, avisos, setAvisos };
   const oscuroActivo = tema.bg === PALETA.oscuro.bg;
   return (
     <>
@@ -67,21 +70,28 @@ function Raiz({ cargadas }: { cargadas: boolean }) {
 
 function Navegacion({ tema, nav }: { tema: Tema; nav: EstadoNav }) {
   const s = useMemo(() => estilos(tema), [tema]);
-  const { pestana, setPestana, empresa, setEmpresa, config, setConfig } = nav;
+  const { pestana, setPestana, empresa, setEmpresa, config, setConfig, avisos, setAvisos } = nav;
 
-  // Botón "atrás" de Android: de la ficha vuelve a la pestaña.
+  // Botón "atrás" de Android: de la ficha (o avisos, o configuración) vuelve atrás.
   useEffect(() => {
-    if (!empresa && !config) return;
-    const sub = BackHandler.addEventListener("hardwareBackPress", () => { setEmpresa(null); setConfig(false); return true; });
+    if (!empresa && !config && !avisos) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      if (empresa) setEmpresa(null); else { setConfig(false); setAvisos(false); }
+      return true;
+    });
     return () => sub.remove();
-  }, [empresa, config]);
+  }, [empresa, config, avisos]);
 
   if (empresa) return <Detalle ticker={empresa} s={s} tema={tema} volver={() => setEmpresa(null)} abrir={setEmpresa} />;
   if (config) return <Configuracion s={s} tema={tema} volver={() => setConfig(false)} />;
+  if (avisos) {
+    return <PantallaAvisos s={s} tema={tema} volver={() => setAvisos(false)} abrir={setEmpresa}
+      irAPerfil={() => { setAvisos(false); setPestana("Perfil"); }} />;
+  }
   return (
     <View style={{ flex: 1, backgroundColor: tema.bg }}>
       <View style={{ flex: 1 }}>
-        {pestana === "Inicio" && <PantallaInicio tema={tema} s={s} abrir={setEmpresa} irA={setPestana} />}
+        {pestana === "Inicio" && <PantallaInicio tema={tema} s={s} abrir={setEmpresa} irA={setPestana} abrirAvisos={() => setAvisos(true)} />}
         {pestana === "Buscar" && <Buscar tema={tema} s={s} abrir={setEmpresa} />}
         {pestana === "Simulador" && <Simulador tema={tema} s={s} abrir={setEmpresa} irA={setPestana} />}
         {pestana === "Seguidas" && <Seguidas tema={tema} s={s} abrir={setEmpresa} irAPerfil={() => setPestana("Perfil")} />}
@@ -92,7 +102,9 @@ function Navegacion({ tema, nav }: { tema: Tema; nav: EstadoNav }) {
   );
 }
 
-function PantallaInicio({ tema, s, abrir, irA }: { tema: Tema; s: Estilos; abrir: Abrir; irA: (p: Pestana) => void }) {
+function PantallaInicio({ tema, s, abrir, irA, abrirAvisos }: {
+  tema: Tema; s: Estilos; abrir: Abrir; irA: (p: Pestana) => void; abrirAvisos: () => void;
+}) {
   const { token, yo } = useSesion();
   const [filtro, setFiltro] = useState<FiltroPortada>("todo");
   const [p, setP] = useState<Portada | null>(null);
@@ -125,8 +137,9 @@ function PantallaInicio({ tema, s, abrir, irA }: { tema: Tema; s: Estilos; abrir
             <Text style={{ fontFamily: s.hd.fontFamily, fontSize: 22, color: tema.fg, letterSpacing: -0.6 }}>
               Al Precio <Text style={{ color: tema.bg === PALETA.oscuro.bg ? tema.mint : tema.accent }}>Justo</Text>
             </Text>
+            <View style={{ marginLeft: "auto", marginRight: 8 }}><Campana tema={tema} onPress={abrirAvisos} /></View>
             <Pressable onPress={() => irA("Buscar")} accessibilityRole="button" accessibilityLabel="Buscar una empresa"
-              style={{ marginLeft: "auto", width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center",
+              style={{ width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center",
                 backgroundColor: tema.card, borderWidth: 1, borderColor: tema.line }}>
               <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={tema.fg} strokeWidth={1.9} strokeLinecap="round">
                 <Circle cx="11" cy="11" r="7" /><Path d="m20 20-3.5-3.5" />

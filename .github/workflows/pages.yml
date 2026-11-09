@@ -1,12 +1,16 @@
-# Demo estática en GitHub Pages.
+# Datos de mercado y página en GitHub Pages.
 #
-# Arma la base de datos desde cero (reportes de la SEC + precios), levanta la API, toma
-# una foto de los datos y publica la app (Expo web) en modo demo. La app real (API,
-# base de datos y login con Google) no cambia: la demo solo se activa con
-# EXPO_PUBLIC_ANCLA_DEMO=1 al compilar.
+# Arma la base de datos desde cero (reportes de la SEC + precios), la publica en la
+# versión "datos" del repositorio (de ahí la descarga la API en Render) y publica la
+# app (Expo web) en GitHub Pages:
+#   - Sin la variable del repositorio API_URL: modo demo (foto fija de los datos,
+#     todo guardado en el navegador; EXPO_PUBLIC_ANCLA_DEMO=1).
+#   - Con API_URL (p. ej. https://al-precio-justo-api.onrender.com): la app real,
+#     conectada a la API, con login de Google (variable GOOGLE_WEB_CLIENT_ID), avisos
+#     y base de datos Postgres.
 #
 # Se ejecuta al subir cambios a main, a mano y de lunes a viernes tras el cierre de la bolsa.
-# Si una ejecución falla, la página sigue mostrando la última foto publicada.
+# Si una ejecución falla, la página sigue mostrando la última versión publicada.
 name: Demo en GitHub Pages
 
 on:
@@ -17,7 +21,7 @@ on:
     - cron: "30 22 * * 1-5"
 
 permissions:
-  contents: read
+  contents: write     # publicar la base en la versión "datos"
   pages: write
   id-token: write
 
@@ -75,10 +79,26 @@ jobs:
           for i in $(seq 1 60); do curl -sf http://127.0.0.1:4000/salud && break; sleep 2; done
           node apps/api/src/foto-demo.ts
 
-      - name: App en modo demo
+      - name: Base para la API publicada (versión "datos")
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Copia sin las tablas que solo usa la ingesta, comprimida.
+          rm -f ancla-api.db
+          python -c "import sqlite3; sqlite3.connect('data/ancla.db').execute(\"VACUUM INTO 'ancla-api.db'\")"
+          python -c "import sqlite3; c = sqlite3.connect('ancla-api.db'); c.execute('DROP TABLE IF EXISTS facts'); c.execute('DROP TABLE IF EXISTS quality_issues'); c.commit(); c.execute('VACUUM')"
+          gzip -9 -c ancla-api.db > ancla.db.gz
+          ls -lh ancla-api.db ancla.db.gz
+          gh release view datos > /dev/null 2>&1 || gh release create datos --title "Datos de mercado" --latest=false \
+            --notes "Base de datos de mercado que usa la API publicada. Se reemplaza en cada actualización."
+          gh release upload datos ancla.db.gz --clobber
+
+      - name: App (demo, o conectada a la API si hay API_URL)
         working-directory: apps/movil
         env:
-          EXPO_PUBLIC_ANCLA_DEMO: "1"
+          EXPO_PUBLIC_ANCLA_DEMO: ${{ vars.API_URL == '' && '1' || '' }}
+          EXPO_PUBLIC_ANCLA_API: ${{ vars.API_URL }}
+          EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: ${{ vars.GOOGLE_WEB_CLIENT_ID }}
           EXPO_PUBLIC_BASE: ${{ env.BASE }}
           EXPO_BASE_URL: ${{ env.BASE }}
         run: |

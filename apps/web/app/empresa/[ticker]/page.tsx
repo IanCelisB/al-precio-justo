@@ -15,6 +15,7 @@ import { RegistrarVista } from "@/components/Preferencias";
 import { Tarjeta } from "@/components/Tarjeta";
 import { preferencias } from "@/lib/preferencias";
 import { BotonSeguir } from "@/components/BotonSeguir";
+import { PrecioObjetivo } from "@/components/Avisos";
 import { TIPOS } from "@ancla/valoracion/recomendaciones";
 import { api, type Ficha } from "@/lib/api";
 
@@ -40,7 +41,10 @@ export default async function Empresa({ params }: { params: Promise<{ ticker: st
   } catch {
     notFound();
   }
-  const [yo, cartera, tambien, { pref }] = await Promise.all([api.yo(), api.simulador(), api.tambien(f.ticker), preferencias()]);
+  const [yo, cartera, tambien, { pref }, objetivos] = await Promise.all([
+    api.yo(), api.simulador(), api.tambien(f.ticker), preferencias(), api.objetivos(),
+  ]);
+  const objetivo = objetivos.find((o) => o.ticker === f.ticker) ?? null;
   const posicion = cartera?.posiciones.find((p) => p.ticker === f.ticker) ?? null;
   const nombre = nombreCorto(f.nombre);
   const a = f.analisis;
@@ -81,6 +85,8 @@ export default async function Empresa({ params }: { params: Promise<{ ticker: st
           </div>
           <div className="ficha-acciones">
             <BotonSeguir ticker={f.ticker} seguida={!!yo?.seguidas.includes(f.ticker)} conSesion={!!yo} />
+            <PrecioObjetivo ticker={f.ticker} precioActual={f.precio} conSesion={!!yo}
+              inicial={objetivo ? { precio: objetivo.precio, cumplido: objetivo.cumplido } : null} />
           </div>
         </div>
       </section>

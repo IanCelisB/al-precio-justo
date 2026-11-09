@@ -1,9 +1,9 @@
 /**
- * Usuarios, empresas seguidas y preferencias. Base propia (lectura y escritura),
- * separada de la de datos de mercado, que la API solo lee.
+ * Usuarios, empresas seguidas, preferencias y simulador (Postgres, ver bd.ts).
+ * Separado de los datos de mercado, que la API solo lee.
  */
-import { DatabaseSync } from "node:sqlite";
 import type { Operacion } from "@ancla/valoracion/simulador";
+import type { BD } from "./bd.ts";
 
 export interface Usuario {
   id: string;          // "google:<sub>"
@@ -12,113 +12,86 @@ export interface Usuario {
   foto: string | null;
 }
 
-const ESQUEMA = `
-CREATE TABLE IF NOT EXISTS usuarios (
-  id         TEXT PRIMARY KEY,
-  email      TEXT NOT NULL,
-  nombre     TEXT NOT NULL,
-  foto       TEXT,
-  creado     TEXT NOT NULL,
-  ultimo     TEXT NOT NULL
-);
-CREATE TABLE IF NOT EXISTS seguidas (
-  usuario_id TEXT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
-  ticker     TEXT NOT NULL,
-  creado     TEXT NOT NULL,
-  PRIMARY KEY (usuario_id, ticker)
-);
-CREATE TABLE IF NOT EXISTS operaciones (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  usuario_id TEXT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
-  ticker     TEXT NOT NULL,
-  tipo       TEXT NOT NULL CHECK (tipo IN ('compra', 'venta')),
-  acciones   REAL NOT NULL,
-  precio     REAL NOT NULL,
-  importe    REAL NOT NULL,
-  fecha      TEXT NOT NULL
-);
-CREATE INDEX IF NOT EXISTS ix_operaciones_usuario ON operaciones (usuario_id, fecha);
-CREATE TABLE IF NOT EXISTS preferencias (
-  usuario_id     TEXT PRIMARY KEY REFERENCES usuarios(id) ON DELETE CASCADE,
-  metricas_extra TEXT NOT NULL DEFAULT '[]'
-);
-`;
-
 const ahora = () => new Date().toISOString();
 
 export class Usuarios {
-  private db: DatabaseSync;
-
-  constructor(ruta: string) {
-    this.db = new DatabaseSync(ruta);
-    this.db.exec("PRAGMA foreign_keys = ON;");
-    this.db.exec(ESQUEMA);
-  }
+  private bd: BD;
+  constructor(bd: BD) { this.bd = bd; }
 
   /** Crea el usuario la primera vez y actualiza nombre y foto en cada inicio de sesión. */
-  guardar(u: Usuario): Usuario {
-    this.db.prepare(
-      `INSERT INTO usuarios (id, email, nombre, foto, creado, ultimo) VALUES (?, ?, ?, ?, ?, ?)
-       ON CONFLICT(id) DO UPDATE SET email=excluded.email, nombre=excluded.nombre, foto=excluded.foto, ultimo=excluded.ultimo`,
-    ).run(u.id, u.email, u.nombre, u.foto, ahora(), ahora());
+  async guardar(u: Usuario): Promise<Usuario> {
+    await this.bd.q(
+      `INSERT INTO usuarios (id, email, nombre, foto, creado, ultimo) VALUES ($1, $2, $3, $4, $5, $5)
+       ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email, nombre = EXCLUDED.nombre, foto = EXCLUDED.foto, ultimo = EXCLUDED.ultimo`,
+      [u.id, u.email, u.nombre, u.foto, ahora()],
+    );
     return u;
   }
 
-  obtener(id: string): Usuario | null {
-    return (this.db.prepare("SELECT id, email, nombre, foto FROM usuarios WHERE id = ?").get(id) as any) ?? null;
+  async obtener(id: string): Promise<Usuario | null> {
+    return (await this.bd.q<Usuario>("SELECT id, email, nombre, foto FROM usuarios WHERE id = $1", [id]))[0] ?? null;
   }
 
   /** Cuántos usuarios siguen cada empresa. */
-  seguidores(): Map<string, number> {
-    const filas = this.db.prepare("SELECT ticker, COUNT(*) AS n FROM seguidas GROUP BY ticker").all() as any[];
+  async seguidores(): Promise<Map<string, number>> {
+    const filas = await this.bd.q<{ ticker: string; n: number }>("SELECT ticker, COUNT(*)::int AS n FROM seguidas GROUP BY ticker");
     return new Map(filas.map((f) => [f.ticker, Number(f.n)]));
   }
 
-  seguidas(id: string): string[] {
-    return (this.db.prepare("SELECT ticker FROM seguidas WHERE usuario_id = ? ORDER BY creado").all(id) as any[])
+  async seguidas(id: string): Promise<string[]> {
+    return (await this.bd.q<{ ticker: string }>("SELECT ticker FROM seguidas WHERE usuario_id = $1 ORDER BY creado", [id]))
       .map((r) => r.ticker);
   }
 
-  seguir(id: string, ticker: string) {
-    this.db.prepare("INSERT OR IGNORE INTO seguidas (usuario_id, ticker, creado) VALUES (?, ?, ?)").run(id, ticker, ahora());
+  /** Quiénes siguen cada una de estas empresas (para los avisos). */
+  async seguidoresDe(tickers: string[]): Promise<{ usuario_id: string; ticker: string }[]> {
+    if (!tickers.length) return [];
+    return this.bd.q("SELECT usuario_id, ticker FROM seguidas WHERE ticker = ANY($1::text[])", [tickers]);
   }
 
-  dejarDeSeguir(id: string, ticker: string) {
-    this.db.prepare("DELETE FROM seguidas WHERE usuario_id = ? AND ticker = ?").run(id, ticker);
+  async seguir(id: string, ticker: string) {
+    await this.bd.q("INSERT INTO seguidas (usuario_id, ticker, creado) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING", [id, ticker, ahora()]);
   }
 
-  metricasExtra(id: string): string[] {
-    const r = this.db.prepare("SELECT metricas_extra FROM preferencias WHERE usuario_id = ?").get(id) as any;
+  async dejarDeSeguir(id: string, ticker: string) {
+    await this.bd.q("DELETE FROM seguidas WHERE usuario_id = $1 AND ticker = $2", [id, ticker]);
+  }
+
+  async metricasExtra(id: string): Promise<string[]> {
+    const r = (await this.bd.q<{ metricas_extra: string }>("SELECT metricas_extra FROM preferencias WHERE usuario_id = $1", [id]))[0];
     try { return r ? JSON.parse(r.metricas_extra) : []; } catch { return []; }
   }
 
-  guardarMetricasExtra(id: string, ids: string[]) {
-    this.db.prepare(
-      `INSERT INTO preferencias (usuario_id, metricas_extra) VALUES (?, ?)
-       ON CONFLICT(usuario_id) DO UPDATE SET metricas_extra = excluded.metricas_extra`,
-    ).run(id, JSON.stringify(ids));
+  async guardarMetricasExtra(id: string, ids: string[]) {
+    await this.bd.q(
+      `INSERT INTO preferencias (usuario_id, metricas_extra) VALUES ($1, $2)
+       ON CONFLICT (usuario_id) DO UPDATE SET metricas_extra = EXCLUDED.metricas_extra`,
+      [id, JSON.stringify(ids)],
+    );
   }
 
   // --- simulador ---------------------------------------------------------------
-  operaciones(id: string): Operacion[] {
-    return this.db.prepare(
-      "SELECT ticker, tipo, acciones, precio, importe, fecha FROM operaciones WHERE usuario_id = ? ORDER BY fecha, id",
-    ).all(id) as any;
+  async operaciones(id: string): Promise<Operacion[]> {
+    return this.bd.q<Operacion>(
+      "SELECT ticker, tipo, acciones, precio, importe, fecha FROM operaciones WHERE usuario_id = $1 ORDER BY fecha, id",
+      [id],
+    );
   }
 
-  registrar(id: string, o: Operacion) {
-    this.db.prepare(
-      "INSERT INTO operaciones (usuario_id, ticker, tipo, acciones, precio, importe, fecha) VALUES (?, ?, ?, ?, ?, ?, ?)",
-    ).run(id, o.ticker, o.tipo, o.acciones, o.precio, o.importe, o.fecha);
+  async registrar(id: string, o: Operacion) {
+    await this.bd.q(
+      "INSERT INTO operaciones (usuario_id, ticker, tipo, acciones, precio, importe, fecha) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      [id, o.ticker, o.tipo, o.acciones, o.precio, o.importe, o.fecha],
+    );
   }
 
   /** Vuelve a empezar con el saldo inicial. */
-  reiniciarSimulador(id: string) {
-    this.db.prepare("DELETE FROM operaciones WHERE usuario_id = ?").run(id);
+  async reiniciarSimulador(id: string) {
+    await this.bd.q("DELETE FROM operaciones WHERE usuario_id = $1", [id]);
   }
 
-  /** Borra la cuenta y todo lo asociado. */
-  borrar(id: string) {
-    this.db.prepare("DELETE FROM usuarios WHERE id = ?").run(id);
+  /** Borra la cuenta y todo lo asociado (seguidas, simulador, avisos…). */
+  async borrar(id: string) {
+    await this.bd.q("DELETE FROM usuarios WHERE id = $1", [id]);
   }
 }

@@ -1,0 +1,29 @@
+# API de Al Precio Justo en Render (plan gratis). Se crea desde el panel de Render con
+# "New → Blueprint" y este repositorio. Ver README, sección «Publicar la API».
+#
+# - Usuarios, avisos y analítica: Postgres en Neon (DATABASE_URL, la pegas tú en Render).
+# - Datos de mercado: los arma GitHub Actions cada día hábil y los publica en la versión
+#   "datos" del repositorio; la API los descarga al arrancar y cada 6 horas.
+services:
+  - type: web
+    name: al-precio-justo-api
+    runtime: node
+    plan: free
+    region: virginia            # cerca de Neon us-east-1
+    buildCommand: npm ci
+    startCommand: node apps/api/src/server.ts
+    healthCheckPath: /salud
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "26"
+      - key: NODE_ENV
+        value: production
+      - key: ANCLA_DATOS_URL
+        value: https://github.com/IanCelisB/al-precio-justo/releases/download/datos/ancla.db.gz
+      - key: ANCLA_SECRETO        # firma las sesiones; Render genera un valor al azar
+        generateValue: true
+      - key: DATABASE_URL         # cadena de conexión de Neon (postgresql://…?sslmode=require)
+        sync: false
+      - key: GOOGLE_CLIENT_IDS    # IDs de cliente OAuth de Google, separados por comas
+        sync: false
