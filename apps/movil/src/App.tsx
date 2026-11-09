@@ -122,13 +122,13 @@ function PantallaInicio({ tema, s, abrir, irA }: { tema: Tema; s: Estilos; abrir
         <View>
           {p && p.destacadas.length > 0 && <PortadaCine s={s} tema={tema} destacadas={p.destacadas} abrir={abrir} />}
           <View style={{ position: "absolute", top: -2, left: 0, right: 0, flexDirection: "row", alignItems: "center" }}>
-            <Text style={{ fontFamily: s.hd.fontFamily, fontSize: 22, color: "#FFFFFF", letterSpacing: -0.6 }}>
+            <Text style={{ fontFamily: s.hd.fontFamily, fontSize: 22, color: tema.fg, letterSpacing: -0.6 }}>
               Al Precio <Text style={{ color: tema.mint }}>Justo</Text>
             </Text>
             <Pressable onPress={() => irA("Buscar")} accessibilityRole="button" accessibilityLabel="Buscar una empresa"
               style={{ marginLeft: "auto", width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center",
-                backgroundColor: "rgba(255,255,255,0.1)", borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" }}>
-              <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth={1.9} strokeLinecap="round">
+                backgroundColor: tema.card, borderWidth: 1, borderColor: tema.line }}>
+              <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={tema.fg} strokeWidth={1.9} strokeLinecap="round">
                 <Circle cx="11" cy="11" r="7" /><Path d="m20 20-3.5-3.5" />
               </Svg>
             </Pressable>

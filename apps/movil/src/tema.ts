@@ -1,5 +1,5 @@
 /**
- * Paleta "cine" de Al Precio Justo: oscuro por defecto (fondo casi negro, tarjetas grafito,
+ * Paleta "cine" de Al Precio Justo: claro por defecto; oscuro opcional (fondo casi negro, tarjetas grafito,
  * degradado violeta → turquesa) y un tema claro adaptado. Los mismos valores que
  * packages/valoracion/src/apariencia.ts y apps/web/app/globals.css.
  */

@@ -23,7 +23,7 @@ cambia: el modo demo solo se activa al compilar con `EXPO_PUBLIC_ANCLA_DEMO=1`
 
 ## Diseño «cine»
 
-Web y móvil comparten el mismo lenguaje visual: **oscuro por defecto** (fondo casi negro, tarjetas grafito, degradado violeta → turquesa, tipografías Bricolage Grotesque y Figtree), con tema claro adaptado y cuatro acentos en Configuración (`packages/valoracion/src/apariencia.ts`).
+Web y móvil comparten el mismo lenguaje visual: **claro por defecto** (degradado violeta → turquesa, tipografías Bricolage Grotesque y Figtree), con tema oscuro tipo cine (fondo casi negro, tarjetas grafito) y cuatro acentos en Configuración (`packages/valoracion/src/apariencia.ts`).
 
 - **Portada**: destacadas que rotan cada 7 s sobre una aurora animada (oportunidad del día, idea prudente, la que más sube en el año, refugio defensivo), filtros (Para ti, Popularidad, Por sector, Ciclo económico, Descubrimientos) y filas de carruseles con las ~1.000 empresas: Mi lista, Top 10 (con números grandes; las más vistas de la semana o, sin datos de uso, las más grandes), Oportunidades, Ideas prudentes, En alza, Descubrimientos, Defensivas y Cíclicas. La lógica está en `packages/valoracion/src/portada.ts` y la sirve `GET /portada?filtro=` (la demo la calcula en el navegador).
 - **Pósters**: degradado del color del sector con un matiz propio por empresa, su logo, el cambio del precio en 12 meses y su estado frente al valor.

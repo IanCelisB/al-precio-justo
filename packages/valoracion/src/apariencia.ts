@@ -1,6 +1,6 @@
 /**
- * Apariencia "cine": oscuro por defecto (fondo casi negro, tarjetas grafito, degradado violeta →
- * turquesa) y un tema claro adaptado. Preferencias de Configuración, iguales en web y móvil.
+ * Apariencia "cine": claro por defecto, con un tema oscuro opcional (fondo casi negro, tarjetas
+ * grafito) y degradado violeta → turquesa. Preferencias de Configuración, iguales en web y móvil.
  */
 
 export type ModoTema = "sistema" | "claro" | "oscuro";
@@ -13,11 +13,11 @@ export interface Preferencias {
   analitica: boolean;   // enviar vistas anónimas para tendencias
 }
 
-export const PREFERENCIAS_POR_DEFECTO: Preferencias = { tema: "oscuro", acento: "violeta", divisa: "USD", analitica: true };
+export const PREFERENCIAS_POR_DEFECTO: Preferencias = { tema: "claro", acento: "violeta", divisa: "USD", analitica: true };
 export const CLAVE_PREFERENCIAS = "apj.preferencias";
 
 export const MODOS: { id: ModoTema; nombre: string }[] = [
-  { id: "oscuro", nombre: "Oscuro" }, { id: "claro", nombre: "Claro" }, { id: "sistema", nombre: "Como el sistema" },
+  { id: "claro", nombre: "Claro" }, { id: "oscuro", nombre: "Oscuro" }, { id: "sistema", nombre: "Como el sistema" },
 ];
 
 /** Colores base de cada tema (los mismos valores en globals.css y en tema.ts del móvil). */
