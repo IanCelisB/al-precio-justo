@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { pagasPorCadaDolar } from "@ancla/valoracion";
-import { dinero, fechaCorta, nombreCorto, porcentaje } from "@ancla/valoracion/formato";
+import { diferencia, ETIQUETA, pagasPorCadaDolar } from "@ancla/valoracion";
+import { tono } from "@ancla/valoracion/portada";
+import { Ilustracion } from "@/components/Ilustracion";
+import { dinero, fechaCorta, nombreCorto, porcentaje, porcentajeConSigno } from "@ancla/valoracion/formato";
 import { sectorDe } from "@ancla/valoracion/sectores";
 import { Logo } from "@/components/Logo";
 import { Metricas } from "@/components/Metricas";
@@ -48,29 +50,40 @@ export default async function Empresa({ params }: { params: Promise<{ ticker: st
   const sec = sectorDe(f.sector);
 
   return (
-    <main className="wrap">
-      <div className="fila-top">
-        <Link href="/" className="volver">‹ Inicio</Link>
-        <BotonSeguir ticker={f.ticker} seguida={!!yo?.seguidas.includes(f.ticker)} conSesion={!!yo} />
-      </div>
-      <div className="cabecera">
-        <Logo ticker={f.ticker} sector={f.sector} size={60} grande />
-        <div>
-          <small className="muted mono">{f.ticker} · {sec.nombre}{f.indice ? ` · ${f.indice}` : ""}</small>
-          <h1 className="hd" style={{ fontSize: 34 }}>{nombre}</h1>
+    <main className="wrap ficha">
+      <section className="ficha-top" style={{ "--h": tono(f.ticker, f.sector) } as React.CSSProperties}>
+        <div className="ficha-banda">
+          <span className="ficha-glifo" aria-hidden><Ilustracion formas={sec.icono} size={260} /></span>
+          <Link href="/" className="ficha-cerrar" aria-label="Volver al inicio">
+            <svg viewBox="0 0 24 24" aria-hidden><path d="M15 5l-7 7 7 7" /></svg>
+          </Link>
         </div>
-      </div>
-
-      <div className="duo">
-        <div style={{ background: "var(--c5)" }}>
-          <small>Precio hoy</small>
-          <b>{f.precio ? dinero(f.precio) : "—"}</b>
+        <div className="ficha-cuerpo">
+          <Logo ticker={f.ticker} sector={f.sector} size={60} grande />
+          <h1 className="ficha-nombre">{nombre}</h1>
+          <div className="etiquetas">
+            <span>{sec.nombre}</span>
+            <span className="cy">{TIPOS[a.tipo].nombre}</span>
+            {f.indice && <span>{f.indice}</span>}
+            <span className="mono">{f.ticker}</span>
+            {a.sugerida && <span className="cy">Idea prudente</span>}
+          </div>
+          <div className="ficha-precio">
+            <b className="mono">{f.precio ? dinero(f.precio) : "—"}</b>
+            {typeof f.cambio1a === "number" && (
+              <span className={`mono ${f.cambio1a >= 0 ? "sube" : "baja"}`}>{porcentajeConSigno(f.cambio1a, 0)} en el año</span>
+            )}
+          </div>
+          <div className="ficha-datos">
+            <div><span>Valor estimado</span><b className="mono">{f.valor ? dinero(f.valor) : "—"}</b></div>
+            <div><span>Frente a su valor</span>
+              <b className={`mono ${f.estado ?? ""}`}>{f.precio && f.valor && f.estado ? `${ETIQUETA[f.estado]} ${diferencia(f.precio, f.valor)}` : "—"}</b></div>
+          </div>
+          <div className="ficha-acciones">
+            <BotonSeguir ticker={f.ticker} seguida={!!yo?.seguidas.includes(f.ticker)} conSesion={!!yo} />
+          </div>
         </div>
-        <div style={{ background: "var(--band)" }}>
-          <small>Valor estimado</small>
-          <b>{f.valor ? dinero(f.valor) : "—"}</b>
-        </div>
-      </div>
+      </section>
 
       {f.precio && f.valor && f.estado ? (
         <p className="frase">

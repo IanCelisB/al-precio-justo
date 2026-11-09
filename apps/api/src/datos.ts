@@ -158,4 +158,15 @@ export class Datos {
        ORDER BY d.codigo`,
     ).all() as any;
   }
+
+  /** Cierre de cada empresa hace `dias` días (el último cierre en o antes de esa fecha). */
+  cierreHace(dias: number): Map<string, number> {
+    const fecha = new Date(Date.now() - dias * 86_400_000).toISOString().slice(0, 10);
+    const filas = this.db.prepare(
+      `SELECT p.ticker, p.close FROM prices_daily p
+       JOIN (SELECT ticker, MAX(day) AS d FROM prices_daily WHERE day <= ? AND day >= date(?, '-10 day') GROUP BY ticker) u
+         ON u.ticker = p.ticker AND u.d = p.day`,
+    ).all(fecha, fecha) as any[];
+    return new Map(filas.map((f) => [f.ticker, f.close]));
+  }
 }

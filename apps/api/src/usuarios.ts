@@ -68,6 +68,12 @@ export class Usuarios {
     return (this.db.prepare("SELECT id, email, nombre, foto FROM usuarios WHERE id = ?").get(id) as any) ?? null;
   }
 
+  /** Cuántos usuarios siguen cada empresa. */
+  seguidores(): Map<string, number> {
+    const filas = this.db.prepare("SELECT ticker, COUNT(*) AS n FROM seguidas GROUP BY ticker").all() as any[];
+    return new Map(filas.map((f) => [f.ticker, Number(f.n)]));
+  }
+
   seguidas(id: string): string[] {
     return (this.db.prepare("SELECT ticker FROM seguidas WHERE usuario_id = ? ORDER BY creado").all(id) as any[])
       .map((r) => r.ticker);

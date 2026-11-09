@@ -11,7 +11,7 @@ export function BotonSeguir({ ticker, seguida, conSesion }: { ticker: string; se
   const router = useRouter();
 
   if (!conSesion) {
-    return <Link href="/perfil" className="seguir">♡ Seguir</Link>;
+    return <Link href="/perfil" className="seguir">+ Mi lista</Link>;
   }
   const alternar = async () => {
     setOcupado(true);
@@ -21,7 +21,7 @@ export function BotonSeguir({ ticker, seguida, conSesion }: { ticker: string; se
   };
   return (
     <button className={on ? "seguir on" : "seguir"} onClick={alternar} disabled={ocupado} aria-pressed={on}>
-      {on ? "♥ Siguiendo" : "♡ Seguir"}
+      {on ? "✓ En mi lista" : "+ Mi lista"}
     </button>
   );
 }

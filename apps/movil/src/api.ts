@@ -28,6 +28,9 @@ export interface Resumen {
   nombre: string;
   sector: string | null;
   indice?: string | null;      // S&P 500 | S&P 400 | Popular
+  cambio1a?: number | null;    // cambio del precio en 12 meses
+  capitalizacion?: number | null;
+  seguidores?: number;
   precio: number | null;
   cambioPct: number | null;
   valor: number | null;
@@ -105,6 +108,12 @@ export interface Divisas {
   detalle: { codigo: string; porUsd: number; fecha: string; fuente: string }[];
 }
 
+export interface Portada {
+  filtro: string;
+  destacadas: { etiqueta: string; empresa: Resumen }[];
+  filas: { id: string; titulo: string; sub: string; ranking?: boolean; empresas: Resumen[] }[];
+}
+
 export interface Tendencia { ticker: string; n: number; previo: number; empresa: Resumen }
 export interface Tendencias { dias: number; vistas: Tendencia[]; seguidas: Tendencia[]; compras: Tendencia[] }
 
@@ -165,6 +174,7 @@ export const api = {
       { method: "POST", body: JSON.stringify({ ticker, acciones }) }),
   reiniciar: (token: string) => pedir<Cartera>("/simulador/reiniciar", token, { method: "POST" }),
   divisas: () => pedir<Divisas>("/divisas"),
+  portada: (filtro: string, token?: string | null) => pedir<Portada>(`/portada?filtro=${encodeURIComponent(filtro)}`, token),
   evento: (tipo: "vista", ticker: string, sesion: string) =>
     pedir<unknown>("/eventos", null, { method: "POST", body: JSON.stringify({ tipo, ticker, sesion }) }),
   tendencias: (dias = 7) => pedir<Tendencias>(`/tendencias?dias=${dias}`),

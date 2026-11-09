@@ -1,65 +1,45 @@
 import Link from "next/link";
-import { pagasPorCadaDolar } from "@ancla/valoracion";
-import { fechaLarga, nombreCorto, saludo } from "@ancla/valoracion/formato";
-import { Tarjeta } from "@/components/Tarjeta";
-import { Logo } from "@/components/Logo";
-import { sectorDe } from "@ancla/valoracion/sectores";
+import { FILTROS, type FiltroPortada } from "@ancla/valoracion/portada";
+import { Carril, Portada } from "@/components/Portada";
+import { Poster } from "@/components/Poster";
 import { api } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
-export default async function Inicio() {
-  const [inicio, tendencias] = await Promise.all([api.inicio(), api.tendencias(7)]);
-  const vistas = tendencias.vistas.slice(0, 4).map((v) => v.empresa);
-  const op = inicio.oportunidad;
-  const baratas = inicio.baratas;
-  // Las fechas se muestran en hora de Nueva York (la de la bolsa).
-  const ahora = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+/** Portada "cine": destacadas que rotan y filas de carruseles con las ~1.000 empresas. */
+export default async function Inicio({ searchParams }: { searchParams: Promise<{ filtro?: string }> }) {
+  const { filtro: f } = await searchParams;
+  const filtro = (FILTROS.some((x) => x.id === f) ? f : "todo") as FiltroPortada;
+  const p = await api.portada(filtro);
 
   return (
-    <main className="wrap">
-      <div className="hola">
-        <small className="muted">{fechaLarga(ahora)}</small>
-        <h1 className="hd">{saludo(ahora)}</h1>
-      </div>
+    <main className="cine">
+      <Portada destacadas={p.destacadas} />
 
-      {op && op.precio && op.valor && (
-        <Link href={`/empresa/${op.ticker}`} className="hero">
-          <small>Oportunidad del día · {sectorDe(op.sector).nombre}</small>
-          <div className="hero-nombre">
-            <Logo ticker={op.ticker} sector={op.sector} size={44} />
-            <h2 className="hd">{nombreCorto(op.nombre)}</h2>
-          </div>
-          <div className="fila">
-            <div>
-              <div className="pct">−{Math.round((1 - op.precio / op.valor) * 100)}%</div>
-              <small>bajo su valor estimado</small>
-            </div>
-            <span className="cta">Ver por qué</span>
-          </div>
-          <p>Hoy pagas ${pagasPorCadaDolar(op.precio, op.valor)} por cada $1 de valor que muestran sus resultados.</p>
-        </Link>
+      <nav className="filtros-cine" aria-label="Filtros de la portada">
+        {FILTROS.map((x) => (
+          <Link key={x.id} href={x.id === "todo" ? "/" : `/?filtro=${x.id}`} scroll={false}
+            className="chip-cine" aria-current={x.id === filtro ? "page" : undefined}>{x.nombre}</Link>
+        ))}
+      </nav>
+
+      {filtro === "ciclo" && (
+        <div className="explica-ciclo">
+          <div><b>Cíclicas</b><span>Les va mejor cuando la economía crece: energía, materiales, viajes.</span></div>
+          <div><b>Defensivas</b><span>Aguantan en épocas malas: comida, salud, servicios básicos.</span></div>
+          <div><b>Estables</b><span>Negocios sin grandes vaivenes en sus ventas.</span></div>
+        </div>
       )}
 
-      <div className="sec">{inicio.seguidasPropias ? "Tus empresas" : "Populares"} <Link href="/seguidas">{inicio.seguidasPropias ? "Ver todas" : "Sigue las tuyas"}</Link></div>
-      <div className="tarjetas">
-        {inicio.seguidas.map((e) => <Tarjeta key={e.ticker} e={e} />)}
-      </div>
+      {p.filas.map((fila) => (
+        <Carril key={fila.id} titulo={fila.titulo} sub={fila.sub}>
+          {fila.empresas.map((e, k) => <Poster key={e.ticker} e={e} puesto={fila.ranking ? k + 1 : undefined} />)}
+        </Carril>
+      ))}
 
-      {vistas.length >= 2 && (
-        <>
-          <div className="sec">Lo más visto esta semana <span>tendencia</span></div>
-          <div className="tarjetas">{vistas.map((e) => <Tarjeta key={e.ticker} e={e} />)}</div>
-        </>
-      )}
-      <div className="sec">Más baratas hoy <span>respecto a su valor</span></div>
-      <div className="tarjetas">
-        {baratas.map((e) => <Tarjeta key={e.ticker} e={e} />)}
-      </div>
-
-      <p className="nota">
-        Valor estimado con flujo de caja libre descontado a 5 años, a partir de los reportes 10-Q y 10-K
-        presentados a la SEC. No es una recomendación de inversión. {inicio.precioFuente}.
+      <p className="nota pie-cine">
+        Valor estimado con flujo de caja libre descontado a 5 años, a partir de los reportes 10-Q y 10-K presentados a la
+        SEC. El porcentaje de cada póster es el cambio del precio en 12 meses. No es una recomendación de inversión.
       </p>
     </main>
   );

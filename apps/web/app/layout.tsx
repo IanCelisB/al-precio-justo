@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, DM_Mono, DM_Sans } from "next/font/google";
+import { Bricolage_Grotesque, DM_Mono, Figtree } from "next/font/google";
 import "./globals.css";
 import { Navegacion } from "@/components/Navegacion";
 import { DivisaCliente } from "@/components/Preferencias";
 import { preferencias } from "@/lib/preferencias";
 import { ACENTOS } from "@ancla/valoracion/apariencia";
 
-const head = Bricolage_Grotesque({ subsets: ["latin"], weight: ["600", "800"], variable: "--f-head" });
-const ui = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--f-ui" });
+const head = Bricolage_Grotesque({ subsets: ["latin"], weight: ["500", "700", "800"], variable: "--f-head" });
+const ui = Figtree({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--f-ui" });
 const mono = DM_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--f-mono" });
 
 export const metadata: Metadata = {
@@ -17,11 +17,10 @@ export const metadata: Metadata = {
 
 /** Variables del color de acento elegido (claro, oscuro del sistema y oscuro forzado). */
 function cssAcento(id: keyof typeof ACENTOS): string {
-  if (id === "menta") return "";
+  if (id === "violeta") return ""; // el acento por defecto ya está en globals.css
   const a = ACENTOS[id];
-  const claro = `--mint:${a.claro.mint};--on-mint:${a.claro.onMint};--band:${a.claro.band};`;
-  const oscuro = `--mint:${a.oscuro.mint};--on-mint:${a.oscuro.onMint};--band:${a.oscuro.band};--link:${a.oscuro.link};`;
-  return `:root{${claro}}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){${oscuro}}}:root[data-theme="dark"]{${oscuro}}`;
+  const v = (c: typeof a.claro) => `--accent:${c.accent};--mint:${c.mint};--on-mint:${c.onMint};--band:${c.band};--link:${c.link};`;
+  return `:root{${v(a.claro)}}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){${v(a.oscuro)}}}:root[data-theme="dark"]{${v(a.oscuro)}}`;
 }
 
 export default async function Layout({ children }: { children: React.ReactNode }) {

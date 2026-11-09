@@ -23,6 +23,9 @@ export interface Resumen {
   nombre: string;
   sector: string | null;
   indice?: string | null;      // S&P 500 | S&P 400 | Popular
+  cambio1a?: number | null;    // cambio del precio en 12 meses
+  capitalizacion?: number | null;
+  seguidores?: number;
   precio: number | null;
   cambioPct: number | null;
   precioFecha: string | null;
@@ -114,6 +117,12 @@ export const api = {
     ? get<Resumen[]>(`/empresas?tickers=${tickers.map(encodeURIComponent).join(",")}`)
     : Promise.resolve([] as Resumen[]),
   ficha: (ticker: string) => get<Ficha>(`/empresas/${encodeURIComponent(ticker)}`),
+  /** Portada: destacadas y filas. Con sesión incluye "Mi lista". */
+  portada: async (filtro: string) => get<{
+    filtro: string;
+    destacadas: { etiqueta: string; empresa: Resumen }[];
+    filas: { id: string; titulo: string; sub: string; ranking?: boolean; empresas: Resumen[] }[];
+  }>(`/portada?filtro=${encodeURIComponent(filtro)}`, !!(await sesion())),
   tendencias: (dias = 7) => get<{ dias: number; vistas: { ticker: string; n: number; empresa: Resumen }[] }>(`/tendencias?dias=${dias}`)
     .catch(() => ({ dias, vistas: [] })),
   tambien: (ticker: string) => get<{ ticker: string; n: number; empresa: Resumen }[]>(`/empresas/${encodeURIComponent(ticker)}/tambien`)

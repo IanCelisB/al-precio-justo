@@ -21,6 +21,14 @@ cambia: el modo demo solo se activa al compilar con `EXPO_PUBLIC_ANCLA_DEMO=1`
 | `apps/web/` | Web | Next.js |
 | `apps/movil/` | App de iOS y Android | React Native + Expo |
 
+## Diseño «cine»
+
+Web y móvil comparten el mismo lenguaje visual: **oscuro por defecto** (fondo casi negro, tarjetas grafito, degradado violeta → turquesa, tipografías Bricolage Grotesque y Figtree), con tema claro adaptado y cuatro acentos en Configuración (`packages/valoracion/src/apariencia.ts`).
+
+- **Portada**: destacadas que rotan cada 7 s sobre una aurora animada (oportunidad del día, idea prudente, la que más sube en el año, refugio defensivo), filtros (Para ti, Popularidad, Por sector, Ciclo económico, Descubrimientos) y filas de carruseles con las ~1.000 empresas: Mi lista, Top 10 (con números grandes; las más vistas de la semana o, sin datos de uso, las más grandes), Oportunidades, Ideas prudentes, En alza, Descubrimientos, Defensivas y Cíclicas. La lógica está en `packages/valoracion/src/portada.ts` y la sirve `GET /portada?filtro=` (la demo la calcula en el navegador).
+- **Pósters**: degradado del color del sector con un matiz propio por empresa, su logo, el cambio del precio en 12 meses y su estado frente al valor.
+- **Ficha**: cabecera tipo panel con el degradado de la empresa, etiquetas (sector, tipo, índice, idea prudente), precio, cambio en el año, valor estimado y «+ Mi lista». Debajo, todo lo de antes: gráfico de valor, Tu modelo, análisis, sobre la empresa, simulador, máquina del tiempo y métricas.
+
 ## Universo (prototipo: ~1.000 empresas)
 
 `ingesta/universo.py` arma la lista y la guarda en `ingesta/universo.json`: **S&P 500 + S&P 400 + ~70 populares** entre inversores minoristas (MercadoLibre, Snowflake, Roblox, SoFi…), 971 en total. Solo empresas que presentan 10‑Q/10‑K; las extranjeras (20‑F) y las chilenas (CMF) quedan para cuando escalemos. Para cambiar las populares, edita `POPULARES` y vuelve a armar la lista con `universo.lista(client, refrescar=True)`.

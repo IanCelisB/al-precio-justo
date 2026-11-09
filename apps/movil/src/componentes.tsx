@@ -1,6 +1,7 @@
 /** Piezas compartidas por las pantallas del móvil: logo, tarjetas, secciones. */
 import { useState } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, View, useWindowDimensions } from "react-native";
+import { Poster } from "./Portada";
 import { diferencia, ETIQUETA } from "@ancla/valoracion";
 import { dinero, nombreCorto } from "@ancla/valoracion/formato";
 import { TIPOS } from "@ancla/valoracion/recomendaciones";
@@ -59,7 +60,13 @@ export function Tarjeta({ s, tema, e, abrir }: { s: Estilos; tema: Tema; e: Resu
 }
 
 export function Rejilla({ s, tema, empresas, abrir }: { s: Estilos; tema: Tema; empresas: Resumen[]; abrir: Abrir }) {
-  return <View style={s.rejilla}>{empresas.map((e) => <Tarjeta key={e.ticker} s={s} tema={tema} e={e} abrir={abrir} />)}</View>;
+  const { width } = useWindowDimensions();
+  const ancho = Math.min(320, (Math.min(width, 720) - 16 * 2 - 12) / 2);
+  return (
+    <View style={[s.rejilla, { gap: 12 }]}>
+      {empresas.map((e) => <Poster key={e.ticker} s={s} tema={tema} e={e} abrir={abrir} ancho={ancho} />)}
+    </View>
+  );
 }
 
 /** Empresa con su análisis prudente: tipo, calidad, precio de compra y razones. */

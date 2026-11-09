@@ -13,6 +13,8 @@ import {
   curva, maquinaDelTiempo, prepararCompra, prepararVenta, REFERENCIA, resumen, type Cierre, type Operacion,
 } from "@ancla/valoracion/simulador";
 import { MONTO_MAXIMO } from "@ancla/valoracion/formato";
+import { destacadas, filas, FILTROS, type FiltroPortada } from "@ancla/valoracion/portada";
+import { sectorDe } from "@ancla/valoracion/sectores";
 
 export const DEMO = process.env.EXPO_PUBLIC_ANCLA_DEMO === "1";
 /** Ruta base del sitio (p. ej. "/ancla" en GitHub Pages). */
@@ -115,6 +117,18 @@ export async function responder(ruta: string, init: RequestInit = {}): Promise<u
   }
   if (p.startsWith("/empresas/") && !p.endsWith("/tambien")) return ficha(decodeURIComponent(p.slice(10)).toUpperCase());
   if (p === "/recomendaciones") return archivo("recomendaciones.json");
+  if (p === "/portada") {
+    const todas = await resumenes();
+    const vistas: Record<string, number> = (() => { try { return JSON.parse(globalThis.localStorage?.getItem("apj.demo.vistas") ?? "{}"); } catch { return {}; } })();
+    const f = (FILTROS.some((x) => x.id === q.get("filtro")) ? q.get("filtro") : "todo") as FiltroPortada;
+    const ctx = {
+      vistas: Object.entries(vistas).sort((a, b) => b[1] - a[1]).map(([t]) => t),
+      compras: [...new Set(e.operaciones.filter((o) => o.tipo === "compra").map((o) => o.ticker))],
+      mias: e.sesion ? e.seguidas : [],
+      nombreSector: (x: string | null) => sectorDe(x).nombre,
+    };
+    return { filtro: f, destacadas: destacadas(todas, ctx), filas: filas(f, todas, ctx) };
+  }
   if (p === "/divisas") return archivo("divisas.json");
   // Uso: en la demo no hay servidor; se cuenta solo en este navegador.
   if (p === "/eventos") {

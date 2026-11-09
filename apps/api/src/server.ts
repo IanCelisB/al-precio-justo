@@ -8,6 +8,7 @@
  *   GET /recomendaciones                sugeridas y para vigilar, con sus razones
  *   GET /logos/:ticker                  logo de la empresa (PNG)
  *   GET /novedades?limite=20            últimos reportes publicados
+ *   GET /portada?filtro=todo            destacadas y filas de carruseles (Para ti, Popularidad, Por sector…)
  *   GET /divisas                        tipos de cambio del día (unidades por 1 USD)
  *   POST /eventos {tipo, ticker, sesion}  registro de uso anónimo (vistas)
  *   GET /tendencias?dias=7              las más vistas, seguidas y compradas
@@ -33,6 +34,8 @@ import { estado, valorar, type Estado, type Trimestre, type Valoracion } from "@
 import { analizar, type Analisis, type Tipo } from "@ancla/valoracion/recomendaciones";
 import { porId } from "@ancla/valoracion/metricas";
 import { datosClave } from "@ancla/valoracion/perfil";
+import { destacadas, filas, FILTROS, type FiltroPortada } from "@ancla/valoracion/portada";
+import { sectorDe } from "@ancla/valoracion/sectores";
 import { MONTO_MAXIMO } from "@ancla/valoracion/formato";
 import { curva, maquinaDelTiempo, prepararCompra, prepararVenta, REFERENCIA, resumen } from "@ancla/valoracion/simulador";
 import { Datos, type Cotizacion, type Empresa } from "./datos.ts";
@@ -71,6 +74,9 @@ export interface Resumen extends Empresa {
   sinModelo: string | null;
   ultimoTrimestre: string | null;
   analisis: AnalisisCorto;
+  cambio1a: number | null;          // variación del precio en 12 meses
+  capitalizacion: number | null;
+  seguidores: number;
 }
 
 interface Cache {
@@ -105,6 +111,8 @@ function calcular(previo: Cache | null): Cache {
     trimestres = datos.trimestres();
   }
   const cotiz = datos.cotizaciones();
+  const haceUnAnio = datos.cierreHace(365);
+  const seguidores = usuarios.seguidores();
   const resumenes = new Map<string, Resumen>();
   const valoraciones = new Map<string, Valoracion>();
   const analisis = new Map<string, Analisis>();
@@ -126,6 +134,9 @@ function calcular(previo: Cache | null): Cache {
       estado: v.ok && q ? estado(q.precio, v.valor) : null,
       sinModelo: v.ok ? null : v.motivo,
       ultimoTrimestre: t.at(-1)?.periodo ?? null,
+      cambio1a: q?.precio && haceUnAnio.get(e.ticker) ? q.precio / haceUnAnio.get(e.ticker)! - 1 : null,
+      capitalizacion: q?.precio && accionesDe(t) ? q.precio * accionesDe(t)! : null,
+      seguidores: seguidores.get(e.ticker) ?? 0,
       analisis: {
         tipo: a.tipo, calidad: a.calidad.puntos, precioCompra: a.precioCompra, buenPrecio: a.buenPrecio,
         sugerida: a.sugerida, vigilar: a.vigilar, motivo: a.motivo, orden: a.orden,
@@ -162,6 +173,12 @@ function oportunidad(resumenes: Resumen[], hoy = new Date()): Resumen | null {
   if (!candidatas.length) return null;
   const dia = Math.floor(hoy.getTime() / 86_400_000);
   return candidatas[dia % candidatas.length];
+}
+
+/** Acciones más recientes informadas (últimos 4 trimestres). */
+function accionesDe(t: Trimestre[]): number | null {
+  for (let i = t.length - 1; i >= Math.max(0, t.length - 4); i--) if (t[i].acciones) return t[i].acciones!;
+  return null;
 }
 
 /** Las más baratas frente a su valor (sin las de menos del 40 %, que suelen ser datos raros). */
@@ -214,6 +231,19 @@ app.get<{ Querystring: { limite?: string } }>("/novedades", async (req) => {
     const r = c.resumenes.get(n.ticker);
     return { ...n, nombre: r?.nombre ?? n.ticker, sector: r?.sector ?? null, estado: r?.estado ?? null };
   });
+});
+
+app.get<{ Querystring: { filtro?: string } }>("/portada", async (req) => {
+  const c = actual();
+  const filtro = (FILTROS.some((f) => f.id === req.query.filtro) ? req.query.filtro : "todo") as FiltroPortada;
+  const todas = [...c.resumenes.values()];
+  const ctx = {
+    vistas: analitica.ranking("vista", 7, 20).map((x) => x.ticker),
+    compras: analitica.ranking("compra", 30, 20).map((x) => x.ticker),
+    mias: req.usuarioId ? usuarios.seguidas(req.usuarioId) : [],
+    nombreSector: (s: string | null) => sectorDe(s).nombre,
+  };
+  return { filtro, filtros: FILTROS, destacadas: destacadas(todas, ctx), filas: filas(filtro, todas, ctx) };
 });
 
 app.get("/divisas", async () => {

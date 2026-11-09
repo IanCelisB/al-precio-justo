@@ -3,7 +3,11 @@ import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from "rea
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Svg, { Line, Path } from "react-native-svg";
-import { pagasPorCadaDolar } from "@ancla/valoracion";
+import { diferencia, ETIQUETA, pagasPorCadaDolar } from "@ancla/valoracion";
+import { tono } from "@ancla/valoracion/portada";
+import { FondoTono } from "./Portada";
+import { Ilustracion } from "./Ilustracion";
+import { fuentes } from "./tema";
 import { dinero, fechaCorta, nombreCorto, porcentaje, porcentajeConSigno } from "@ancla/valoracion/formato";
 import {
   ADICIONALES, CLAVE_GUARDADO, CLAVE_PERIODO, EXTRA_POR_DEFECTO, PERIODO_POR_DEFECTO, PERIODOS_METRICAS, PRINCIPALES,
@@ -82,40 +86,72 @@ export function Detalle({ ticker, s, tema, volver, abrir }: {
   return (
     <SafeAreaView style={s.pantalla} edges={["top"]}>
       <ScrollView contentContainerStyle={s.contenido}>
-        <View style={[s.fila, { alignItems: "center" }]}>
-          <Pressable onPress={volver} style={s.volver} accessibilityRole="button" accessibilityLabel="Volver">
-            <Text style={[s.uiB, { color: tema.link, fontSize: 15 }]}>‹ Volver</Text>
-          </Pressable>
-          {sesion.yo && (
-            <Pressable onPress={() => sesion.seguir(ticker, !seguida).catch(() => {})} accessibilityRole="button"
-              accessibilityState={{ selected: seguida }}
-              style={[s.chip, { borderColor: seguida ? tema.down : tema.line }]}>
-              <Text style={[s.uiB, { fontSize: 14, color: seguida ? tema.down : tema.fg }]}>{seguida ? "♥ Siguiendo" : "♡ Seguir"}</Text>
-            </Pressable>
-          )}
-        </View>
-
-        {error && <Text style={[s.ui, { color: tema.down }]}>{error}</Text>}
+        {error && (
+          <>
+            <Pressable onPress={volver} accessibilityRole="button"><Text style={[s.uiB, s.enlace, { fontSize: 15 }]}>‹ Volver</Text></Pressable>
+            <Text style={[s.ui, { color: tema.down }]}>{error}</Text>
+          </>
+        )}
         {!f && !error && <ActivityIndicator color={tema.link} style={{ marginTop: 40 }} />}
 
         {f && ctx && (
           <>
-            <View style={{ flexDirection: "row", gap: 14, alignItems: "center" }}>
-              <Logo ticker={f.ticker} sector={f.sector} size={58} s={s} />
-              <View style={{ flex: 1 }}>
-                <Text style={[s.mono, s.muted, { fontSize: 12 }]}>{f.ticker} · {sec.nombre}{f.indice ? ` · ${f.indice}` : ""}</Text>
-                <Text style={[s.hd, { fontSize: 30 }]} numberOfLines={2}>{nombreCorto(f.nombre)}</Text>
+            {/* Cabecera tipo panel: degradado del tono de la empresa, logo, etiquetas y precio */}
+            <View style={{ marginHorizontal: -16, marginTop: -16, backgroundColor: tema.bg2, borderBottomLeftRadius: 28,
+              borderBottomRightRadius: 28, borderWidth: 1, borderTopWidth: 0, borderColor: tema.line, overflow: "hidden" }}>
+              <View style={{ height: 180, overflow: "hidden" }}>
+                <FondoTono h={tono(f.ticker, f.sector)} id="ficha" fundido={tema.bg2} />
+                <View style={{ position: "absolute", right: -30, bottom: -70, opacity: 0.3 }}>
+                  <Ilustracion formas={sec.icono} size={240} color="#FFFFFF" />
+                </View>
+                <Pressable onPress={volver} accessibilityRole="button" accessibilityLabel="Volver"
+                  style={{ position: "absolute", left: 12, top: 12, width: 40, height: 40, borderRadius: 20,
+                    backgroundColor: "rgba(7,8,12,0.5)", alignItems: "center", justifyContent: "center" }}>
+                  <Text style={{ color: "#FFFFFF", fontSize: 22, lineHeight: 24, marginTop: -2 }}>‹</Text>
+                </Pressable>
               </View>
-            </View>
-
-            <View style={s.duo}>
-              <View style={[s.duoCaja, { backgroundColor: tema.pastel[4] }]}>
-                <Text style={[s.ui, s.cFg, { fontSize: 12, opacity: 0.75 }]}>Precio hoy</Text>
-                <Text style={[s.hd, s.cFg, { fontSize: tamano(f.precio) }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>{f.precio ? dinero(f.precio) : "—"}</Text>
-              </View>
-              <View style={[s.duoCaja, { backgroundColor: tema.band }]}>
-                <Text style={[s.ui, s.cFg, { fontSize: 12, opacity: 0.75 }]}>Valor estimado</Text>
-                <Text style={[s.hd, s.cFg, { fontSize: tamano(f.valor) }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>{f.valor ? dinero(f.valor) : "—"}</Text>
+              <View style={{ paddingHorizontal: 20, paddingBottom: 20, marginTop: -56, gap: 4 }}>
+                <Logo ticker={f.ticker} sector={f.sector} size={60} s={s} />
+                <Text style={{ fontFamily: fuentes.head, fontSize: 36, color: tema.fg, letterSpacing: -1.2, marginTop: 12 }} numberOfLines={2}>
+                  {nombreCorto(f.nombre)}
+                </Text>
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+                  {[[sec.nombre, false], [TIPOS[f.analisis.tipo].nombre, true], ...(f.indice ? [[f.indice, false]] : []), [f.ticker, false],
+                    ...(f.analisis.sugerida ? [["Idea prudente", true]] : [])].map(([t, cy]) => (
+                    <View key={t as string} style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, borderWidth: 1,
+                      borderColor: cy ? tema.mint : tema.line, backgroundColor: tema.card }}>
+                      <Text style={[s.ui, { fontSize: 12.5, color: cy ? tema.mint : tema.muted }]}>{t as string}</Text>
+                    </View>
+                  ))}
+                </View>
+                <View style={{ flexDirection: "row", alignItems: "baseline", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
+                  <Text style={{ fontFamily: fuentes.headMedio, fontSize: tamano(f.precio) + 16, color: tema.fg, letterSpacing: -1 }}>
+                    {f.precio ? dinero(f.precio) : "—"}
+                  </Text>
+                  {typeof f.cambio1a === "number" && (
+                    <Text style={[s.uiB, { fontSize: 15, color: f.cambio1a >= 0 ? tema.good : tema.down }]}>
+                      {porcentajeConSigno(f.cambio1a, 0)} en el año
+                    </Text>
+                  )}
+                </View>
+                <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
+                  {[["Valor estimado", f.valor ? dinero(f.valor) : "—", tema.fg],
+                    ["Frente a su valor", f.precio && f.valor && f.estado ? `${ETIQUETA[f.estado]} ${diferencia(f.precio, f.valor)}` : "—",
+                      f.estado === "barata" ? tema.good : f.estado === "cara" ? tema.down : tema.fg]].map(([k, v, col]) => (
+                    <View key={k} style={{ flex: 1, borderRadius: 16, padding: 12, backgroundColor: tema.card, borderWidth: 1, borderColor: tema.line }}>
+                      <Text style={[s.ui, s.muted, { fontSize: 12 }]}>{k}</Text>
+                      <Text style={{ fontFamily: fuentes.headMedio, fontSize: 19, color: col }} numberOfLines={1} adjustsFontSizeToFit>{v}</Text>
+                    </View>
+                  ))}
+                </View>
+                {sesion.yo && (
+                  <Pressable onPress={() => sesion.seguir(ticker, !seguida).catch(() => {})} accessibilityRole="button"
+                    accessibilityState={{ selected: seguida }}
+                    style={({ pressed }) => [{ marginTop: 16, height: 48, borderRadius: 999, alignItems: "center", justifyContent: "center",
+                      backgroundColor: seguida ? tema.good : tema.acc }, pressed && { transform: [{ scale: 0.97 }] }]}>
+                    <Text style={[s.uiB, { fontSize: 15, color: seguida ? "#04221A" : tema.onAcc }]}>{seguida ? "✓ En mi lista" : "+ Mi lista"}</Text>
+                  </Pressable>
+                )}
               </View>
             </View>
 

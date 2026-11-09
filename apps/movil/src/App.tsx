@@ -5,14 +5,17 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
-import { BricolageGrotesque_800ExtraBold } from "@expo-google-fonts/bricolage-grotesque";
-import { DMSans_400Regular, DMSans_700Bold } from "@expo-google-fonts/dm-sans";
+import { BricolageGrotesque_700Bold, BricolageGrotesque_800ExtraBold } from "@expo-google-fonts/bricolage-grotesque";
+import { Figtree_400Regular, Figtree_600SemiBold } from "@expo-google-fonts/figtree";
+import { FILTROS, type FiltroPortada } from "@ancla/valoracion/portada";
+import { PALETA } from "@ancla/valoracion/apariencia";
+import { Carril, Portada as PortadaCine, Poster } from "./Portada";
 import { DMMono_400Regular } from "@expo-google-fonts/dm-mono";
 import Svg, { Circle, Path } from "react-native-svg";
 import { pagasPorCadaDolar } from "@ancla/valoracion";
 import { fechaLarga, nombreCorto, saludo } from "@ancla/valoracion/formato";
 import { sectorDe } from "@ancla/valoracion/sectores";
-import { api, API, type Inicio, type Resumen } from "./api";
+import { api, API, type Portada } from "./api";
 import { Logo, Rejilla, Seccion, type Abrir } from "./componentes";
 import { Buscar } from "./Buscar";
 import { Detalle } from "./Detalle";
@@ -27,7 +30,7 @@ import { Configuracion } from "./Configuracion";
 type Pestana = "Inicio" | "Buscar" | "Simulador" | "Seguidas" | "Perfil";
 
 export default function App() {
-  const [cargadas] = useFonts({ BricolageGrotesque_800ExtraBold, DMSans_400Regular, DMSans_700Bold, DMMono_400Regular });
+  const [cargadas] = useFonts({ BricolageGrotesque_700Bold, BricolageGrotesque_800ExtraBold, Figtree_400Regular, Figtree_600SemiBold, DMMono_400Regular });
   return (
     <SafeAreaProvider>
       <ProveedorConfig>
@@ -52,7 +55,7 @@ function Raiz({ cargadas }: { cargadas: boolean }) {
   const [empresa, setEmpresa] = useState<string | null>(null);
   const [config, setConfig] = useState(false);
   const nav: EstadoNav = { pestana, setPestana, empresa, setEmpresa, config, setConfig };
-  const oscuroActivo = tema.bg !== "#F8F9FB";
+  const oscuroActivo = tema.bg === PALETA.oscuro.bg;
   return (
     <>
       <StatusBar style={oscuroActivo ? "light" : "dark"} />
@@ -91,85 +94,92 @@ function Navegacion({ tema, nav }: { tema: Tema; nav: EstadoNav }) {
 
 function PantallaInicio({ tema, s, abrir, irA }: { tema: Tema; s: Estilos; abrir: Abrir; irA: (p: Pestana) => void }) {
   const { token, yo } = useSesion();
-  const [inicio, setInicio] = useState<Inicio | null>(null);
-  const [baratas, setBaratas] = useState<Resumen[]>([]);
-  const [vistas, setVistas] = useState<Resumen[]>([]);
+  const [filtro, setFiltro] = useState<FiltroPortada>("todo");
+  const [p, setP] = useState<Portada | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [recargando, setRecargando] = useState(false);
   const seguidasClave = yo?.seguidas.join(",") ?? "";
 
   const cargar = useCallback(async () => {
     try {
-      const i = await api.inicio(token);
-      setInicio(i);
-      setBaratas(i.baratas.slice(0, 6));
-      api.tendencias(7).then((t) => setVistas(t.vistas.slice(0, 4).map((x) => x.empresa))).catch(() => {});
+      setP(await api.portada(filtro, token));
       setError(null);
     } catch {
       setError(`No pudimos conectar con ${API}. ¿Está la API encendida?`);
     }
-  }, [token, seguidasClave]);
+  }, [token, seguidasClave, filtro]);
 
   useEffect(() => { cargar(); }, [cargar]);
-
-  const op = inicio?.oportunidad;
-  const ahora = new Date();
 
   return (
     <SafeAreaView style={s.pantalla} edges={["top"]}>
       <ScrollView
-        contentContainerStyle={s.contenido}
+        contentContainerStyle={[s.contenido, { gap: 10 }]}
+        stickyHeaderIndices={[1]}
         refreshControl={<RefreshControl refreshing={recargando} tintColor={tema.link}
           onRefresh={async () => { setRecargando(true); await cargar(); setRecargando(false); }} />}
       >
         <View>
-          <Text style={[s.ui, s.muted, { fontSize: 13 }]}>{fechaLarga(ahora)}</Text>
-          <Text style={[s.hd, { fontSize: 30 }]}>{yo ? `${saludo(ahora)}, ${yo.usuario.nombre.split(" ")[0]}` : saludo(ahora)}</Text>
+          {p && p.destacadas.length > 0 && <PortadaCine s={s} tema={tema} destacadas={p.destacadas} abrir={abrir} />}
+          <View style={{ position: "absolute", top: -2, left: 0, right: 0, flexDirection: "row", alignItems: "center" }}>
+            <Text style={{ fontFamily: s.hd.fontFamily, fontSize: 22, color: "#FFFFFF", letterSpacing: -0.6 }}>
+              Al Precio <Text style={{ color: tema.mint }}>Justo</Text>
+            </Text>
+            <Pressable onPress={() => irA("Buscar")} accessibilityRole="button" accessibilityLabel="Buscar una empresa"
+              style={{ marginLeft: "auto", width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center",
+                backgroundColor: "rgba(255,255,255,0.1)", borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" }}>
+              <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth={1.9} strokeLinecap="round">
+                <Circle cx="11" cy="11" r="7" /><Path d="m20 20-3.5-3.5" />
+              </Svg>
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={{ backgroundColor: tema.bg, marginHorizontal: -16 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 8, paddingHorizontal: 16, paddingVertical: 10 }}>
+            {FILTROS.map((f) => {
+              const on = f.id === filtro;
+              return (
+                <Pressable key={f.id} onPress={() => setFiltro(f.id)} accessibilityRole="button" accessibilityState={{ selected: on }}
+                  style={{ height: 36, paddingHorizontal: 15, borderRadius: 999, justifyContent: "center", borderWidth: 1,
+                    borderColor: on ? "transparent" : tema.line, backgroundColor: on ? tema.mint : tema.card }}>
+                  <Text style={[s.uiB, { fontSize: 14, color: on ? tema.onMint : tema.muted }]}>{f.nombre}</Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
         </View>
 
         {error && <Text style={[s.ui, { color: tema.down }]}>{error}</Text>}
-        {!inicio && !error && <ActivityIndicator color={tema.link} style={{ marginTop: 40 }} />}
+        {!p && !error && <ActivityIndicator color={tema.link} style={{ marginTop: 40 }} />}
 
-        {op && op.precio && op.valor && (
-          <Pressable style={({ pressed }) => [s.hero, pressed && { opacity: 0.9 }]} accessibilityRole="button"
-            onPress={() => abrir(op.ticker)}>
-            <Text style={[s.ui, s.enAcc, { opacity: 0.85, fontSize: 12 }]}>Oportunidad del día · {sectorDe(op.sector).nombre}</Text>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-              <Logo ticker={op.ticker} sector={op.sector} size={44} s={s} />
-              <Text style={[s.hd, s.enAcc, { fontSize: 26, flex: 1 }]} numberOfLines={1}>{nombreCorto(op.nombre)}</Text>
-            </View>
-            <View style={s.fila}>
-              <View>
-                <Text style={[s.hd, { fontSize: 44, color: tema.mint }]}>−{Math.round((1 - op.precio / op.valor) * 100)}%</Text>
-                <Text style={[s.ui, s.enAcc, { opacity: 0.85, fontSize: 12 }]}>bajo su valor estimado</Text>
+        {filtro === "ciclo" && (
+          <View style={{ gap: 8 }}>
+            {[["Cíclicas", "Les va mejor cuando la economía crece: energía, materiales, viajes."],
+              ["Defensivas", "Aguantan en épocas malas: comida, salud, servicios básicos."],
+              ["Estables", "Negocios sin grandes vaivenes en sus ventas."]].map(([t, d]) => (
+              <View key={t} style={{ borderRadius: 16, padding: 14, backgroundColor: tema.bg2, borderWidth: 1, borderColor: tema.line }}>
+                <Text style={[s.hd, { fontSize: 17 }]}>{t}</Text>
+                <Text style={[s.ui, s.muted, { fontSize: 13.5 }]}>{d}</Text>
               </View>
-              <View style={s.cta}><Text style={[s.uiB, { color: tema.onMint, fontSize: 13 }]}>Ver por qué</Text></View>
-            </View>
-            <Text style={[s.ui, s.enAcc, { opacity: 0.9, fontSize: 13, marginTop: 4 }]}>
-              Hoy pagas ${pagasPorCadaDolar(op.precio, op.valor)} por cada $1 de valor que muestran sus resultados.
-            </Text>
-          </Pressable>
+            ))}
+          </View>
         )}
 
-        {inicio && (
-          <>
-            <Seccion s={s} titulo={inicio.seguidasPropias ? "Tus empresas" : "Populares"}
-              extra={inicio.seguidasPropias ? "Ver todas" : "Sigue las tuyas"}
-              onExtra={() => irA(inicio.seguidasPropias ? "Seguidas" : "Perfil")} />
-            <Rejilla s={s} tema={tema} empresas={inicio.seguidas} abrir={abrir} />
-            {vistas.length >= 2 && (
-              <>
-                <Seccion s={s} titulo="Lo más visto esta semana" extra="tendencia" />
-                <Rejilla s={s} tema={tema} empresas={vistas} abrir={abrir} />
-              </>
-            )}
-            <Seccion s={s} titulo="Más baratas hoy" extra="Ideas prudentes" onExtra={() => irA("Buscar")} />
-            <Rejilla s={s} tema={tema} empresas={baratas} abrir={abrir} />
-            <Text style={[s.ui, s.muted, { fontSize: 11 }]}>
-              Valor estimado con flujo de caja libre descontado a 5 años, según los reportes presentados a la SEC.
-              No es una recomendación de inversión. {inicio.precioFuente}.
-            </Text>
-          </>
+        {p?.filas.map((fila) => (
+          <Carril key={fila.id} s={s} titulo={fila.titulo} sub={fila.sub}>
+            {fila.empresas.map((e, k) => (
+              <Poster key={e.ticker} s={s} tema={tema} e={e} abrir={abrir} puesto={fila.ranking ? k + 1 : undefined} />
+            ))}
+          </Carril>
+        ))}
+
+        {p && (
+          <Text style={[s.ui, s.muted, { fontSize: 11, marginTop: 12 }]}>
+            Valor estimado con flujo de caja libre descontado a 5 años, según los reportes presentados a la SEC. El porcentaje de cada
+            póster es el cambio del precio en 12 meses. No es una recomendación de inversión.
+          </Text>
         )}
       </ScrollView>
     </SafeAreaView>
