@@ -123,7 +123,7 @@ function PantallaInicio({ tema, s, abrir, irA }: { tema: Tema; s: Estilos; abrir
           {p && p.destacadas.length > 0 && <PortadaCine s={s} tema={tema} destacadas={p.destacadas} abrir={abrir} />}
           <View style={{ position: "absolute", top: -2, left: 0, right: 0, flexDirection: "row", alignItems: "center" }}>
             <Text style={{ fontFamily: s.hd.fontFamily, fontSize: 22, color: tema.fg, letterSpacing: -0.6 }}>
-              Al Precio <Text style={{ color: tema.mint }}>Justo</Text>
+              Al Precio <Text style={{ color: tema.bg === PALETA.oscuro.bg ? tema.mint : tema.accent }}>Justo</Text>
             </Text>
             <Pressable onPress={() => irA("Buscar")} accessibilityRole="button" accessibilityLabel="Buscar una empresa"
               style={{ marginLeft: "auto", width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center",

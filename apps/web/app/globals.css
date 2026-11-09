@@ -1,5 +1,5 @@
-/* Paleta "cine" de Al Precio Justo: claro por defecto; oscuro opcional (fondo casi negro, tarjetas grafito,
-   degradado violeta → turquesa) y un tema claro adaptado. Mismos valores que
+/* Paleta "cine" de Al Precio Justo: claro por defecto y un tema oscuro opcional (fondo casi negro,
+   tarjetas grafito), con degradado violeta → turquesa. Mismos valores que
    packages/valoracion/src/apariencia.ts. Pares texto/fondo con contraste WCAG AA. */
 :root {
   --bg: #F5F6FA; --bg-2: #ECEEF5; --card: #FFFFFF; --fg: #0B0D14; --muted: #586078; --line: #E2E5EE;
@@ -7,12 +7,14 @@
   --band: #D7F6EF; --good: #0B8A5A; --down: #D2402F;
   --c1: #E9EEFB; --c2: #E1F6EE; --c3: #F0ECFB; --c4: #F7F1E7; --c5: #EDF1F5; --c-fg: #0B0D14;
   --grad: linear-gradient(90deg, var(--accent), var(--mint));
+  --grad-logo: linear-gradient(90deg, var(--accent), #0B9C82);
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #07080C; --bg-2: #0E1018; --card: #151824; --fg: #F4F5FA; --muted: #9BA1B5; --line: #262A3A;
     --acc: #F4F5FA; --on-acc: #0B0B12; --accent: #8C7DFF; --mint: #3EE6C4; --on-mint: #06221B; --link: #3EE6C4;
+    --grad-logo: var(--grad);
     --band: #143A37; --good: #46D99A; --down: #FF6E6E;
     --c1: #171D33; --c2: #10261F; --c3: #1E1B33; --c4: #2A2318; --c5: #181C28; --c-fg: #F4F5FA;
     color-scheme: dark;
@@ -21,6 +23,7 @@
 :root[data-theme="dark"] {
   --bg: #07080C; --bg-2: #0E1018; --card: #151824; --fg: #F4F5FA; --muted: #9BA1B5; --line: #262A3A;
   --acc: #F4F5FA; --on-acc: #0B0B12; --accent: #8C7DFF; --mint: #3EE6C4; --on-mint: #06221B; --link: #3EE6C4;
+  --grad-logo: var(--grad);
   --band: #143A37; --good: #46D99A; --down: #FF6E6E;
   --c1: #171D33; --c2: #10261F; --c3: #1E1B33; --c4: #2A2318; --c5: #181C28; --c-fg: #F4F5FA;
   color-scheme: dark;
@@ -42,7 +45,7 @@ a { color: inherit; text-decoration: none; }
 .wrap { max-width: 1040px; margin: 0 auto; padding: 20px 16px 96px; display: flex; flex-direction: column; gap: 18px; }
 .top { display: flex; justify-content: space-between; align-items: center; }
 .logo { font-family: var(--f-head); font-weight: 800; font-size: 20px; display: flex; gap: 8px; align-items: center; }
-.logo i { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.logo i { font-style: normal; background: var(--grad-logo); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 .hola small { font-size: 14px; }
 .hola h1 { font-size: 32px; }
