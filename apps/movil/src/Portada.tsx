@@ -6,6 +6,7 @@ import { diferencia, ETIQUETA } from "@ancla/valoracion";
 import { dinero, nombreCorto, porcentajeConSigno } from "@ancla/valoracion/formato";
 import { tono } from "@ancla/valoracion/portada";
 import { sectorDe } from "@ancla/valoracion/sectores";
+import { TIPOS } from "@ancla/valoracion/recomendaciones";
 import type { Resumen } from "./api";
 import { Logo, type Abrir } from "./componentes";
 import type { Estilos } from "./estilos";
@@ -130,11 +131,25 @@ export function Poster({ s, tema, e, abrir, puesto, ancho }: {
   const h = tono(e.ticker, e.sector);
   const c = e.cambio1a;
   const w = ancho ?? (puesto ? 150 : 250);
+  // Con ratón: la tarjeta crece un poco y muestra lo básico de la empresa.
+  const encima = useRef(new Animated.Value(0)).current;
+  const [hover, setHover] = useState(false);
+  const animar = (v: number) => {
+    setHover(v === 1);
+    Animated.timing(encima, { toValue: v, duration: 180, easing: Easing.out(Easing.cubic), useNativeDriver: Platform.OS !== "web" }).start();
+  };
+  const a = e.analisis;
   const tarjeta = (
-    <Pressable onPress={() => abrir(e.ticker)} accessibilityRole="button"
+    <Pressable onPress={() => abrir(e.ticker)} accessibilityRole="button" onHoverIn={() => animar(1)} onHoverOut={() => animar(0)}
       accessibilityLabel={`${nombreCorto(e.nombre)}, ${sector.nombre}${e.estado ? `, ${ETIQUETA[e.estado]}` : ""}`}
-      style={({ pressed }) => [{ width: w }, pressed && { transform: [{ scale: 0.97 }] }]}>
-      <View style={{ width: w, aspectRatio: puesto ? 3 / 4 : 16 / 10, borderRadius: 18, overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" }}>
+      style={({ pressed }) => [{ width: w, zIndex: hover ? 2 : 0 }, pressed && { transform: [{ scale: 0.97 }] }]}>
+      <Animated.View style={{
+        width: w, aspectRatio: puesto ? 3 / 4 : 16 / 10, borderRadius: 18, overflow: "hidden", borderWidth: 1,
+        borderColor: hover ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.08)",
+        transform: [{ scale: encima.interpolate({ inputRange: [0, 1], outputRange: [1, 1.04] }) },
+          { translateY: encima.interpolate({ inputRange: [0, 1], outputRange: [0, -4] }) }],
+        ...(Platform.OS === "web" ? { boxShadow: hover ? "0 14px 30px rgba(0,0,0,0.35)" : "none", transitionProperty: "box-shadow", transitionDuration: "180ms" } as any : {}),
+      }}>
         <FondoTono h={h} id={`p${e.ticker}${puesto ?? ""}`} />
         <View style={{ position: "absolute", right: -w * 0.14, bottom: -w * 0.16, opacity: 0.22 }}>
           <Ilustracion formas={sector.icono} size={w * (puesto ? 1.05 : 0.72)} color="#FFFFFF" />
@@ -151,7 +166,30 @@ export function Poster({ s, tema, e, abrir, puesto, ancho }: {
           </Text>
           <Text style={[s.ui, { fontSize: 12, color: "rgba(255,255,255,0.78)" }]} numberOfLines={1}>{sector.nombre}</Text>
         </View>
-      </View>
+        {/* Información básica al pasar el ratón */}
+        <Animated.View pointerEvents="none" style={{
+          position: "absolute", left: 0, right: 0, top: 0, bottom: 0, backgroundColor: "rgba(7,8,12,0.84)",
+          paddingHorizontal: 14, paddingVertical: 12, justifyContent: "flex-end", gap: 3, opacity: encima,
+        }}>
+          <Text style={{ fontFamily: fuentes.headMedio, fontSize: puesto ? 15 : 17, color: "#FFFFFF", letterSpacing: -0.3 }} numberOfLines={1}>
+            {nombreCorto(e.nombre)} <Text style={[s.mono, { fontSize: 11, color: "rgba(255,255,255,0.6)" }]}>{e.ticker}</Text>
+          </Text>
+          {[
+            ["Valor estimado", e.valor ? dinero(e.valor) : "—"],
+            ...(puesto ? [] : [["Precio de compra", a.precioCompra ? dinero(a.precioCompra) : "—"]]),
+            ["Calidad", `${a.calidad}/100 · ${TIPOS[a.tipo].nombre}`],
+          ].map(([k, v]) => (
+            <View key={k} style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}>
+              <Text style={[s.ui, { fontSize: 11.5, color: "rgba(255,255,255,0.65)" }]}>{k}</Text>
+              <Text style={[s.uiB, { fontSize: 11.5, color: "#FFFFFF" }]} numberOfLines={1}>{v}</Text>
+            </View>
+          ))}
+          {!puesto && !!a.motivo && (
+            <Text style={[s.ui, { fontSize: 11.5, color: "rgba(255,255,255,0.8)", marginTop: 2 }]} numberOfLines={2}>{a.motivo}</Text>
+          )}
+          <Text style={[s.uiB, { fontSize: 12, color: tema.mint, marginTop: 3 }]}>Ver ficha →</Text>
+        </Animated.View>
+      </Animated.View>
       <View style={{ flexDirection: puesto ? "column" : "row", justifyContent: "space-between", paddingTop: 7, paddingHorizontal: 3 }}>
         <Text style={[s.mono, { fontSize: 12.5 }]}>{e.precio ? dinero(e.precio) : "—"}</Text>
         <Text style={[s.uiB, { fontSize: 12.5, color: e.estado === "barata" ? tema.good : e.estado === "cara" ? tema.down : tema.muted }]} numberOfLines={1}>
@@ -170,6 +208,19 @@ export function Poster({ s, tema, e, abrir, puesto, ancho }: {
   );
 }
 
+/** Web: barra de desplazamiento fina y discreta para los carriles (una sola vez). */
+function estiloBarra() {
+  if (typeof document === "undefined" || document.getElementById("estilo-carril")) return;
+  const st = document.createElement("style");
+  st.id = "estilo-carril";
+  st.textContent = `[data-carril]{scrollbar-width:thin;scrollbar-color:rgba(128,128,140,.45) transparent;cursor:grab}
+[data-carril]::-webkit-scrollbar{height:8px}
+[data-carril]::-webkit-scrollbar-thumb{background:rgba(128,128,140,.45);border-radius:8px}
+[data-carril]::-webkit-scrollbar-thumb:hover{background:rgba(128,128,140,.7)}
+[data-carril]::-webkit-scrollbar-track{background:transparent}`;
+  document.head.appendChild(st);
+}
+
 /** Fila de carrusel deslizable. */
 export function Carril({ s, titulo, sub, children }: { s: Estilos; titulo: string; sub: string; children: React.ReactNode }) {
   const carril = useRef<React.ComponentRef<typeof ScrollView>>(null);
@@ -180,6 +231,46 @@ export function Carril({ s, titulo, sub, children }: { s: Estilos; titulo: strin
   // Con ratón (web) no hay cómo deslizar: flechas para avanzar casi una pantalla. En el teléfono se desliza con el dedo.
   const flechas = Platform.OS === "web" && max > 4;
   const mover = (dir: number) => carril.current?.scrollTo({ x: Math.min(max, Math.max(0, x + dir * visible * 0.85)), animated: true });
+
+  // Web: arrastrar con el ratón (sin abrir la ficha al soltar después de arrastrar).
+  useEffect(() => {
+    if (Platform.OS !== "web") return;
+    estiloBarra();
+    const nodo: HTMLElement | null = (carril.current as any)?.getScrollableNode?.() ?? null;
+    if (!nodo) return;
+    let inicio: { x: number; scroll: number } | null = null;
+    let arrastro = false;
+    const bajar = (ev: PointerEvent) => {
+      if (ev.pointerType !== "mouse" || ev.button !== 0) return;
+      inicio = { x: ev.clientX, scroll: nodo.scrollLeft }; arrastro = false;
+    };
+    const mover = (ev: PointerEvent) => {
+      if (!inicio) return;
+      const dx = ev.clientX - inicio.x;
+      if (!arrastro && Math.abs(dx) > 6) { arrastro = true; nodo.style.cursor = "grabbing"; nodo.style.scrollSnapType = "none"; }
+      if (arrastro) { nodo.scrollLeft = inicio.scroll - dx; ev.preventDefault(); }
+    };
+    const soltar = () => {
+      if (!inicio) return;
+      inicio = null; nodo.style.cursor = "";
+      if (arrastro) {
+        const evitar = (c: Event) => { c.stopPropagation(); c.preventDefault(); };
+        nodo.addEventListener("click", evitar, { capture: true, once: true });
+        setTimeout(() => nodo.removeEventListener("click", evitar, { capture: true }), 50);
+      }
+    };
+    const sinArrastreNativo = (ev: Event) => ev.preventDefault();   // imágenes y enlaces no se "arrastran" solos
+    nodo.addEventListener("pointerdown", bajar);
+    window.addEventListener("pointermove", mover);
+    window.addEventListener("pointerup", soltar);
+    nodo.addEventListener("dragstart", sinArrastreNativo);
+    return () => {
+      nodo.removeEventListener("pointerdown", bajar);
+      window.removeEventListener("pointermove", mover);
+      window.removeEventListener("pointerup", soltar);
+      nodo.removeEventListener("dragstart", sinArrastreNativo);
+    };
+  }, []);
   const flecha = (dir: number, activa: boolean) => (
     <Pressable onPress={() => mover(dir)} disabled={!activa} accessibilityRole="button"
       accessibilityLabel={dir < 0 ? `Anteriores de ${titulo}` : `Siguientes de ${titulo}`}
@@ -197,7 +288,8 @@ export function Carril({ s, titulo, sub, children }: { s: Estilos; titulo: strin
         <Text style={[s.ui, s.muted, { fontSize: 12.5, flex: 1 }]} numberOfLines={1}>{sub}</Text>
         {flechas && <View style={{ flexDirection: "row", gap: 6 }}>{flecha(-1, x > 4)}{flecha(1, x < max - 4)}</View>}
       </View>
-      <ScrollView ref={carril} horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16 }}
+      <ScrollView ref={carril} horizontal showsHorizontalScrollIndicator={Platform.OS === "web"} style={{ marginHorizontal: -16 }}
+        {...({ dataSet: { carril: "1" } } as any)}
         scrollEventThrottle={32} onScroll={(e) => setX(e.nativeEvent.contentOffset.x)}
         onLayout={(e) => setVisible(e.nativeEvent.layout.width)} onContentSizeChange={(w) => setTotal(w)}
         contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8, gap: 12, alignItems: "flex-end" }}>
