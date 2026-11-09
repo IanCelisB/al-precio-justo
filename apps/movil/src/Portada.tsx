@@ -1,7 +1,7 @@
 /** Portada "cine" del móvil: destacadas que rotan, filas de carruseles y pósters de empresa. */
 import { useEffect, useRef, useState } from "react";
-import { Animated, Easing, Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
-import Svg, { Defs, LinearGradient, RadialGradient, Rect, Stop } from "react-native-svg";
+import { Animated, Easing, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
+import Svg, { Defs, LinearGradient, Path, RadialGradient, Rect, Stop } from "react-native-svg";
 import { diferencia, ETIQUETA } from "@ancla/valoracion";
 import { dinero, nombreCorto, porcentajeConSigno } from "@ancla/valoracion/formato";
 import { tono } from "@ancla/valoracion/portada";
@@ -172,13 +172,34 @@ export function Poster({ s, tema, e, abrir, puesto, ancho }: {
 
 /** Fila de carrusel deslizable. */
 export function Carril({ s, titulo, sub, children }: { s: Estilos; titulo: string; sub: string; children: React.ReactNode }) {
+  const carril = useRef<React.ComponentRef<typeof ScrollView>>(null);
+  const [x, setX] = useState(0);
+  const [visible, setVisible] = useState(0);
+  const [total, setTotal] = useState(0);
+  const max = Math.max(0, total - visible);
+  // Con ratón (web) no hay cómo deslizar: flechas para avanzar casi una pantalla. En el teléfono se desliza con el dedo.
+  const flechas = Platform.OS === "web" && max > 4;
+  const mover = (dir: number) => carril.current?.scrollTo({ x: Math.min(max, Math.max(0, x + dir * visible * 0.85)), animated: true });
+  const flecha = (dir: number, activa: boolean) => (
+    <Pressable onPress={() => mover(dir)} disabled={!activa} accessibilityRole="button"
+      accessibilityLabel={dir < 0 ? `Anteriores de ${titulo}` : `Siguientes de ${titulo}`}
+      style={({ pressed, hovered }: any) => [s.chip, { width: 36, height: 36, paddingVertical: 0, paddingHorizontal: 0, alignItems: "center",
+        justifyContent: "center", opacity: activa ? 1 : 0.35 }, hovered && activa && { borderColor: s.enlace.color }, pressed && { transform: [{ scale: 0.94 }] }]}>
+      <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={s.ui.color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <Path d={dir < 0 ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"} />
+      </Svg>
+    </Pressable>
+  );
   return (
     <View style={{ marginTop: 6 }}>
-      <View style={{ flexDirection: "row", alignItems: "baseline", gap: 8 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
         <Text style={{ fontFamily: fuentes.headMedio, fontSize: 20, color: s.ui.color, letterSpacing: -0.4 }}>{titulo}</Text>
         <Text style={[s.ui, s.muted, { fontSize: 12.5, flex: 1 }]} numberOfLines={1}>{sub}</Text>
+        {flechas && <View style={{ flexDirection: "row", gap: 6 }}>{flecha(-1, x > 4)}{flecha(1, x < max - 4)}</View>}
       </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16 }}
+      <ScrollView ref={carril} horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -16 }}
+        scrollEventThrottle={32} onScroll={(e) => setX(e.nativeEvent.contentOffset.x)}
+        onLayout={(e) => setVisible(e.nativeEvent.layout.width)} onContentSizeChange={(w) => setTotal(w)}
         contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8, gap: 12, alignItems: "flex-end" }}>
         {children}
       </ScrollView>
