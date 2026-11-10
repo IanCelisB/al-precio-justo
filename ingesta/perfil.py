@@ -1,9 +1,7 @@
 """Perfil de cada empresa: a qué se dedica y de dónde vienen sus ingresos.
 
 Fuentes (todas públicas y gratuitas):
-- Wikidata (por el CIK de la SEC): fundación, sede, CEO, empleados, web y el artículo
-  de Wikipedia. Wikipedia en español (o en inglés si no hay): la descripción.
-  Licencia CC BY-SA: la app muestra la fuente y el enlace.
+- Wikidata (por el CIK de la SEC, licencia CC0): fundación, sede, CEO, empleados y web.
 - SEC (lista de presentaciones): industria, bolsa, estado de constitución y cierre fiscal.
 - El último 10-K, leído por `lector.read_inline_segments`: ventas por segmento,
   producto y región, con los nombres que usa la propia empresa.
@@ -66,7 +64,7 @@ PAISES = {
 }
 
 
-# --- red (Wikimedia) --------------------------------------------------------------------------
+# --- red (Wikidata) ----------------------------------------------------------------------------
 def _get(url: str, data: bytes | None = None, headers: dict | None = None) -> bytes:
     for intento in range(4):
         req = urllib.request.Request(url, data=data, headers={"User-Agent": UA, **(headers or {})})
@@ -94,11 +92,9 @@ def wikidata(ciks: list[int]) -> dict[int, dict]:
     for i in range(0, len(ciks), 150):
         valores = " ".join(f'"{c:010d}"' for c in ciks[i:i + 150])
         q = f"""
-        SELECT ?cik ?es ?en ?inicio ?empleados ?web ?ceoLabel ?sedeLabel WHERE {{
+        SELECT ?cik ?inicio ?empleados ?web ?ceoLabel ?sedeLabel WHERE {{
           VALUES ?cik {{ {valores} }}
           ?item wdt:P5531 ?cik .
-          OPTIONAL {{ ?es schema:about ?item; schema:isPartOf <https://es.wikipedia.org/> . }}
-          OPTIONAL {{ ?en schema:about ?item; schema:isPartOf <https://en.wikipedia.org/> . }}
           OPTIONAL {{ ?item wdt:P571 ?inicio }}
           OPTIONAL {{ ?item wdt:P1128 ?empleados }}
           OPTIONAL {{ ?item wdt:P856 ?web }}
@@ -112,7 +108,7 @@ def wikidata(ciks: list[int]) -> dict[int, dict]:
         for b in res["results"]["bindings"]:
             v = {k: x["value"] for k, x in b.items()}
             d = out.setdefault(int(v["cik"]), {})
-            for k in ("es", "en", "ceoLabel", "sedeLabel"):
+            for k in ("ceoLabel", "sedeLabel"):
                 if k in v and k not in d and not re.fullmatch(r"Q\d+", v[k]):  # Q123: sin nombre en Wikidata
                     d[k] = v[k]
             if "web" in v and ("web" not in d or len(v["web"]) < len(d["web"])):  # la más corta: la principal
@@ -129,21 +125,6 @@ def wikidata(ciks: list[int]) -> dict[int, dict]:
         time.sleep(1)
     return out
 
-
-def resumen_wikipedia(url_articulo: str) -> dict | None:
-    """Resumen del artículo (primer párrafo) y su enlace."""
-    m = re.match(r"https://(\w+)\.wikipedia\.org/wiki/(.+)", url_articulo)
-    if not m:
-        return None
-    idioma, titulo = m.groups()
-    try:
-        d = json.loads(_get(f"https://{idioma}.wikipedia.org/api/rest_v1/page/summary/{titulo}"))
-    except Exception:
-        return None
-    texto = (d.get("extract") or "").strip()
-    if len(texto) < 40:
-        return None
-    return {"texto": texto, "idioma": idioma, "fuente": url_articulo}
 
 
 # --- SEC: industria y último 10-K --------------------------------------------------------------
@@ -263,7 +244,7 @@ def _ventas_anuales(html: str) -> float | None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description="Perfil de cada empresa (descripción, datos y desglose de ventas)")
+    ap = argparse.ArgumentParser(description="Perfil de cada empresa (datos y desglose de ventas)")
     src = ap.add_mutually_exclusive_group(required=True)
     src.add_argument("--tickers")
     src.add_argument("--todas", action="store_true")
@@ -285,10 +266,6 @@ def main(argv: list[str] | None = None) -> int:
             "fundacion": d.get("fundacion"), "empleados": d.get("empleados"), "ceo": d.get("ceoLabel"),
             "sede": d.get("sedeLabel"), "web": d.get("web"),
         }
-        desc = resumen_wikipedia(d["es"]) if "es" in d else None
-        if not desc and "en" in d:
-            desc = resumen_wikipedia(d["en"])
-        perfil["descripcion"] = desc
         try:
             perfil.update(perfil_sec(client, e))
         except (SecError, ValueError, ET.ParseError) as err:

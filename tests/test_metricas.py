@@ -2,7 +2,6 @@ import unittest
 from datetime import date
 
 from ingesta.metricas import build_quarters, calendar_quarter, merge_company_facts, quarterize, validate
-from ingesta.universo import parse_sp500
 
 
 def fact(start, end, val, filed="2025-01-01", form="10-Q"):
@@ -194,22 +193,6 @@ class BuildQuartersTest(unittest.TestCase):
         self.assertTrue(any("Beneficios" in i for i in issues))
         self.assertTrue(any("sin inversión" in i for i in issues))
 
-
-class Sp500ParserTest(unittest.TestCase):
-    def test_parses_constituents_table(self):
-        html = """<table class="wikitable" id="constituents"><tbody>
-        <tr><th>Symbol</th><th>Security</th><th>GICS Sector</th><th>GICS Sub-Industry</th>
-            <th>Headquarters Location</th><th>Date added</th><th>CIK</th><th>Founded</th></tr>
-        <tr><td><a href="#">AAPL</a></td><td><a>Apple Inc.</a></td><td>Information Technology</td>
-            <td>Tech Hardware</td><td>Cupertino</td><td>1982-11-30</td><td>0000320193</td><td>1977</td></tr>
-        <tr><td>BRK.B</td><td>Berkshire Hathaway</td><td>Financials</td><td>x</td><td>y</td>
-            <td>2010-02-16</td><td>0001067983</td><td>1839</td></tr>
-        </tbody></table><table id="changes"><tr><td>ignorar</td></tr></table>"""
-        rows = parse_sp500(html)
-        self.assertEqual(rows[0], {"ticker": "AAPL", "name": "Apple Inc.",
-                                   "sector": "Information Technology", "cik": 320193})
-        self.assertEqual(rows[1]["ticker"], "BRK.B")
-        self.assertEqual(len(rows), 2)
 
 
 class EscalaAccionesTest(unittest.TestCase):

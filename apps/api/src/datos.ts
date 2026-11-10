@@ -150,7 +150,9 @@ export class Datos {
   perfil(ticker: string): unknown {
     if (!this.hay("perfiles")) return null;
     const r = this.db.prepare("SELECT datos FROM perfiles WHERE ticker = ?").get(ticker) as any;
-    return r ? JSON.parse(r.datos) : null;
+    if (!r) return null;
+    const { descripcion: _, ...perfil } = JSON.parse(r.datos);  // bases antiguas: ya no se muestra
+    return perfil;
   }
 
   /** Última tasa de cada divisa (unidades por 1 USD), con su fecha y fuente. */

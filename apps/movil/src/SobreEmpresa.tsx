@@ -39,18 +39,6 @@ export function SobreEmpresa({ s, tema, nombre, perfil, clave }: {
   return (
     <View style={[s.metrica, { gap: 10 }]}>
       <Text style={[s.hd, { fontSize: 18 }]}>Sobre la empresa</Text>
-      {p.descripcion ? (
-        <Text style={[s.ui, { fontSize: 15, lineHeight: 22 }]}>
-          {p.descripcion.texto}{" "}
-          <Text style={[s.ui, s.muted, { fontSize: 12.5, textDecorationLine: "underline" }]}
-            onPress={() => Linking.openURL(p.descripcion!.fuente)}>
-            Wikipedia{p.descripcion.idioma !== "es" ? " (en inglés)" : ""}
-          </Text>
-        </Text>
-      ) : (
-        <Text style={[s.ui, s.muted, { fontSize: 13 }]}>Todavía no tenemos una descripción de esta empresa.</Text>
-      )}
-
       <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
         {ficha.filter(([, v]) => v).map(([k, v]) => celda(k, v!))}
         {p.web ? celda("Web", (

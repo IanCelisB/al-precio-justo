@@ -31,17 +31,6 @@ export function SobreEmpresa({ nombre, perfil, clave }: { nombre: string; perfil
     <section className="sobre" aria-label={`Sobre ${nombre}`}>
       <b className="sobre-titulo">Sobre la empresa</b>
 
-      {p.descripcion ? (
-        <p className="sobre-desc">
-          {p.descripcion.texto}{" "}
-          <a href={p.descripcion.fuente} target="_blank" rel="noreferrer" className="muted">
-            Wikipedia{p.descripcion.idioma !== "es" ? " (en inglés)" : ""}
-          </a>
-        </p>
-      ) : (
-        <p className="nota">Todavía no tenemos una descripción de esta empresa.</p>
-      )}
-
       <dl className="sobre-ficha">
         {ficha.filter(([, v]) => v).map(([k, v]) => (
           <div key={k}><dt>{k}</dt><dd>{v}</dd></div>

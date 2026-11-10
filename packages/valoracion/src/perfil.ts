@@ -15,9 +15,8 @@ export interface DatosClave {
   acciones: number | null;
 }
 
-/** Perfil descriptivo (Wikipedia, Wikidata y SEC), tal como lo guarda `ingesta.perfil`. */
+/** Perfil descriptivo (Wikidata y SEC), tal como lo guarda `ingesta.perfil`. */
 export interface Perfil {
-  descripcion?: { texto: string; idioma: string; fuente: string } | null;
   fundacion?: string | null;
   empleados?: number | null;
   ceo?: string | null;

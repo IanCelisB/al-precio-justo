@@ -70,7 +70,7 @@ jobs:
       - name: Tipos de cambio (BCE y Banco Central de Chile)
         run: python -m ingesta.divisas || true
 
-      - name: Perfiles (Wikipedia, Wikidata y desglose de ventas del último 10-K)
+      - name: Perfiles (Wikidata y desglose de ventas del último 10-K)
         run: python -m ingesta.perfil --todas | tail -5 || true
 
       - name: API y foto de los datos

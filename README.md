@@ -31,7 +31,7 @@ Web y móvil comparten el mismo lenguaje visual: **claro por defecto** (degradad
 
 ## Universo (prototipo: ~1.000 empresas)
 
-`ingesta/universo.py` arma la lista y la guarda en `ingesta/universo.json`: **S&P 500 + S&P 400 + ~70 populares** entre inversores minoristas (MercadoLibre, Snowflake, Roblox, SoFi…), 971 en total. Solo empresas que presentan 10‑Q/10‑K; las extranjeras (20‑F) y las chilenas (CMF) quedan para cuando escalemos. Para cambiar las populares, edita `POPULARES` y vuelve a armar la lista con `universo.lista(client, refrescar=True)`.
+La lista está en `ingesta/universo.json` (la lee `ingesta/universo.py`): **S&P 500 + S&P 400 + ~70 populares** entre inversores minoristas (MercadoLibre, Snowflake, Roblox, SoFi…), 971 en total. Solo empresas que presentan 10‑Q/10‑K; las extranjeras (20‑F) y las chilenas (CMF) quedan para cuando escalemos. Para agregar o quitar empresas, edita ese archivo (ticker, nombre, sector, CIK de la SEC e índice).
 
 **Espacio**: de cada documento solo se guardan las ~40 etiquetas que usan las métricas (un 8 % de sus cifras, con resultados idénticos) y el documento se borra tras leerlo. Con `ANCLA_GUARDAR_DOCUMENTOS=1` se conservan los documentos y todas sus cifras.
 
@@ -92,8 +92,7 @@ valor se recalculan al instante en el dispositivo y se guardan en él.
 
 `ingesta/perfil.py` arma el perfil de cada empresa con fuentes públicas:
 
-- **Descripción**: el resumen de su artículo en Wikipedia en español (en inglés si no hay), encontrado por su número de la SEC (CIK) en Wikidata. Se muestra con el enlace a la fuente (licencia CC BY-SA).
-- **Ficha**: fundación, sede, CEO, empleados y web (Wikidata); industria, bolsa y cierre del año fiscal (SEC).
+- **Ficha**: fundación, sede, CEO, empleados y web (Wikidata, encontrada por su número de la SEC, CIK); industria, bolsa y cierre del año fiscal (SEC).
 - **¿De dónde vienen sus ingresos?**: ventas por negocio, producto y región del último 10-K, leídas por el propio lector de documentos (`lector.read_inline_segments`) con los nombres que usa la empresa.
 - **Datos clave** (`packages/valoracion/src/perfil.ts`): capitalización, PER, rentabilidad por dividendo, rango de 52 semanas y beta frente al S&P 500 (2 años, semanal).
 
@@ -351,4 +350,4 @@ El proceso de reportes necesita esta variable.
 
 - Bancos y aseguradoras no tienen inversión en activos comparable: su flujo de caja libre es solo la caja operativa, y la deuda neta no tiene sentido. La app debe usar otro modelo para ellos.
 - Unas 80 empresas no tienen deuda reconocible con las etiquetas estándar (p. ej. Berkshire usa etiquetas propias).
-- Las listas del S&P 500 y S&P 400 salen de Wikipedia. En producción deben venir de una fuente con licencia.
+- La lista de empresas (`ingesta/universo.json`) está fija. En producción debe venir de una fuente con licencia.
