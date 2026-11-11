@@ -57,3 +57,16 @@ test("frase de ingresos con montos", async () => {
     + "$37,9 mil M en Mac y $63,5 mil M en el resto.");
   assert.equal(fraseIngresos("X", [{ nombre: "A", valor: 1 }]), null);
 });
+
+test("historia de ingresos: partes con su crecimiento y total", async () => {
+  const { historiaIngresos } = await import("../src/perfil.ts");
+  const h = historiaIngresos([
+    { anio: "2022", cierre: "2022-11-30", total: 16, partes: [{ nombre: "Digital Media", valor: 12 }, { nombre: "Digital Experience", valor: 4 }] },
+    { anio: "2024", cierre: "2024-11-30", total: 21.6, partes: [{ nombre: "Digital Media", valor: 16.2 }, { nombre: "Digital Experience", valor: 5.4 }] },
+  ])!;
+  assert.deepEqual(h.anios, ["2022", "2024"]);
+  assert.equal(h.filas[0].nombre, "Digital Media");
+  assert.ok(Math.abs(h.filas[0].cagr! - 0.35) < 1e-9);
+  assert.ok(Math.abs(h.cagrTotal! - 0.35) < 1e-9);
+  assert.equal(historiaIngresos(undefined), null);
+});

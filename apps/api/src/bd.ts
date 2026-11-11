@@ -106,6 +106,68 @@ const MIGRACIONES: string[] = [
      ultimo_trimestre  TEXT,
      actualizado       TEXT NOT NULL
    );`,
+  // 4. varias listas por usuario ("Quiero comprar", "Tengo"…). `seguidas` queda como la unión de
+  //    todas las listas (la usan los avisos y el recuento de seguidores). Las seguidas de antes
+  //    pasan a una lista "Mi lista".
+  `CREATE TABLE listas (
+     id         BIGSERIAL PRIMARY KEY,
+     usuario_id TEXT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+     nombre     TEXT NOT NULL,
+     orden      INTEGER NOT NULL DEFAULT 0,
+     creado     TEXT NOT NULL
+   );
+   CREATE INDEX ix_listas_usuario ON listas (usuario_id, orden, id);
+   CREATE TABLE lista_empresas (
+     lista_id BIGINT NOT NULL REFERENCES listas(id) ON DELETE CASCADE,
+     ticker   TEXT NOT NULL,
+     creado   TEXT NOT NULL,
+     PRIMARY KEY (lista_id, ticker)
+   );
+   INSERT INTO listas (usuario_id, nombre, orden, creado)
+     SELECT DISTINCT usuario_id, 'Mi lista', 0, MIN(creado) OVER (PARTITION BY usuario_id) FROM seguidas;
+   INSERT INTO lista_empresas (lista_id, ticker, creado)
+     SELECT l.id, s.ticker, s.creado FROM seguidas s JOIN listas l ON l.usuario_id = s.usuario_id;`,
+  // 5. comunidad: perfil propio (nombre, foto y presentación que no pisa Google), publicaciones,
+  //    me gusta, comentarios y buzón de sugerencias. `publico` es el id que ven los demás
+  //    (nunca el email ni el id de Google).
+  `ALTER TABLE usuarios ADD COLUMN publico TEXT;
+   UPDATE usuarios SET publico = md5(random()::text || id || clock_timestamp()::text);
+   ALTER TABLE usuarios ALTER COLUMN publico SET NOT NULL;
+   CREATE UNIQUE INDEX ix_usuarios_publico ON usuarios (publico);
+   ALTER TABLE usuarios ADD COLUMN nombre_propio TEXT;
+   ALTER TABLE usuarios ADD COLUMN foto_propia TEXT;
+   ALTER TABLE usuarios ADD COLUMN bio TEXT NOT NULL DEFAULT '';
+   CREATE TABLE publicaciones (
+     id         BIGSERIAL PRIMARY KEY,
+     usuario_id TEXT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+     texto      TEXT NOT NULL,
+     ticker     TEXT,
+     cartera    TEXT,             -- JSON: resultado del simulador compartido
+     creado     TEXT NOT NULL
+   );
+   CREATE INDEX ix_publicaciones_creado ON publicaciones (creado DESC);
+   CREATE INDEX ix_publicaciones_usuario ON publicaciones (usuario_id, creado DESC);
+   CREATE TABLE me_gusta (
+     publicacion_id BIGINT NOT NULL REFERENCES publicaciones(id) ON DELETE CASCADE,
+     usuario_id     TEXT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+     creado         TEXT NOT NULL,
+     PRIMARY KEY (publicacion_id, usuario_id)
+   );
+   CREATE TABLE comentarios (
+     id             BIGSERIAL PRIMARY KEY,
+     publicacion_id BIGINT NOT NULL REFERENCES publicaciones(id) ON DELETE CASCADE,
+     usuario_id     TEXT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+     texto          TEXT NOT NULL,
+     creado         TEXT NOT NULL
+   );
+   CREATE INDEX ix_comentarios_publicacion ON comentarios (publicacion_id, creado);
+   CREATE TABLE buzon (
+     id         BIGSERIAL PRIMARY KEY,
+     usuario_id TEXT REFERENCES usuarios(id) ON DELETE SET NULL,
+     tipo       TEXT NOT NULL CHECK (tipo IN ('comentario', 'sugerencia', 'reclamo', 'reporte')),
+     texto      TEXT NOT NULL,
+     creado     TEXT NOT NULL
+   );`,
 ];
 
 async function migrar(bd: BD) {

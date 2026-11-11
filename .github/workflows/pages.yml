@@ -32,7 +32,7 @@ concurrency:
 jobs:
   construir:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     env:
       # Nombre y email de contacto que exige la SEC (secreto del repositorio).
       SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}

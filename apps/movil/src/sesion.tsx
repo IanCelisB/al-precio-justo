@@ -7,7 +7,7 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { api, ErrorApi, type Yo } from "./api";
+import { api, ErrorApi, type Lista, type Usuario, type Yo } from "./api";
 
 const CLAVE = "ancla.sesion";
 
@@ -24,6 +24,11 @@ interface Sesion {
   entrar: (r: { token: string }) => Promise<void>;
   salir: () => Promise<void>;
   seguir: (ticker: string, si: boolean) => Promise<void>;
+  crearLista: (nombre: string, ticker?: string) => Promise<Lista>;
+  renombrarLista: (id: string, nombre: string) => Promise<void>;
+  borrarLista: (id: string) => Promise<void>;
+  enLista: (id: string, ticker: string, si: boolean) => Promise<void>;
+  editarPerfil: (cambios: { nombre?: string; foto?: string | null; bio?: string }) => Promise<Usuario>;
   guardarMetricas: (ids: string[]) => Promise<void>;
   borrarCuenta: () => Promise<void>;
 }
@@ -37,7 +42,8 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
 
   const cargarYo = useCallback(async (t: string) => {
     try {
-      setYo(await api.yo(t));
+      const y = await api.yo(t);
+      setYo({ ...y, listas: y.listas ?? [] });
       setToken(t);
     } catch (e) {
       if (e instanceof ErrorApi && e.codigo === 401) { await almacen.borrar(); setToken(null); setYo(null); }
@@ -56,6 +62,36 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
       if (!token || !yo) return;
       const { seguidas } = await api.seguir(token, ticker, si);
       setYo({ ...yo, seguidas });
+    },
+    crearLista: async (nombre, ticker) => {
+      if (!token || !yo) throw new Error("Inicia sesión.");
+      const r = await api.crearLista(token, nombre);
+      if (ticker) {
+        const x = await api.enLista(token, r.lista.id, ticker, true);
+        setYo({ ...yo, listas: x.listas, seguidas: x.seguidas });
+      } else setYo({ ...yo, listas: r.listas });
+      return r.lista;
+    },
+    renombrarLista: async (id, nombre) => {
+      if (!token || !yo) return;
+      const r = await api.renombrarLista(token, id, nombre);
+      setYo({ ...yo, listas: r.listas });
+    },
+    borrarLista: async (id) => {
+      if (!token || !yo) return;
+      const r = await api.borrarLista(token, id);
+      setYo({ ...yo, listas: r.listas, seguidas: r.seguidas });
+    },
+    enLista: async (id, ticker, si) => {
+      if (!token || !yo) return;
+      const r = await api.enLista(token, id, ticker, si);
+      setYo({ ...yo, listas: r.listas, seguidas: r.seguidas });
+    },
+    editarPerfil: async (cambios) => {
+      if (!token || !yo) throw new Error("Inicia sesión.");
+      const { usuario } = await api.editarPerfil(token, cambios);
+      setYo({ ...yo, usuario });
+      return usuario;
     },
     guardarMetricas: async (ids) => {
       if (!token || !yo) return;

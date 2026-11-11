@@ -15,8 +15,15 @@ export interface DatosClave {
   acciones: number | null;
 }
 
+export type EjeIngresos = "segmentos" | "productos" | "regiones";
+export interface AnioIngresos { anio: string; cierre: string; total: number; partes: { nombre: string; valor: number }[] }
+
 /** Perfil descriptivo (Wikidata y SEC), tal como lo guarda `ingesta.perfil`. */
 export interface Perfil {
+  /** "Item 1. Business" del último 10-K: a qué se dedica, en palabras de la empresa (en inglés). */
+  actividad?: { texto: string; idioma: string; fuente: string; fecha: string } | null;
+  /** Ventas por negocio, producto y región de los últimos 5 años fiscales (del más antiguo al más nuevo). */
+  ingresosHistoria?: Partial<Record<EjeIngresos, AnioIngresos[]>>;
   fundacion?: string | null;
   empleados?: number | null;
   ceo?: string | null;
@@ -135,4 +142,38 @@ export function fraseIngresos(nombre: string, lista: { nombre: string; valor: nu
   const trozos = p.map((x) => (x.nombre === "Otros" ? `${monto(x.valor)} en el resto` : `${monto(x.valor)} en ${x.nombre}`));
   const texto = `${trozos.slice(0, -1).join(", ")} y ${trozos.at(-1)}`;
   return `${nombre} vendió ${monto(total)}${anio ? ` en su año fiscal ${anio}` : " en su último año"}: ${texto}.`;
+}
+
+export interface FilaHistoria { nombre: string; valores: (number | null)[]; ultimo: number; pct: number; cagr: number | null }
+
+/**
+ * Historia de ingresos por partes para mostrar: las mayores partes del último año (el resto,
+ * "Otros"), con su valor en cada año y su crecimiento anual compuesto; y el total por año.
+ */
+export function historiaIngresos(serie: AnioIngresos[] | undefined, max = 6): { anios: string[]; total: (number | null)[]; cagrTotal: number | null; filas: FilaHistoria[] } | null {
+  if (!serie || serie.length < 2) return null;
+  const anios = serie.map((a) => a.anio);
+  const ultimo = serie.at(-1)!;
+  const orden = [...ultimo.partes].sort((a, b) => b.valor - a.valor);
+  const top = (orden.length > max ? orden.slice(0, max - 1) : orden).map((p) => p.nombre);
+  const valorDe = (a: AnioIngresos, nombre: string) => a.partes.find((p) => p.nombre === nombre)?.valor ?? null;
+  const tasa = (vals: (number | null)[]) => {
+    const i = vals.findIndex((v) => v !== null && v > 0);
+    const f = vals.at(-1);
+    const n = vals.length - 1 - i;
+    return i >= 0 && f && f > 0 && n >= 1 ? (f / vals[i]!) ** (1 / n) - 1 : null;
+  };
+  const filas: FilaHistoria[] = top.map((nombre) => {
+    const valores = serie.map((a) => valorDe(a, nombre));
+    return { nombre, valores, ultimo: valores.at(-1) ?? 0, pct: (valores.at(-1) ?? 0) / ultimo.total, cagr: tasa(valores) };
+  });
+  if (orden.length > top.length) {
+    const valores = serie.map((a) => {
+      const resto = a.partes.filter((p) => !top.includes(p.nombre)).reduce((s, p) => s + p.valor, 0);
+      return resto > 0 ? resto : null;
+    });
+    filas.push({ nombre: "Otros", valores, ultimo: valores.at(-1) ?? 0, pct: (valores.at(-1) ?? 0) / ultimo.total, cagr: tasa(valores) });
+  }
+  const total = serie.map((a) => a.total);
+  return { anios, total, cagrTotal: tasa(total), filas };
 }

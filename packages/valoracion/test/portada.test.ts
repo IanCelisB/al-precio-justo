@@ -14,6 +14,7 @@ const todas = [
   e("SUBE", { cambio1a: 1.5, capitalizacion: 5e9 }),
   e("GRANDE", { capitalizacion: 9e12 }),
   e("MEDIANA", { indice: "S&P 400", valor: 180, estado: "barata", cambio1a: 0.4, analisis: { tipo: "ciclica", sugerida: false, buenPrecio: true, orden: 70, calidad: 60 } }),
+  e("CHICA", { valor: 150, estado: "barata", capitalizacion: 4e8, cambio1a: 0.2 }),
 ];
 
 test("Para ti: Mi lista primero; sin vistas, el Top 10 es por capitalización", () => {
@@ -26,7 +27,14 @@ test("Para ti: Mi lista primero; sin vistas, el Top 10 es por capitalización", 
   assert.ok(top.ranking);
   assert.deepEqual(f.find((x) => x.id === "oportunidades")!.empresas.map((x) => x.ticker), ["BARATA", "MEDIANA"]);
   assert.equal(f.find((x) => x.id === "alza")!.empresas[0].ticker, "SUBE");
-  assert.deepEqual(f.find((x) => x.id === "descubre")!.empresas.map((x) => x.ticker), ["MEDIANA"]);
+  assert.deepEqual(f.find((x) => x.id === "descubre")!.empresas.map((x) => x.ticker), ["CHICA"]);
+  // Las pequeñas solo aparecen en Descubrimientos.
+  assert.ok(!f.filter((x) => x.id !== "descubre").some((x) => x.empresas.some((y) => y.ticker === "CHICA")));
+});
+
+test("Para ti: una fila por cada lista del usuario", () => {
+  const f = filas("todo", todas, { listas: [{ id: "1", nombre: "Quiero comprar", tickers: ["BARATA"] }, { id: "2", nombre: "Tengo", tickers: ["SUBE", "GRANDE"] }] });
+  assert.deepEqual(f.slice(0, 2).map((x) => [x.titulo, x.empresas.length]), [["Quiero comprar", 1], ["Tengo", 2]]);
 });
 
 test("con vistas suficientes el Top 10 es de la semana; filas vacías no aparecen", () => {
@@ -36,9 +44,12 @@ test("con vistas suficientes el Top 10 es de la semana; filas vacías no aparece
   assert.ok(!f.some((x) => x.id === "compras"));   // nadie compró todavía
 });
 
-test("por sector y por ciclo", () => {
+test("por sector y por tamaño (límite de US$1.000 M)", () => {
   assert.equal(filas("tipo", todas, { nombreSector: () => "Tecnología" })[0].titulo, "Tecnología");
-  assert.deepEqual(filas("ciclo", todas).map((x) => x.titulo), ["Cíclicas", "Defensivas", "Estables"]);
+  const t = filas("tamano", todas);
+  assert.ok(t.find((x) => x.id === "grandes-calidad")!.empresas.every((x) => x.ticker !== "CHICA"));
+  assert.deepEqual(t.find((x) => x.id === "pequenas-calidad")!.empresas.map((x) => x.ticker), ["CHICA"]);
+  assert.deepEqual(filas("descubre", todas).find((x) => x.id === "joyas")!.empresas.map((x) => x.ticker), ["CHICA"]);
 });
 
 test("destacadas: sin repetir empresa", () => {

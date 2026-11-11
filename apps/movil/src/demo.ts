@@ -13,7 +13,7 @@ import {
   curva, maquinaDelTiempo, prepararCompra, prepararVenta, REFERENCIA, resumen, type Cierre, type Operacion,
 } from "@ancla/valoracion/simulador";
 import { MONTO_MAXIMO } from "@ancla/valoracion/formato";
-import { destacadas, filas, FILTROS, type FiltroPortada } from "@ancla/valoracion/portada";
+import { destacadas, esPequena, filas, FILTROS, type FiltroPortada } from "@ancla/valoracion/portada";
 import { sectorDe } from "@ancla/valoracion/sectores";
 import {
   AJUSTES_AVISOS_POR_DEFECTO, avisoObjetivo, cumpleObjetivo, direccionObjetivo, leerAjustesAvisos, objetivoValido,
@@ -26,21 +26,114 @@ export const BASE = process.env.EXPO_PUBLIC_BASE ?? "";
 
 const AVISO = "Demo con datos fijos (foto del día de publicación) y dinero ficticio. No es asesoría financiera.";
 const SEGUIDAS_POR_DEFECTO = ["AAPL", "MSFT", "GOOGL", "NVDA"];
-const USUARIO = { id: "demo", email: "", nombre: "Invitado", foto: null };
+const PUBLICO = "invitado-demo";
 const CLAVE = "ancla.demo";
 
-interface Estado { sesion: boolean; seguidas: string[]; metricasExtra: string[]; operaciones: Operacion[] }
+interface ListaDemo { id: string; nombre: string; tickers: string[] }
+interface PerfilDemo { nombre: string; bio: string; foto: string | null }
+interface PublicacionDemo { id: string; texto: string; ticker: string | null; cartera: any; creado: string; meGusta: boolean; comentarios: { id: string; texto: string; creado: string }[] }
+interface Estado {
+  sesion: boolean; seguidas: string[]; metricasExtra: string[]; operaciones: Operacion[];
+  listas: ListaDemo[]; perfil: PerfilDemo; publicaciones: PublicacionDemo[];
+}
+const VACIO: Estado = {
+  sesion: false, seguidas: [], metricasExtra: [], operaciones: [], listas: [],
+  perfil: { nombre: "Invitado", bio: "", foto: null }, publicaciones: [],
+};
+const usuario = (e: Estado) => ({ id: "demo", email: "", nombre: e.perfil.nombre, foto: e.perfil.foto, publico: PUBLICO, bio: e.perfil.bio });
+const autor = (e: Estado) => ({ publico: PUBLICO, nombre: e.perfil.nombre, foto: e.perfil.foto });
+const union = (ls: ListaDemo[]) => [...new Set(ls.flatMap((l) => l.tickers))];
 
 // --- almacenamiento del navegador ---------------------------------------------------------------
 function leer(): Estado {
   try {
     const g = JSON.parse(globalThis.localStorage?.getItem(CLAVE) ?? "null");
-    if (g && typeof g === "object") return { sesion: !!g.sesion, seguidas: g.seguidas ?? [], metricasExtra: g.metricasExtra ?? [], operaciones: g.operaciones ?? [] };
+    if (g && typeof g === "object") {
+      const seguidas: string[] = g.seguidas ?? [];
+      // Antes había una sola lista: las seguidas pasan a "Mi lista".
+      const listas: ListaDemo[] = g.listas ?? (seguidas.length ? [{ id: "1", nombre: "Mi lista", tickers: seguidas }] : []);
+      return {
+        ...VACIO, sesion: !!g.sesion, metricasExtra: g.metricasExtra ?? [], operaciones: g.operaciones ?? [],
+        listas, seguidas: union(listas), perfil: { ...VACIO.perfil, ...(g.perfil ?? {}) }, publicaciones: g.publicaciones ?? [],
+      };
+    }
   } catch { /* sin almacenamiento */ }
-  return { sesion: false, seguidas: [], metricasExtra: [], operaciones: [] };
+  return { ...VACIO };
 }
 function guardar(e: Estado) {
-  try { globalThis.localStorage?.setItem(CLAVE, JSON.stringify(e)); } catch { /* sin almacenamiento */ }
+  try { globalThis.localStorage?.setItem(CLAVE, JSON.stringify({ ...e, seguidas: union(e.listas) })); } catch { /* sin almacenamiento */ }
+}
+
+/** Una publicación de la demo con la forma de la API (solo existen las del propio navegador). */
+const publicacion = (e: Estado, x: PublicacionDemo) => ({
+  id: x.id, autor: autor(e), texto: x.texto, ticker: x.ticker, cartera: x.cartera, creado: x.creado,
+  meGusta: x.meGusta ? 1 : 0, comentarios: x.comentarios.length, loHeGustado: x.meGusta, mia: true,
+});
+
+async function rutasComunidad(p: string, metodo: string, cuerpo: any, e: Estado): Promise<unknown> {
+  if (p === "/comunidad" && metodo === "GET") return e.publicaciones.map((x) => publicacion(e, x));
+  if (p === "/buzon") {
+    const texto = String(cuerpo.texto ?? "").trim();
+    if (texto.length < 3) throw new ErrorDemo(400, "Escribe tu mensaje.");
+    return { ok: true };
+  }
+  if (p.startsWith("/usuarios/")) {
+    return {
+      publico: PUBLICO, nombre: e.perfil.nombre, foto: e.perfil.foto, bio: e.perfil.bio, desde: new Date().toISOString(),
+      meGustaRecibidos: e.publicaciones.filter((x) => x.meGusta).length, publicaciones: e.publicaciones.map((x) => publicacion(e, x)), soyYo: true,
+    };
+  }
+  const m = p.match(/^\/comunidad\/(\d+)\/(comentarios|me-gusta)$/);
+  if (p.startsWith("/comentarios/")) {
+    const id = p.slice(13);
+    for (const x of e.publicaciones) x.comentarios = x.comentarios.filter((c) => c.id !== id);
+    guardar(e);
+    return { ok: true };
+  }
+  if (m && m[2] === "comentarios") {
+    const x = e.publicaciones.find((y) => y.id === m[1]);
+    if (!x) throw new ErrorDemo(404, "Esa publicación ya no existe.");
+    if (metodo === "POST") {
+      const texto = String(cuerpo.texto ?? "").trim().slice(0, 500);
+      if (!texto) throw new ErrorDemo(400, "Escribe un comentario.");
+      const c = { id: String(Date.now()), texto, creado: new Date().toISOString() };
+      x.comentarios.push(c);
+      guardar(e);
+      return { ...c, autor: autor(e), mio: true };
+    }
+    return x.comentarios.map((c) => ({ ...c, autor: autor(e), mio: true }));
+  }
+  if (m && m[2] === "me-gusta") {
+    const x = e.publicaciones.find((y) => y.id === m[1]);
+    if (!x) throw new ErrorDemo(404, "Esa publicación ya no existe.");
+    x.meGusta = metodo === "PUT";
+    guardar(e);
+    return { meGusta: x.meGusta ? 1 : 0, loHeGustado: x.meGusta };
+  }
+  if (p === "/comunidad" && metodo === "POST") {
+    const texto = String(cuerpo.texto ?? "").trim().slice(0, 1000);
+    let cartera = null;
+    if (cuerpo.compartirCartera) {
+      const c = await cartera_(e);
+      if (!c.posiciones.length) throw new ErrorDemo(400, "Tu cartera del simulador está vacía.");
+      cartera = {
+        gananciaPct: c.gananciaPct, valorTotal: c.valorTotal,
+        posiciones: c.posiciones.map((x: any) => ({ ticker: x.ticker, peso: (x.valor ?? 0) / (c.valorPosiciones || 1), gananciaPct: x.gananciaPct }))
+          .sort((a: any, b: any) => b.peso - a.peso).slice(0, 12),
+      };
+    }
+    if (!texto && !cartera) throw new ErrorDemo(400, "Escribe algo antes de publicar.");
+    const x: PublicacionDemo = { id: String(Date.now()), texto, ticker: cuerpo.ticker ? String(cuerpo.ticker).toUpperCase() : null, cartera, creado: new Date().toISOString(), meGusta: false, comentarios: [] };
+    e.publicaciones.unshift(x);
+    guardar(e);
+    return publicacion(e, x);
+  }
+  if (p.startsWith("/comunidad/") && metodo === "DELETE") {
+    e.publicaciones = e.publicaciones.filter((x) => x.id !== p.slice(11));
+    guardar(e);
+    return { ok: true };
+  }
+  throw new ErrorDemo(404, `La demo no tiene ${p}`);
 }
 
 // --- foto de los datos ----------------------------------------------------------------------------
@@ -74,6 +167,7 @@ function coincide(r: { ticker: string; nombre: string }, q: string): number {
 }
 
 // --- simulador en el navegador (mismas funciones que la API) --------------------------------------
+const cartera_ = (e: Estado) => cartera(e);
 async function cartera(e: Estado) {
   const todas = await resumenes();
   const por = new Map(todas.map((r) => [r.ticker, r]));
@@ -173,7 +267,7 @@ export async function responder(ruta: string, init: RequestInit = {}): Promise<u
 
   if (p === "/auth/config") return { google: false, prueba: true };
   if (p === "/auth/google") throw new ErrorDemo(400, "En la demo se entra como invitado.");
-  if (p === "/auth/prueba") { guardar({ ...e, sesion: true }); return { token: "demo", usuario: USUARIO }; }
+  if (p === "/auth/prueba") { guardar({ ...e, sesion: true }); return { token: "demo", usuario: usuario(e) }; }
 
   if (p === "/inicio") {
     const [todas, base] = await Promise.all([resumenes(), archivo<any>("inicio.json")]);
@@ -196,6 +290,7 @@ export async function responder(ruta: string, init: RequestInit = {}): Promise<u
       vistas: Object.entries(vistas).sort((a, b) => b[1] - a[1]).map(([t]) => t),
       compras: [...new Set(e.operaciones.filter((o) => o.tipo === "compra").map((o) => o.ticker))],
       mias: e.sesion ? e.seguidas : [],
+      listas: e.sesion ? e.listas : [],
       nombreSector: (x: string | null) => sectorDe(x).nombre,
     };
     return { filtro: f, destacadas: destacadas(todas, ctx), filas: filas(f, todas, ctx) };
@@ -219,36 +314,87 @@ export async function responder(ruta: string, init: RequestInit = {}): Promise<u
   if (p === "/buscar") {
     const texto = (q.get("q") ?? "").trim().toLowerCase();
     let lista = (await resumenes()).map((r) => ({ r, m: texto ? coincide(r, texto) : 1 })).filter((x) => x.m > 0);
+    const universo = lista.length;
     if (q.get("tipo")) lista = lista.filter((x) => x.r.analisis.tipo === q.get("tipo"));
+    if (q.get("tamano") === "grande") lista = lista.filter((x) => !esPequena(x.r));
+    if (q.get("tamano") === "pequena") lista = lista.filter((x) => esPequena(x.r));
     if (q.get("buenPrecio") === "1") lista = lista.filter((x) => x.r.analisis.buenPrecio);
     lista.sort((a, b) => b.m - a.m || (b.r.analisis.orden ?? 0) - (a.r.analisis.orden ?? 0));
-    return { total: lista.length, resultados: lista.slice(0, Number(q.get("limite") ?? 30)).map((x) => x.r) };
+    const desde = Number(q.get("desde") ?? 0) || 0;
+    return { total: lista.length, universo: texto ? undefined : universo, resultados: lista.slice(desde, desde + Number(q.get("limite") ?? 30)).map((x) => x.r) };
   }
   if (p === "/simulador/tiempo") {
     const importe = Number(q.get("importe") ?? 1000);
     if (!Number.isFinite(importe) || importe <= 0 || importe > MONTO_MAXIMO) throw new ErrorDemo(400, "Monto fuera de rango.");
     const desde = q.get("desde") ?? "";
-    const [f, s] = await Promise.all([ficha(String(q.get("ticker")).toUpperCase()), spy()]);
-    const r = maquinaDelTiempo(importe, f.precios, desde, s);
+    const contra = q.get("contra") ? String(q.get("contra")).toUpperCase() : null;
+    const [f, c] = await Promise.all([ficha(String(q.get("ticker")).toUpperCase()), contra ? ficha(contra) : Promise.resolve(null)]);
+    const r = maquinaDelTiempo(importe, f.precios, desde, c?.precios ?? []);
     if (!r) throw new ErrorDemo(404, "No hay precios para esa fecha.");
-    return { ticker: f.ticker, importe, ...r, aviso: AVISO };
+    return { ticker: f.ticker, importe, contra, ...r, aviso: AVISO };
+  }
+
+  if (p === "/comunidad" && metodo === "GET") return e.sesion ? rutasComunidad(p, metodo, cuerpo, e) : [];
+  if (p.startsWith("/usuarios/") || p === "/buzon" || (p.startsWith("/comunidad/") && p.endsWith("/comentarios") && metodo === "GET")) {
+    return rutasComunidad(p, metodo, cuerpo, e);
   }
 
   // Desde aquí, todo necesita la sesión de invitado.
   if (!e.sesion) throw new ErrorDemo(401, "Inicia sesión como invitado.");
+  if (p.startsWith("/comunidad") || p.startsWith("/comentarios/")) return rutasComunidad(p, metodo, cuerpo, e);
+  if (p === "/yo/perfil") {
+    if (cuerpo.nombre !== undefined) {
+      const n = String(cuerpo.nombre).trim().slice(0, 40);
+      if (n.length < 2) throw new ErrorDemo(400, "El nombre debe tener al menos 2 letras.");
+      e.perfil.nombre = n;
+    }
+    if (cuerpo.bio !== undefined) e.perfil.bio = String(cuerpo.bio).trim().slice(0, 280);
+    if (cuerpo.foto !== undefined) e.perfil.foto = cuerpo.foto || null;
+    guardar(e);
+    return { usuario: usuario(e) };
+  }
+  if (p.startsWith("/yo/listas")) {
+    const [, , , id, , ticker] = p.split("/");
+    if (!id && metodo === "POST") {
+      const nombre = String(cuerpo.nombre ?? "").trim().slice(0, 40);
+      if (!nombre) throw new ErrorDemo(400, "Ponle un nombre a la lista.");
+      if (e.listas.length >= 20) throw new ErrorDemo(400, "Puedes tener hasta 20 listas.");
+      const l = { id: String(Date.now()), nombre, tickers: [] };
+      e.listas.push(l);
+      guardar(e);
+      return { lista: l, listas: e.listas };
+    }
+    const l = e.listas.find((x) => x.id === id);
+    if (id && !l) throw new ErrorDemo(404, "No existe esa lista.");
+    if (l && ticker) {
+      const t = decodeURIComponent(ticker).toUpperCase();
+      l.tickers = metodo === "DELETE" ? l.tickers.filter((x) => x !== t) : [...new Set([...l.tickers, t])];
+    } else if (l && metodo === "PUT") {
+      const nombre = String(cuerpo.nombre ?? "").trim().slice(0, 40);
+      if (nombre) l.nombre = nombre;
+    } else if (l && metodo === "DELETE") {
+      e.listas = e.listas.filter((x) => x !== l);
+    }
+    guardar(e);
+    return { listas: e.listas, seguidas: union(e.listas) };
+  }
   if (p === "/yo") {
     if (metodo === "DELETE") {
-      guardar({ sesion: false, seguidas: [], metricasExtra: [], operaciones: [] });
+      guardar({ ...VACIO });
       try { globalThis.localStorage?.removeItem(CLAVE_AVISOS); } catch { /* sin almacenamiento */ }
       return { ok: true };
     }
-    return { usuario: USUARIO, seguidas: e.seguidas, metricasExtra: e.metricasExtra };
+    return { usuario: usuario(e), seguidas: union(e.listas), metricasExtra: e.metricasExtra, listas: e.listas };
   }
   if (p.startsWith("/yo/seguidas/")) {
     const t = decodeURIComponent(p.slice(13)).toUpperCase();
-    const seguidas = metodo === "DELETE" ? e.seguidas.filter((x) => x !== t) : [...new Set([...e.seguidas, t])];
-    guardar({ ...e, seguidas });
-    return { seguidas };
+    if (metodo === "DELETE") e.listas.forEach((l) => { l.tickers = l.tickers.filter((x) => x !== t); });
+    else {
+      if (!e.listas.length) e.listas.push({ id: "1", nombre: "Mi lista", tickers: [] });
+      e.listas[0].tickers = [...new Set([...e.listas[0].tickers, t])];
+    }
+    guardar(e);
+    return { seguidas: union(e.listas) };
   }
   if (p === "/yo/metricas") { guardar({ ...e, metricasExtra: cuerpo.ids ?? [] }); return { metricasExtra: cuerpo.ids ?? [] }; }
   if (p.startsWith("/yo/avisos") || p.startsWith("/yo/objetivos")) return rutasAvisos(p, metodo, cuerpo);

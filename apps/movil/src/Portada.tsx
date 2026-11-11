@@ -6,7 +6,6 @@ import { diferencia, ETIQUETA } from "@ancla/valoracion";
 import { dinero, nombreCorto, porcentajeConSigno } from "@ancla/valoracion/formato";
 import { tono } from "@ancla/valoracion/portada";
 import { sectorDe } from "@ancla/valoracion/sectores";
-import { TIPOS } from "@ancla/valoracion/recomendaciones";
 import type { Resumen } from "./api";
 import { Logo, type Abrir } from "./componentes";
 import type { Estilos } from "./estilos";
@@ -177,7 +176,7 @@ export function Poster({ s, tema, e, abrir, puesto, ancho }: {
           {[
             ["Valor estimado", e.valor ? dinero(e.valor) : "—"],
             ...(puesto ? [] : [["Precio de compra", a.precioCompra ? dinero(a.precioCompra) : "—"]]),
-            ["Calidad", `${a.calidad}/100 · ${TIPOS[a.tipo].nombre}`],
+            ["Calidad", `${a.calidad}/100`],
           ].map(([k, v]) => (
             <View key={k} style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}>
               <Text style={[s.ui, { fontSize: 11.5, color: "rgba(255,255,255,0.65)" }]}>{k}</Text>

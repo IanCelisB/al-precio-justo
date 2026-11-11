@@ -73,6 +73,7 @@ export function Simulador({ s, tema, abrir, irA }: { s: Estilos; tema: Tema; abr
               </View>
               {c.curva.length > 1 && (
                 <Comparado s={s} tema={tema} valores={c.curva.map((p) => p.valor)} referencia={c.curva.map((p) => p.referencia)}
+                  fechas={c.curva.map((p) => p.fecha)}
                   etiquetas={["Tu cartera", "S&P 500"]} />
               )}
               {vsIndice !== null && c.posiciones.length > 0 && (

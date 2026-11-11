@@ -20,7 +20,8 @@ import { Logo, Rejilla, Seccion, type Abrir } from "./componentes";
 import { Buscar } from "./Buscar";
 import { Detalle } from "./Detalle";
 import { estilos, type Estilos } from "./estilos";
-import { Perfil, Seguidas } from "./Perfil";
+import { Perfil } from "./Perfil";
+import { PantallaListas } from "./Listas";
 import { Simulador } from "./Simulador";
 import { ProveedorSesion, useSesion } from "./sesion";
 import type { Tema } from "./tema";
@@ -28,7 +29,7 @@ import { ProveedorConfig, useConfig } from "./config";
 import { Configuracion } from "./Configuracion";
 import { Campana, PantallaAvisos } from "./Avisos";
 
-type Pestana = "Inicio" | "Buscar" | "Simulador" | "Seguidas" | "Perfil";
+type Pestana = "Inicio" | "Buscar" | "Simulador" | "Listas" | "Perfil";
 
 export default function App() {
   const [cargadas] = useFonts({ BricolageGrotesque_700Bold, BricolageGrotesque_800ExtraBold, Figtree_400Regular, Figtree_600SemiBold, DMMono_400Regular });
@@ -82,22 +83,20 @@ function Navegacion({ tema, nav }: { tema: Tema; nav: EstadoNav }) {
     return () => sub.remove();
   }, [empresa, config, avisos]);
 
-  if (empresa) return <Detalle ticker={empresa} s={s} tema={tema} volver={() => setEmpresa(null)} abrir={setEmpresa} />;
-  if (config) return <Configuracion s={s} tema={tema} volver={() => setConfig(false)} />;
-  if (avisos) {
-    return <PantallaAvisos s={s} tema={tema} volver={() => setAvisos(false)} abrir={setEmpresa}
-      irAPerfil={() => { setAvisos(false); setPestana("Perfil"); }} />;
-  }
+  // La barra de abajo (Inicio, Buscar, Simulador, Listas, Perfil) está siempre, también dentro de una empresa.
+  const elegir = (p: Pestana) => { setEmpresa(null); setConfig(false); setAvisos(false); setPestana(p); };
+  const pantalla = empresa ? <Detalle key={empresa} ticker={empresa} s={s} tema={tema} volver={() => setEmpresa(null)} abrir={setEmpresa} />
+    : config ? <Configuracion s={s} tema={tema} volver={() => setConfig(false)} />
+    : avisos ? <PantallaAvisos s={s} tema={tema} volver={() => setAvisos(false)} abrir={setEmpresa} irAPerfil={() => elegir("Perfil")} />
+    : pestana === "Inicio" ? <PantallaInicio tema={tema} s={s} abrir={setEmpresa} irA={setPestana} abrirAvisos={() => setAvisos(true)} />
+    : pestana === "Buscar" ? <Buscar tema={tema} s={s} abrir={setEmpresa} />
+    : pestana === "Simulador" ? <Simulador tema={tema} s={s} abrir={setEmpresa} irA={setPestana} />
+    : pestana === "Listas" ? <PantallaListas tema={tema} s={s} abrir={setEmpresa} irAPerfil={() => setPestana("Perfil")} />
+    : <Perfil tema={tema} s={s} abrirConfig={() => setConfig(true)} abrir={setEmpresa} />;
   return (
     <View style={{ flex: 1, backgroundColor: tema.bg }}>
-      <View style={{ flex: 1 }}>
-        {pestana === "Inicio" && <PantallaInicio tema={tema} s={s} abrir={setEmpresa} irA={setPestana} abrirAvisos={() => setAvisos(true)} />}
-        {pestana === "Buscar" && <Buscar tema={tema} s={s} abrir={setEmpresa} />}
-        {pestana === "Simulador" && <Simulador tema={tema} s={s} abrir={setEmpresa} irA={setPestana} />}
-        {pestana === "Seguidas" && <Seguidas tema={tema} s={s} abrir={setEmpresa} irAPerfil={() => setPestana("Perfil")} />}
-        {pestana === "Perfil" && <Perfil tema={tema} s={s} abrirConfig={() => setConfig(true)} />}
-      </View>
-      <Pestanas s={s} tema={tema} activa={pestana} elegir={setPestana} />
+      <View style={{ flex: 1 }}>{pantalla}</View>
+      <Pestanas s={s} tema={tema} activa={empresa || config || avisos ? null : pestana} elegir={elegir} />
     </View>
   );
 }
@@ -167,17 +166,20 @@ function PantallaInicio({ tema, s, abrir, irA, abrirAvisos }: {
         {error && <Text style={[s.ui, { color: tema.down }]}>{error}</Text>}
         {!p && !error && <ActivityIndicator color={tema.link} style={{ marginTop: 40 }} />}
 
-        {filtro === "ciclo" && (
-          <View style={{ gap: 8 }}>
-            {[["Cíclicas", "Les va mejor cuando la economía crece: energía, materiales, viajes."],
-              ["Defensivas", "Aguantan en épocas malas: comida, salud, servicios básicos."],
-              ["Estables", "Negocios sin grandes vaivenes en sus ventas."]].map(([t, d]) => (
-              <View key={t} style={{ borderRadius: 16, padding: 14, backgroundColor: tema.bg2, borderWidth: 1, borderColor: tema.line }}>
-                <Text style={[s.hd, { fontSize: 17 }]}>{t}</Text>
-                <Text style={[s.ui, s.muted, { fontSize: 13.5 }]}>{d}</Text>
-              </View>
-            ))}
+        {(filtro === "tamano" || filtro === "descubre") && (
+          <View style={{ borderRadius: 16, padding: 14, backgroundColor: tema.bg2, borderWidth: 1, borderColor: tema.line, gap: 4 }}>
+            <Text style={[s.hd, { fontSize: 17 }]}>{filtro === "tamano" ? "Grandes y pequeñas" : "Empresas pequeñas"}</Text>
+            <Text style={[s.ui, s.muted, { fontSize: 13.5, lineHeight: 19 }]}>
+              {filtro === "tamano"
+                ? "Grandes: valen más de US$1.000 millones en bolsa; suelen ser negocios consolidados. Pequeñas: menos de US$1.000 millones; más espacio para crecer y más riesgo."
+                : "Empresas de menos de US$1.000 millones en bolsa: más espacio para crecer, pero también más riesgo. La app se centra en las grandes y de calidad; aquí van las pequeñas."}
+            </Text>
           </View>
+        )}
+        {p && filtro === "descubre" && p.filas.length === 0 && (
+          <Text style={[s.ui, s.muted, { fontSize: 14 }]}>
+            Todavía tenemos pocas empresas pequeñas: llegarán cuando ampliemos el universo más allá de las ~1.000 actuales.
+          </Text>
         )}
 
         {p?.filas.map((fila) => (
@@ -203,11 +205,11 @@ const ICONOS: Record<Pestana, React.ReactNode> = {
   Inicio: <Path d="M3 11l9-7 9 7v9H3z" />,
   Buscar: <><Circle cx="11" cy="11" r="7" /><Path d="m20 20-4-4" /></>,
   Simulador: <><Path d="M3 17l5-5 4 4 8-8" /><Path d="M14 8h6v6" /></>,
-  Seguidas: <Path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10z" />,
+  Listas: <><Path d="M9 6h11M9 12h11M9 18h11" /><Circle cx="4.5" cy="6" r="1.2" /><Circle cx="4.5" cy="12" r="1.2" /><Circle cx="4.5" cy="18" r="1.2" /></>,
   Perfil: <><Circle cx="12" cy="8" r="4" /><Path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" /></>,
 };
 
-function Pestanas({ s, tema, activa, elegir }: { s: Estilos; tema: Tema; activa: Pestana; elegir: (p: Pestana) => void }) {
+function Pestanas({ s, tema, activa, elegir }: { s: Estilos; tema: Tema; activa: Pestana | null; elegir: (p: Pestana) => void }) {
   return (
     <SafeAreaView edges={["bottom"]} style={s.pestanas}>
       {(Object.keys(ICONOS) as Pestana[]).map((k) => {

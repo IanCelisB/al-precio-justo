@@ -23,11 +23,10 @@ export default async function Inicio({ searchParams }: { searchParams: Promise<{
         ))}
       </nav>
 
-      {filtro === "ciclo" && (
+      {(filtro === "tamano" || filtro === "descubre") && (
         <div className="explica-ciclo">
-          <div><b>Cíclicas</b><span>Les va mejor cuando la economía crece: energía, materiales, viajes.</span></div>
-          <div><b>Defensivas</b><span>Aguantan en épocas malas: comida, salud, servicios básicos.</span></div>
-          <div><b>Estables</b><span>Negocios sin grandes vaivenes en sus ventas.</span></div>
+          <div><b>Grandes</b><span>Más de US$1.000 millones en bolsa: suelen ser negocios consolidados.</span></div>
+          <div><b>Pequeñas</b><span>Menos de US$1.000 millones: más espacio para crecer y más riesgo.</span></div>
         </div>
       )}
 

@@ -172,9 +172,9 @@ export function analizar(
   let motivo: string;
   if (!e.valor) motivo = "Sin valor estimado: no la sugerimos.";
   else if (c.descarta) motivo = c.descarta;
-  else if (picoCiclico) motivo = "Muy barata para ser cíclica: su caja puede estar en un buen momento del ciclo que no durará.";
+  else if (picoCiclico) motivo = "Muy barata para su historia: su caja puede estar en un buen momento del ciclo que no durará.";
   else if (c.puntos < CALIDAD_MINIMA) motivo = `Calidad ${c.puntos}/100: no llega al mínimo de ${CALIDAD_MINIMA}.`;
-  else if (sugerida) motivo = `${TIPOS[tipo].nombre}, calidad ${c.puntos}/100 y bajo su precio de compra.`;
+  else if (sugerida) motivo = `Calidad ${c.puntos}/100 y bajo su precio de compra.`;
   else if (vigilar) motivo = `Buena empresa, cerca de su precio de compra.`;
   else motivo = `Buena empresa, pero hoy está por encima de su precio de compra.`;
 

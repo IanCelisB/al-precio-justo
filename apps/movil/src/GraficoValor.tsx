@@ -2,14 +2,84 @@
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Svg, { Path } from "react-native-svg";
 import { ETIQUETA, estado, supuestosPorDefecto, valorar, type Supuestos, type Trimestre } from "@ancla/valoracion";
-import { dinero, porcentaje } from "@ancla/valoracion/formato";
-import { ajustar, CLAVE_MODELO, CONTROLES, geometriaValor, historialValor, type Cierre } from "@ancla/valoracion/grafico";
+import { dinero, divisaActual, porcentaje } from "@ancla/valoracion/formato";
+import { ajustar, CLAVE_MODELO, CONTROLES, geometriaValor, historialValor, valorEn, type Cierre } from "@ancla/valoracion/grafico";
+import { fechaEje, textoEje } from "@ancla/valoracion/ejes";
+import { historialPer, mediana } from "@ancla/valoracion/ficha";
 import type { Estilos } from "./estilos";
 import type { Tema } from "./tema";
+import { Grafico } from "./Grafico";
 
 const PERIODOS = [1, 3, 5, 10];
+
+/** Etiquetas del eje en la divisa elegida: "$200", "CLP$150.000"… */
+export const ejeDinero = (v: number, paso: number) => {
+  const d = divisaActual();
+  return textoEje(v * d.porUsd, paso * d.porUsd, d.simbolo);
+};
+
+const desdeHace = (anios: number) => { const d = new Date(); d.setFullYear(d.getFullYear() - anios); return d.toISOString().slice(0, 10); };
+
+function Periodos({ s, tema, anios, setAnios, disponibles }: {
+  s: Estilos; tema: Tema; anios: number; setAnios: (a: number) => void; disponibles: number;
+}) {
+  return (
+    <View style={{ flexDirection: "row", gap: 6 }}>
+      {PERIODOS.filter((a) => a === 1 || a <= disponibles).map((a) => {
+        const on = anios === a;
+        return (
+          <Pressable key={a} onPress={() => setAnios(a)} style={[s.chip, on && s.chipOn, { paddingHorizontal: 11, paddingVertical: 5 }]}
+            accessibilityRole="button" accessibilityState={{ selected: on }}>
+            <Text style={[s.uiB, { fontSize: 12.5, color: on ? tema.onAcc : tema.fg }]}>{a} {a === 1 ? "año" : "años"}</Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
+/** PER semana a semana: cuántos años de beneficios pagas al precio de cada momento, y su mediana. */
+export function GraficoPer({ s, tema, ticker, trimestres, precios, precio }: {
+  s: Estilos; tema: Tema; ticker: string; trimestres: Trimestre[]; precios: Cierre[]; precio: number | null;
+}) {
+  const [anios, setAnios] = useState(5);
+  const cierres = useMemo(() => {
+    const hoy = new Date().toISOString().slice(0, 10);
+    return precio && precios.at(-1)?.fecha !== hoy ? [...precios, { fecha: hoy, cierre: precio }] : precios;
+  }, [precios, precio]);
+  const todo = useMemo(() => historialPer(trimestres, cierres), [trimestres, cierres]);
+  const desde = desdeHace(anios);
+  const puntos = todo.filter((p) => p.fecha >= desde);
+  if (puntos.filter((p) => p.per !== null).length < 4) return null;
+  const actual = puntos.at(-1)?.per ?? null;
+  const med = mediana(puntos.map((p) => p.per));
+  // PER por encima de 150 (beneficios casi nulos) aplasta el gráfico: el eje se corta ahí.
+  const techo = Math.min(150, Math.max(...puntos.map((p) => p.per ?? 0)));
+  const disponibles = Math.ceil((Date.now() - Date.parse(cierres[0]?.fecha ?? "")) / (365.25 * 86_400_000));
+  const veces = (v: number) => `${v.toLocaleString("es", { maximumFractionDigits: 1 })}x`;
+  return (
+    <View style={[s.metrica, { gap: 10 }]}>
+      <View style={[s.fila, { alignItems: "center" }]}>
+        <Text style={[s.hd, { fontSize: 18 }]}>PER histórico</Text>
+        <Text style={[s.ui, s.muted, { fontSize: 11.5 }]}>precio / beneficio de 12 meses</Text>
+      </View>
+      <Periodos s={s} tema={tema} anios={anios} setAnios={setAnios} disponibles={disponibles} />
+      <Grafico s={s} tema={tema} xs={puntos.map((p) => Date.parse(p.fecha + "T00:00:00Z"))} etiquetas={puntos.map((p) => fechaEje(p.fecha))}
+        techo={techo} alto={200} desdeCero descripcion={`PER de ${ticker} en ${anios} ${anios === 1 ? "año" : "años"}`}
+        series={[
+          { id: "per", nombre: "PER", color: tema.link, valores: puntos.map((p) => (p.per === null ? null : Math.min(p.per, techo))), area: true },
+          ...(med !== null ? [{ id: "mediana", nombre: "Mediana", color: tema.muted, valores: puntos.map(() => med), punteada: true, grosor: 1.25, sinCursor: true }] : []),
+        ]}
+        formatoEje={(v) => `${Math.round(v)}x`} formatoValor={veces} />
+      <Text style={[s.ui, s.muted, { fontSize: 12.5, lineHeight: 18 }]}>
+        {actual !== null ? <>Hoy pagas <Text style={[s.uiB, s.cFg]}>{veces(actual)}</Text> sus beneficios de 12 meses</> : "Hoy tiene pérdidas: el PER no aplica"}
+        {med !== null ? <>; su mediana en {anios === 1 ? "el último año" : `${anios} años`} es <Text style={[s.uiB, s.cFg]}>{veces(med)}</Text>.</> : "."}
+        {" "}Un PER bajo su mediana puede indicar que está barata frente a su propia historia (si sus beneficios no se están deteriorando).
+      </Text>
+    </View>
+  );
+}
 
 export function GraficoValor({ s, tema, ticker, sector, trimestres, precios, precio }: {
   s: Estilos; tema: Tema; ticker: string; sector: string | null; trimestres: Trimestre[]; precios: Cierre[]; precio: number | null;
@@ -39,6 +109,20 @@ export function GraficoValor({ s, tema, ticker, sector, trimestres, precios, pre
     const d = new Date(); d.setFullYear(d.getFullYear() - anios); return d.toISOString().slice(0, 10);
   }, [anios]);
   const g = useMemo(() => geometriaValor(cierres, historial, desde), [cierres, historial, desde]);
+  const datos = useMemo(() => {
+    const cs = cierres.filter((c) => c.fecha >= desde && c.cierre > 0);
+    const v = cs.map((c) => valorEn(historial, c.fecha));
+    return {
+      xs: cs.map((c) => Date.parse(c.fecha.slice(0, 10) + "T00:00:00Z")),
+      etiquetas: cs.map((c) => fechaEje(c.fecha)),
+      precio: cs.map((c) => c.cierre),
+      valor: v.map((p) => p?.valor ?? null),
+      min: v.map((p) => p?.min ?? null),
+      max: v.map((p) => p?.max ?? null),
+      // Si el valor se dispara (un año de caja extraordinaria), el eje se corta para que el precio se lea.
+      techo: Math.max(...cs.map((c) => c.cierre)) * 2.5,
+    };
+  }, [cierres, historial, desde]);
   const base = useMemo(() => supuestosPorDefecto(trimestres, precio ?? undefined), [trimestres, precio]);
   const ahora = useMemo(() => valorar(trimestres, { precio: precio ?? undefined, sector: sec, supuestos: modelo }), [trimestres, precio, sec, modelo]);
   const propio = Object.keys(modelo).length > 0;
@@ -51,49 +135,25 @@ export function GraficoValor({ s, tema, ticker, sector, trimestres, precios, pre
   return (
     <View style={[s.metrica, { gap: 10 }]}>
       <Text style={[s.hd, { fontSize: 18 }]}>Precio frente a su valor</Text>
-      <View style={{ flexDirection: "row", gap: 6 }}>
-        {PERIODOS.filter((a) => a === 1 || a <= disponibles).map((a) => {
-          const on = anios === a;
-          return (
-            <Pressable key={a} onPress={() => setAnios(a)} style={[s.chip, on && s.chipOn, { paddingHorizontal: 11, paddingVertical: 5 }]}
-              accessibilityRole="button" accessibilityState={{ selected: on }}>
-              <Text style={[s.uiB, { fontSize: 12.5, color: on ? tema.onAcc : tema.fg }]}>{a} {a === 1 ? "año" : "años"}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
+      <Periodos s={s} tema={tema} anios={anios} setAnios={setAnios} disponibles={disponibles} />
 
-      <View style={{ height: 210, marginRight: 6 }}
-        accessible accessibilityLabel={`Precio de ${ticker} y su banda de valor en ${anios} ${anios === 1 ? "año" : "años"}`}>
-        {g.marcasY.map((m) => (
-          <View key={m.texto} style={{ position: "absolute", left: 0, right: 0, top: `${m.pos}%`, borderTopWidth: 1, borderColor: tema.line, borderStyle: "dashed" }}>
-            <Text style={[s.mono, s.muted, { position: "absolute", top: -15, fontSize: 10, backgroundColor: tema.card, paddingRight: 4 }]}>{m.texto}</Text>
-          </View>
-        ))}
-        <Svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute" }}>
-          {g.bandas.map((d, i) => <Path key={`b${i}`} d={d} fill={tema.band} opacity={0.9} />)}
-          {g.centro.map((d, i) => (
-            <Path key={`c${i}`} d={d} fill="none" stroke={tema.good} strokeWidth={1} strokeDasharray="3 3" opacity={0.7} vectorEffect="non-scaling-stroke" />
-          ))}
-          <Path d={g.precio} fill="none" stroke={tema.fg} strokeWidth={2} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-        </Svg>
-        {g.fin && (
-          <View style={{ position: "absolute", left: `${g.fin.x}%`, top: `${g.fin.y}%`, width: 10, height: 10, marginLeft: -5, marginTop: -5,
-            borderRadius: 5, backgroundColor: tema.fg, borderWidth: 2, borderColor: tema.card }} />
-        )}
-      </View>
-      <View style={{ height: 14 }}>
-        {g.marcasX.map((m) => (
-          <Text key={m.texto} style={[s.mono, s.muted, { position: "absolute", left: `${m.pos}%`, width: 40, marginLeft: -20, textAlign: "center", fontSize: 10 }]}>
-            {m.texto}
-          </Text>
-        ))}
-      </View>
+      <Grafico s={s} tema={tema} xs={datos.xs} etiquetas={datos.etiquetas} techo={datos.techo} alto={250}
+        descripcion={`Precio de ${ticker} y su rango de valor en ${anios} ${anios === 1 ? "año" : "años"}. Pasa el dedo o el ratón para ver cada fecha.`}
+        series={[
+          { id: "valor", nombre: "Valor estimado", color: tema.good, valores: datos.valor, punteada: true, grosor: 1.25 },
+          { id: "precio", nombre: "Precio", color: tema.fg, valores: datos.precio, grosor: 2 },
+        ]}
+        banda={{ nombre: `Rango${propio ? " (tu modelo)" : ""}`, color: tema.band, min: datos.min, max: datos.max }}
+        formatoEje={ejeDinero} formatoValor={(v) => dinero(v)} />
 
-      <View style={{ flexDirection: "row", gap: 14 }}>
+      <View style={{ flexDirection: "row", gap: 14, flexWrap: "wrap" }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
           <View style={{ width: 16, borderTopWidth: 2, borderColor: tema.fg }} />
           <Text style={[s.ui, s.muted, { fontSize: 12 }]}>Precio</Text>
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+          <View style={{ width: 16, borderTopWidth: 1.5, borderColor: tema.good, borderStyle: "dashed" }} />
+          <Text style={[s.ui, s.muted, { fontSize: 12 }]}>Valor estimado</Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
           <View style={{ width: 16, height: 10, borderRadius: 3, backgroundColor: tema.band }} />

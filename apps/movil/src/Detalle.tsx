@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Svg, { Line, Path } from "react-native-svg";
-import { diferencia, ETIQUETA, pagasPorCadaDolar } from "@ancla/valoracion";
+import Svg, { Path } from "react-native-svg";
+import { diferencia, ETIQUETA } from "@ancla/valoracion";
+import { divisaActual } from "@ancla/valoracion/formato";
+import { textoEje } from "@ancla/valoracion/ejes";
+import { caidaDesdeMaximo } from "@ancla/valoracion/ficha";
 import { tono } from "@ancla/valoracion/portada";
 import { FondoTono } from "./Portada";
 import { Ilustracion } from "./Ilustracion";
@@ -11,7 +14,7 @@ import { fuentes } from "./tema";
 import { dinero, fechaCorta, nombreCorto, porcentaje, porcentajeConSigno } from "@ancla/valoracion/formato";
 import {
   ADICIONALES, CLAVE_GUARDADO, CLAVE_PERIODO, EXTRA_POR_DEFECTO, PERIODO_POR_DEFECTO, PERIODOS_METRICAS, PRINCIPALES,
-  geometriaLinea, mostrar, porId, serieMetrica, type Contexto, type Metrica, type PeriodoMetricas, type PuntoMetrica,
+  mostrar, porId, serieMetrica, type Contexto, type Formato, type Metrica, type PeriodoMetricas, type PuntoMetrica,
 } from "@ancla/valoracion/metricas";
 import { sectorDe } from "@ancla/valoracion/sectores";
 import { TIPOS } from "@ancla/valoracion/recomendaciones";
@@ -19,7 +22,10 @@ import { api, type Ficha, type Resumen } from "./api";
 import type { Estilos } from "./estilos";
 import { Logo } from "./componentes";
 import { MaquinaTiempo, PanelSimular } from "./simulacion";
-import { GraficoValor } from "./GraficoValor";
+import { GraficoPer, GraficoValor } from "./GraficoValor";
+import { Grafico } from "./Grafico";
+import { Formula } from "./Formula";
+import { ModalListas } from "./Listas";
 import { SobreEmpresa } from "./SobreEmpresa";
 import { BotonObjetivo } from "./Avisos";
 import { useSesion } from "./sesion";
@@ -29,8 +35,6 @@ import type { Tema } from "./tema";
 
 /** Montos largos (p. ej. en pesos chilenos) en letra más chica para que quepan en la caja. */
 const tamano = (x: number | null) => { const n = x ? dinero(x).length : 0; return n > 12 ? 18 : n > 9 ? 22 : 26; };
-
-const FRASE = { cara: "Está cara.", barata: "Está barata.", rango: "Está dentro de su rango." } as const;
 
 /** Ficha de empresa: precio frente a valor, las 7 métricas clave y las que el usuario añada. */
 export function Detalle({ ticker, s, tema, volver, abrir }: {
@@ -46,8 +50,10 @@ export function Detalle({ ticker, s, tema, volver, abrir }: {
   const [error, setError] = useState<string | null>(null);
   const [extra, setExtra] = useState<string[]>(EXTRA_POR_DEFECTO);
   const [selector, setSelector] = useState(false);
+  const [formula, setFormula] = useState(false);
+  const [listas, setListas] = useState(false);
   const sesion = useSesion();
-  const seguida = !!sesion.yo?.seguidas.includes(ticker);
+  const enListas = (sesion.yo?.listas ?? []).filter((l) => l.tickers.includes(ticker));
 
   useEffect(() => {
     api.ficha(ticker).then(setF).catch(() => setError("No pudimos cargar esta empresa."));
@@ -83,6 +89,7 @@ export function Detalle({ ticker, s, tema, volver, abrir }: {
   const ctx: Contexto | null = f ? { trimestres: f.trimestres, precio: f.precio } : null;
   const serieDe = (m: Metrica) => serieMetrica(m, f!.trimestres, anios, { precios: f!.precios, precio: f!.precio });
   const ultimo = f?.trimestres.at(-1);
+  const caida = f ? caidaDesdeMaximo(f.precios, f.precio) : null;
 
   return (
     <SafeAreaView style={s.pantalla} edges={["top"]}>
@@ -114,10 +121,11 @@ export function Detalle({ ticker, s, tema, volver, abrir }: {
               <View style={{ paddingHorizontal: 20, paddingBottom: 20, marginTop: -56, gap: 4 }}>
                 <Logo ticker={f.ticker} sector={f.sector} size={60} s={s} />
                 <Text style={{ fontFamily: fuentes.head, fontSize: 36, color: tema.fg, letterSpacing: -1.2, marginTop: 12 }} numberOfLines={2}>
-                  {nombreCorto(f.nombre)}
+                  {nombreCorto(f.nombre)}{" "}
+                  <Text style={{ fontFamily: fuentes.headMedio, fontSize: 30, color: tema.muted, letterSpacing: -0.6 }}>({f.ticker})</Text>
                 </Text>
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
-                  {[[sec.nombre, false], [TIPOS[f.analisis.tipo].nombre, true], ...(f.indice ? [[f.indice, false]] : []), [f.ticker, false],
+                  {[[sec.nombre, false], ...(f.indice ? [[f.indice, false]] : []),
                     ...(f.analisis.sugerida ? [["Idea prudente", true]] : [])].map(([t, cy]) => (
                     <View key={t as string} style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, borderWidth: 1,
                       borderColor: cy ? tema.mint : tema.line, backgroundColor: tema.card }}>
@@ -135,49 +143,54 @@ export function Detalle({ ticker, s, tema, volver, abrir }: {
                     </Text>
                   )}
                 </View>
+                {caida && (
+                  <Text style={[s.ui, { fontSize: 14, color: tema.muted }]}>
+                    {caida.caida < -0.005 ? (
+                      <>Caída desde máximos: <Text style={[s.uiB, { color: caida.caida <= -0.2 ? tema.down : tema.fg }]}>{porcentajeConSigno(caida.caida, 0)}</Text>
+                        {" "}(máximo de {dinero(caida.maximo)} el {fechaCorta(caida.fecha)})</>
+                    ) : <Text style={[s.uiB, { color: tema.good }]}>En máximos de los últimos 10 años</Text>}
+                  </Text>
+                )}
                 <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
                   {[["Valor estimado", f.valor ? dinero(f.valor) : "—", tema.fg],
                     ["Frente a su valor", f.precio && f.valor && f.estado ? `${ETIQUETA[f.estado]} ${diferencia(f.precio, f.valor)}` : "—",
-                      f.estado === "barata" ? tema.good : f.estado === "cara" ? tema.down : tema.fg]].map(([k, v, col]) => (
+                      f.estado === "barata" ? tema.good : f.estado === "cara" ? tema.down : tema.fg]].map(([k, v, col], i) => (
                     <View key={k} style={{ flex: 1, borderRadius: 16, padding: 12, backgroundColor: tema.card, borderWidth: 1, borderColor: tema.line }}>
                       <Text style={[s.ui, s.muted, { fontSize: 12 }]}>{k}</Text>
                       <Text style={{ fontFamily: fuentes.headMedio, fontSize: 19, color: col }} numberOfLines={1} adjustsFontSizeToFit>{v}</Text>
+                      {i === 0 && (
+                        <Pressable onPress={() => setFormula(true)} accessibilityRole="button" accessibilityLabel="Ver cómo se calcula el valor estimado"
+                          style={({ pressed }) => [{ marginTop: 6, alignSelf: "flex-start", flexDirection: "row", alignItems: "center", gap: 5 }, pressed && { opacity: 0.6 }]}>
+                          <View style={{ width: 16, height: 16, borderRadius: 8, borderWidth: 1.5, borderColor: tema.link, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={[s.uiB, { fontSize: 10, lineHeight: 12, color: tema.link }]}>i</Text>
+                          </View>
+                          <Text style={[s.uiB, { fontSize: 12.5, color: tema.link }]}>¿Cómo se calcula?</Text>
+                        </Pressable>
+                      )}
                     </View>
                   ))}
                 </View>
+                {!f.valor && <Text style={[s.ui, s.muted, { fontSize: 13.5, marginTop: 8 }]}>{f.sinModelo ?? "Todavía no podemos estimar su valor."}</Text>}
                 {sesion.yo && (
-                  <Pressable onPress={() => sesion.seguir(ticker, !seguida).catch(() => {})} accessibilityRole="button"
-                    accessibilityState={{ selected: seguida }}
+                  <Pressable onPress={() => setListas(true)} accessibilityRole="button"
                     style={({ pressed }) => [{ marginTop: 16, height: 48, borderRadius: 999, alignItems: "center", justifyContent: "center",
-                      backgroundColor: seguida ? tema.good : tema.acc }, pressed && { transform: [{ scale: 0.97 }] }]}>
-                    <Text style={[s.uiB, { fontSize: 15, color: seguida ? "#04221A" : tema.onAcc }]}>{seguida ? "✓ En mi lista" : "+ Mi lista"}</Text>
+                      backgroundColor: enListas.length ? tema.good : tema.acc }, pressed && { transform: [{ scale: 0.97 }] }]}>
+                    <Text style={[s.uiB, { fontSize: 15, color: enListas.length ? "#04221A" : tema.onAcc }]} numberOfLines={1}>
+                      {enListas.length ? `✓ En ${enListas.length === 1 ? `«${enListas[0].nombre}»` : `${enListas.length} listas`}` : "+ Guardar en lista"}
+                    </Text>
                   </Pressable>
                 )}
                 <BotonObjetivo s={s} tema={tema} ticker={f.ticker} precioActual={f.precio} />
               </View>
             </View>
 
-            {f.precio && f.valor && f.estado ? (
-              <Text style={[s.ui, { fontSize: 16, lineHeight: 23 }]}>
-                Hoy pagas{" "}
-                <Text style={[s.uiB, { color: f.estado === "cara" ? tema.down : f.estado === "barata" ? tema.good : tema.fg }]}>
-                  ${pagasPorCadaDolar(f.precio, f.valor)} por cada $1
-                </Text>{" "}
-                de valor que muestran sus resultados. {FRASE[f.estado]}{" "}
-                <Text style={s.muted}>Rango de valor: {dinero(f.bandaMin!)} – {dinero(f.bandaMax!)}.</Text>
-              </Text>
-            ) : (
-              <Text style={[s.ui, { fontSize: 16 }]}>{f.sinModelo ?? "Todavía no podemos estimar su valor."}</Text>
-            )}
-
             <GraficoValor s={s} tema={tema} ticker={f.ticker} sector={f.sector} trimestres={f.trimestres} precios={f.precios}
               precio={f.precio} />
+            <GraficoPer s={s} tema={tema} ticker={f.ticker} trimestres={f.trimestres} precios={f.precios} precio={f.precio} />
 
             <View style={[s.metrica, { gap: 6 }, f.analisis.sugerida && { borderColor: tema.mint, borderWidth: 2 }]}>
               <View style={[s.fila, { alignItems: "center" }]}>
-                <View style={[s.pildora, { backgroundColor: tema.pastel[{ defensiva: 1, estable: 0, ciclica: 3 }[f.analisis.tipo]] }]}>
-                  <Text style={[s.uiB, s.cFg, { fontSize: 11.5 }]}>{TIPOS[f.analisis.tipo].nombre}</Text>
-                </View>
+                <Text style={[s.hd, { fontSize: 16 }]}>Análisis prudente</Text>
                 <Text style={[s.mono, { fontSize: 12.5 }]}>Calidad {f.analisis.calidad}/100</Text>
               </View>
               <Text style={[s.uiB, { fontSize: 14.5 }]}>{f.analisis.motivo}</Text>
@@ -243,6 +256,14 @@ export function Detalle({ ticker, s, tema, volver, abrir }: {
           </>
         )}
       </ScrollView>
+
+      {f && (
+        <Formula s={s} tema={tema} visible={formula} cerrar={() => setFormula(false)} nombre={nombreCorto(f.nombre)}
+          trimestres={f.trimestres} valoracion={f.valoracion} precio={f.precio} />
+      )}
+      {f && sesion.yo && (
+        <ModalListas s={s} tema={tema} visible={listas} cerrar={() => setListas(false)} ticker={f.ticker} nombre={nombreCorto(f.nombre)} />
+      )}
 
       <Modal visible={selector} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setSelector(false)}>
         <SafeAreaView style={s.pantalla} edges={["top", "bottom"]}>
@@ -321,47 +342,29 @@ function TarjetaMetrica({ m, ctx, s, tema, serieDe, anios, onQuitar }: {
   );
 }
 
-/**
- * Gráfico de línea de los últimos trimestres (la misma geometría que la web).
- * La línea se estira al ancho; los puntos son vistas aparte para que sigan redondos.
- */
+/** Etiquetas del eje vertical según el formato de la métrica. */
+function ejeMetrica(f: Formato) {
+  return (v: number, paso: number) => {
+    const d = divisaActual();
+    if (f === "porcentaje") return textoEje(v * 100, paso * 100, "", " %");
+    if (f === "veces") return textoEje(v, paso, "", "x");
+    if (f === "acciones") return textoEje(v, paso);
+    return textoEje(v * d.porUsd, paso * d.porUsd, d.simbolo);
+  };
+}
+
+/** Gráfico de la métrica por trimestre o por año, con ejes y cursor. */
 function Linea({ puntos, m, s, tema, anual }: {
   puntos: PuntoMetrica[]; m: Metrica; s: Estilos; tema: Tema; anual: boolean;
 }) {
-  const g = geometriaLinea(puntos.map((p) => p.valor));
-  const ultimo = puntos.length - 1;
   return (
-    <View style={{ marginTop: 10 }} accessibilityLabel={`${m.nombre} por ${anual ? "año" : "trimestre"}`}>
-      <View style={s.linea}>
-        <Svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute" }}>
-          {g.cero !== null && (
-            <Line x1={0} x2={100} y1={g.cero} y2={g.cero} stroke={tema.line} strokeWidth={1} strokeDasharray="3 3"
-              vectorEffect="non-scaling-stroke" />
-          )}
-          {g.areas.map((d, i) => <Path key={`a${i}`} d={d} fill={tema.link} fillOpacity={0.08} />)}
-          {g.tramos.map((d, i) => (
-            <Path key={`t${i}`} d={d} fill="none" stroke={tema.link} strokeWidth={2.25} strokeLinejoin="round"
-              strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-          ))}
-        </Svg>
-        {g.puntos.map((p, i) => {
-          if (!p) return null;
-          const fin = i === ultimo;
-          const t = fin ? 12 : 8;
-          return (
-            <View key={puntos[i].etiqueta} style={{
-              position: "absolute", left: `${p.x}%`, top: `${p.y}%`, width: t, height: t, marginLeft: -t / 2, marginTop: -t / 2,
-              borderRadius: t, borderWidth: 2, backgroundColor: fin ? tema.mint : tema.card,
-              borderColor: fin ? tema.mint : (puntos[i].valor ?? 0) < 0 && !m.menosEsMejor ? tema.down : tema.link,
-            }} />
-          );
-        })}
-      </View>
-      <View style={s.etiquetas}>
-        {puntos.map((p) => (
-          <Text key={p.etiqueta} style={[s.mono, s.muted, s.etiqueta]} numberOfLines={1}>{p.visible ? p.etiqueta : ""}</Text>
-        ))}
-      </View>
+    <View style={{ marginTop: 10 }}>
+      <Grafico s={s} tema={tema} tiempo={false} alto={170} puntos xs={puntos.map((_, i) => i)} etiquetas={puntos.map((p) => p.etiqueta)}
+        marcasX={puntos.map((p, i) => ({ i, texto: p.visible ? p.etiqueta : "" })).filter((x) => x.texto)}
+        series={[{ id: m.id, nombre: m.nombre, color: tema.link, valores: puntos.map((p) => p.valor), area: true }]}
+        desdeCero={puntos.some((p) => (p.valor ?? 0) < 0)}
+        formatoEje={ejeMetrica(m.formato)} formatoValor={(v) => mostrar(v, m.formato)}
+        descripcion={`${m.nombre} por ${anual ? "año" : "trimestre"}`} />
     </View>
   );
 }

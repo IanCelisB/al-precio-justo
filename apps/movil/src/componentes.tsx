@@ -4,7 +4,6 @@ import { Image, Pressable, Text, View, useWindowDimensions } from "react-native"
 import { Poster } from "./Portada";
 import { diferencia, ETIQUETA } from "@ancla/valoracion";
 import { dinero, nombreCorto } from "@ancla/valoracion/formato";
-import { TIPOS } from "@ancla/valoracion/recomendaciones";
 import { sectorDe } from "@ancla/valoracion/sectores";
 import { urlLogo, type ConRazones, type Resumen } from "./api";
 import type { Estilos } from "./estilos";
@@ -69,12 +68,11 @@ export function Rejilla({ s, tema, empresas, abrir }: { s: Estilos; tema: Tema; 
   );
 }
 
-/** Empresa con su análisis prudente: tipo, calidad, precio de compra y razones. */
+/** Empresa con su análisis prudente: calidad, precio de compra y razones. */
 export function Idea({ s, tema, e, abrir }: { s: Estilos; tema: Tema; e: ConRazones; abrir: Abrir }) {
   const a = e.analisis;
   const sector = sectorDe(e.sector);
   const distancia = e.precio && a.precioCompra ? e.precio / a.precioCompra - 1 : null;
-  const tono = { defensiva: 1, estable: 0, ciclica: 3 }[a.tipo];
   return (
     <Pressable style={({ pressed }) => [s.metrica, { gap: 8 }, pressed && { opacity: 0.85 }]} onPress={() => abrir(e.ticker)}
       accessibilityRole="button" accessibilityLabel={nombreCorto(e.nombre)}>
@@ -83,9 +81,6 @@ export function Idea({ s, tema, e, abrir }: { s: Estilos; tema: Tema; e: ConRazo
         <View style={{ flex: 1 }}>
           <Text style={[s.hd, { fontSize: 17 }]} numberOfLines={1}>{nombreCorto(e.nombre)}</Text>
           <Text style={[s.mono, s.muted, { fontSize: 11 }]}>{e.ticker} · {sector.nombre}</Text>
-        </View>
-        <View style={[s.pildora, { backgroundColor: tema.pastel[tono] }]}>
-          <Text style={[s.uiB, s.cFg, { fontSize: 11 }]}>{TIPOS[a.tipo].nombre}</Text>
         </View>
       </View>
       <View style={{ flexDirection: "row" }}>

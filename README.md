@@ -25,9 +25,12 @@ cambia: el modo demo solo se activa al compilar con `EXPO_PUBLIC_ANCLA_DEMO=1`
 
 Web y móvil comparten el mismo lenguaje visual: **claro por defecto** (degradado violeta → turquesa, tipografías Bricolage Grotesque y Figtree), con tema oscuro tipo cine (fondo casi negro, tarjetas grafito) y cuatro acentos en Configuración (`packages/valoracion/src/apariencia.ts`).
 
-- **Portada**: destacadas que rotan cada 7 s sobre una aurora animada (oportunidad del día, idea prudente, la que más sube en el año, refugio defensivo), filtros (Para ti, Popularidad, Por sector, Ciclo económico, Descubrimientos) y filas de carruseles con las ~1.000 empresas: Mi lista, Top 10 (con números grandes; las más vistas de la semana o, sin datos de uso, las más grandes), Oportunidades, Ideas prudentes, En alza, Descubrimientos, Defensivas y Cíclicas. La lógica está en `packages/valoracion/src/portada.ts` y la sirve `GET /portada?filtro=` (la demo la calcula en el navegador).
+- **Portada**: destacadas que rotan cada 7 s sobre una aurora animada (oportunidad del día, idea prudente, la que más sube en el año, calidad a precio justo), filtros (Para ti, Popularidad, Por sector, Por tamaño, Descubrimientos) y filas de carruseles: una por cada lista del usuario, Top 10, Oportunidades, Ideas prudentes, Calidad a precio justo, En alza y Descubrimientos. La app se centra en las **grandes** (más de US$1.000 M en bolsa); las **pequeñas** (menos de US$1.000 M) van a Descubrimientos y a «Por tamaño». La lógica está en `packages/valoracion/src/portada.ts` y la sirve `GET /portada?filtro=` (la demo la calcula en el navegador).
 - **Pósters**: degradado del color del sector con un matiz propio por empresa, su logo, el cambio del precio en 12 meses y su estado frente al valor.
-- **Ficha**: cabecera tipo panel con el degradado de la empresa, etiquetas (sector, tipo, índice, idea prudente), precio, cambio en el año, valor estimado y «+ Mi lista». Debajo, todo lo de antes: gráfico de valor, Tu modelo, análisis, sobre la empresa, simulador, máquina del tiempo y métricas.
+- **Ficha**: nombre y ticker en grande, etiquetas (sector, índice, idea prudente), precio, cambio en el año, **caída desde máximos**, valor estimado con «¿Cómo se calcula?» (la fórmula paso a paso con los números de la empresa) y «Guardar en lista». Debajo: precio frente a su valor, **PER histórico**, análisis, sobre la empresa, simulador, máquina del tiempo (comparable con la empresa que elijas) y métricas. La barra de abajo (Inicio, Buscar, Simulador, Listas, Perfil) está siempre visible.
+- **Gráficos interactivos** (`apps/movil/src/Grafico.tsx`, ejes en `packages/valoracion/src/ejes.ts`): eje vertical con valores redondos, eje de tiempo (meses o años) y, al pasar el ratón o el dedo, la fecha y el valor de cada serie.
+- **Listas**: cada usuario crea las que quiera («Quiero comprar», «Tengo», «Quiero vender», «Me gusta mirar»…) y guarda cada empresa en una o varias.
+- **Perfil y comunidad**: foto, nombre y presentación propios; un muro con lo que publican todos (con una empresa o el resultado de su cartera del simulador para que otros la copien), me gusta, comentarios, perfiles públicos (nunca se muestra el email) y un buzón de comentarios, sugerencias y reclamos. En la demo, todo queda en el navegador.
 
 ## Universo (prototipo: ~1.000 empresas)
 
@@ -92,8 +95,9 @@ valor se recalculan al instante en el dispositivo y se guardan en él.
 
 `ingesta/perfil.py` arma el perfil de cada empresa con fuentes públicas:
 
-- **Ficha**: fundación, sede, CEO, empleados y web (Wikidata, encontrada por su número de la SEC, CIK); industria, bolsa y cierre del año fiscal (SEC).
-- **¿De dónde vienen sus ingresos?**: ventas por negocio, producto y región del último 10-K, leídas por el propio lector de documentos (`lector.read_inline_segments`) con los nombres que usa la empresa.
+- **A qué se dedica**: los primeros párrafos de «Item 1. Business» de su último 10-K (en inglés; los documentos de la SEC son de dominio público). La app muestra una línea y «Ver más».
+- **Ficha**: fundación, sede y empleados (Wikidata, encontrada por su número de la SEC, CIK); industria y bolsa (SEC).
+- **¿De dónde vienen sus ingresos?**: ventas por negocio, producto y región de los **últimos 5 años fiscales** (el último 10-K y el de hace dos años), leídas por el propio lector de documentos (`lector.read_inline_segments`) con los nombres que usa la empresa. La app muestra cada parte con su crecimiento anual y avisa si las ventas totales caen.
 - **Datos clave** (`packages/valoracion/src/perfil.ts`): capitalización, PER, rentabilidad por dividendo, rango de 52 semanas y beta frente al S&P 500 (2 años, semanal).
 
 ```bash

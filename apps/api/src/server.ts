@@ -30,7 +30,16 @@
  *
  *   GET  /simulador                     cartera simulada (30.000 USD ficticios)
  *   POST /simulador/comprar {ticker, importe} · /vender {ticker, acciones|null} · /reiniciar
- *   GET  /simulador/tiempo?ticker=&importe=&desde=   máquina del tiempo (sin sesión)
+ *   GET  /simulador/tiempo?ticker=&importe=&desde=&contra=   máquina del tiempo (sin sesión), contra otra empresa
+ *
+ *   GET  /yo/listas · POST {nombre} · PUT/DELETE /yo/listas/:id · PUT/DELETE /yo/listas/:id/empresas/:ticker
+ *   PUT  /yo/perfil {nombre?, foto?, bio?}   lo que ven los demás en la comunidad
+ *
+ *   GET  /comunidad?antes=&ticker=       muro: lo último que publicaron todos
+ *   POST /comunidad {texto, ticker?, compartirCartera?}   · DELETE /comunidad/:id (solo el autor)
+ *   PUT/DELETE /comunidad/:id/me-gusta   · GET/POST /comunidad/:id/comentarios · DELETE /comentarios/:id
+ *   GET  /usuarios/:publico              perfil público y sus publicaciones
+ *   POST /buzon {tipo, texto}            comentarios, sugerencias y reclamos
  */
 import Fastify from "fastify";
 import cors from "@fastify/cors";
@@ -50,6 +59,8 @@ import { CLIENT_IDS, crearSesion, ErrorAuth, LOGIN_PRUEBA, usuarioDeSesion, veri
 import { Usuarios } from "./usuarios.ts";
 import { abrirBD } from "./bd.ts";
 import { Avisos } from "./avisos.ts";
+import { Comunidad, fotoValida, LIMITES, limpiar, type CarteraCompartida } from "./comunidad.ts";
+import { esPequena } from "@ancla/valoracion/portada";
 import { objetivoValido } from "@ancla/valoracion/avisos";
 import { Logos } from "./logos.ts";
 import { bajarSiCambio, CADA, reemplazar, URL_DATOS } from "./descarga.ts";
@@ -108,6 +119,7 @@ const bd = await abrirBD({ dir: DIR_PG });
 const usuarios = new Usuarios(bd);
 const analitica = new Analitica(bd);
 const avisos = new Avisos(bd);
+const comunidad = new Comunidad(bd);
 await analitica.limpiar();
 const logos = new Logos(process.env.ANCLA_LOGOS ?? resolve(RAIZ, "data/logos"));
 let cache: Cache | null = null;
@@ -273,6 +285,7 @@ app.get<{ Querystring: { filtro?: string } }>("/portada", async (req) => {
     vistas: (await analitica.ranking("vista", 7, 20)).map((x) => x.ticker),
     compras: (await analitica.ranking("compra", 30, 20)).map((x) => x.ticker),
     mias: req.usuarioId ? await usuarios.seguidas(req.usuarioId) : [],
+    listas: req.usuarioId ? await usuarios.listas(req.usuarioId) : [],
     nombreSector: (s: string | null) => sectorDe(s).nombre,
   };
   return { filtro, filtros: FILTROS, destacadas: destacadas(todas, ctx), filas: filas(filtro, todas, ctx) };
@@ -374,15 +387,18 @@ app.get<{ Params: { ticker: string } }>("/empresas/:ticker", async (req, rep) =>
   };
 });
 
-app.get<{ Querystring: { q?: string; tipo?: Tipo; buenPrecio?: string; limite?: string } }>("/buscar", async (req) => {
+app.get<{ Querystring: { q?: string; tipo?: Tipo; tamano?: string; buenPrecio?: string; limite?: string; desde?: string } }>("/buscar", async (req) => {
   const c = await actual();
   const q = (req.query.q ?? "").trim().toLowerCase();
   const limite = Math.min(Number(req.query.limite ?? 30) || 30, 100);
+  const desde = Math.max(0, Number(req.query.desde ?? 0) || 0);
   let lista = [...c.resumenes.values()].map((r) => ({ r, m: q ? coincide(r, q) : 1 })).filter((x) => x.m > 0);
   if (req.query.tipo) lista = lista.filter((x) => x.r.analisis.tipo === req.query.tipo);
+  if (req.query.tamano === "grande") lista = lista.filter((x) => !esPequena(x.r));
+  if (req.query.tamano === "pequena") lista = lista.filter((x) => esPequena(x.r));
   if (req.query.buenPrecio === "1") lista = lista.filter((x) => x.r.analisis.buenPrecio);
   lista.sort((a, b) => b.m - a.m || c.analisis.get(b.r.ticker)!.orden - c.analisis.get(a.r.ticker)!.orden);
-  return { total: lista.length, resultados: lista.slice(0, limite).map((x) => x.r) };
+  return { total: lista.length, universo: c.resumenes.size, resultados: lista.slice(desde, desde + limite).map((x) => x.r) };
 });
 
 app.get("/recomendaciones", async () => {
@@ -395,7 +411,7 @@ app.get("/recomendaciones", async () => {
     .sort((a, b) => c.analisis.get(b.ticker)!.orden - c.analisis.get(a.ticker)!.orden);
   return {
     criterio: "Calidad mínima de 60/100, sin deuda excesiva, caja irregular ni dilución fuerte, y precio por debajo "
-      + "de su precio de compra: el valor estimado menos un 15 % en defensivas, 20 % en estables y 35 % en cíclicas.",
+      + "de su precio de compra: el valor estimado menos un margen de seguridad del 15 % al 35 %, mayor cuanto más han variado sus ventas y su caja en el pasado.",
     aviso: "Ideas que cumplen un criterio fijo, iguales para todos. No es asesoría financiera ni una recomendación personalizada.",
     sugeridas: orden.filter((r) => r.analisis.sugerida).slice(0, 12).map(conRazones),
     vigilar: orden.filter((r) => r.analisis.vigilar).slice(0, 8).map(conRazones),
@@ -421,9 +437,63 @@ if (LOGIN_PRUEBA) {
 
 app.get("/yo", async (req) => {
   const id = await exigirUsuario(req);
-  const [usuario, seguidas, metricasExtra] = await Promise.all([usuarios.obtener(id), usuarios.seguidas(id), usuarios.metricasExtra(id)]);
-  return { usuario, seguidas, metricasExtra };
+  const [usuario, seguidas, metricasExtra, listas] = await Promise.all([
+    usuarios.obtener(id), usuarios.seguidas(id), usuarios.metricasExtra(id), usuarios.listas(id)]);
+  return { usuario, seguidas, metricasExtra, listas };
 });
+
+app.put<{ Body: { nombre?: string; foto?: string | null; bio?: string } }>("/yo/perfil", async (req, rep) => {
+  const id = await exigirUsuario(req);
+  const b = req.body ?? {};
+  const cambios: { nombre?: string; foto?: string | null; bio?: string } = {};
+  if (b.nombre !== undefined) {
+    cambios.nombre = limpiar(b.nombre, LIMITES.nombre);
+    if (cambios.nombre.length < 2) return rep.code(400).send({ error: "El nombre debe tener al menos 2 letras." });
+  }
+  if (b.bio !== undefined) cambios.bio = limpiar(b.bio, LIMITES.bio);
+  if (b.foto !== undefined) {
+    const f = fotoValida(b.foto);
+    if (f === false) return rep.code(400).send({ error: "La foto debe ser una imagen JPG, PNG o WebP de menos de 300 KB." });
+    cambios.foto = f;
+  }
+  return { usuario: await usuarios.editarPerfil(id, cambios) };
+});
+
+// --- listas -------------------------------------------------------------------------
+app.get("/yo/listas", async (req) => usuarios.listas(await exigirUsuario(req)));
+
+app.post<{ Body: { nombre?: string } }>("/yo/listas", async (req, rep) => {
+  const id = await exigirUsuario(req);
+  const l = await usuarios.crearLista(id, String(req.body?.nombre ?? ""));
+  if (typeof l === "string") return rep.code(400).send({ error: l });
+  return { lista: l, listas: await usuarios.listas(id) };
+});
+
+app.put<{ Params: { lista: string }; Body: { nombre?: string } }>("/yo/listas/:lista", async (req, rep) => {
+  const id = await exigirUsuario(req);
+  if (!(await usuarios.renombrarLista(id, req.params.lista, String(req.body?.nombre ?? "")))) return rep.code(400).send({ error: "No se pudo renombrar." });
+  return { listas: await usuarios.listas(id) };
+});
+
+app.delete<{ Params: { lista: string } }>("/yo/listas/:lista", async (req, rep) => {
+  const id = await exigirUsuario(req);
+  if (!(await usuarios.borrarLista(id, req.params.lista))) return rep.code(404).send({ error: "No existe esa lista." });
+  return { listas: await usuarios.listas(id), seguidas: await usuarios.seguidas(id) };
+});
+
+for (const metodo of ["PUT", "DELETE"] as const) {
+  app.route<{ Params: { lista: string; ticker: string } }>({
+    method: metodo, url: "/yo/listas/:lista/empresas/:ticker",
+    handler: async (req, rep) => {
+      const id = await exigirUsuario(req);
+      const t = req.params.ticker.toUpperCase();
+      if (metodo === "PUT" && !(await actual()).resumenes.has(t)) return rep.code(404).send({ error: `No conocemos ${t}` });
+      if (!(await usuarios.enLista(id, req.params.lista, t, metodo === "PUT"))) return rep.code(404).send({ error: "No existe esa lista." });
+      if (metodo === "PUT") await analitica.registrar("seguir", t);
+      return { listas: await usuarios.listas(id), seguidas: await usuarios.seguidas(id) };
+    },
+  });
+}
 
 app.put<{ Params: { ticker: string } }>("/yo/seguidas/:ticker", async (req, rep) => {
   const id = await exigirUsuario(req);
@@ -556,6 +626,18 @@ app.post<{ Body: { ticker?: string; acciones?: number | null } }>("/simulador/ve
   return { operacion: o, cartera: await estadoSimulador(id) };
 });
 
+/** Resumen compartible de la cartera simulada: rentabilidad y peso de cada posición (sin montos de operaciones). */
+async function carteraCompartida(id: string): Promise<CarteraCompartida | null> {
+  const c = await estadoSimulador(id);
+  if (!c.posiciones.length) return null;
+  return {
+    gananciaPct: c.gananciaPct,
+    valorTotal: c.valorTotal,
+    posiciones: c.posiciones.map((p) => ({ ticker: p.ticker, peso: (p.valor ?? 0) / (c.valorPosiciones || 1), gananciaPct: p.gananciaPct }))
+      .sort((a, b) => b.peso - a.peso).slice(0, 12),
+  };
+}
+
 app.post("/simulador/reiniciar", async (req) => {
   const id = await exigirUsuario(req);
   await usuarios.reiniciarSimulador(id);
@@ -563,18 +645,75 @@ app.post("/simulador/reiniciar", async (req) => {
 });
 
 /** Máquina del tiempo: "si hubieras invertido `importe` en `ticker` el `desde`". No necesita sesión. */
-app.get<{ Querystring: { ticker?: string; importe?: string; desde?: string } }>("/simulador/tiempo", async (req, rep) => {
+app.get<{ Querystring: { ticker?: string; importe?: string; desde?: string; contra?: string } }>("/simulador/tiempo", async (req, rep) => {
   const t = String(req.query.ticker ?? "").toUpperCase();
-  if (!(await actual()).resumenes.has(t)) return rep.code(404).send({ error: `No conocemos ${t}` });
+  const resumenes = (await actual()).resumenes;
+  if (!resumenes.has(t)) return rep.code(404).send({ error: `No conocemos ${t}` });
+  const contra = req.query.contra ? String(req.query.contra).toUpperCase() : null;
+  if (contra && !resumenes.has(contra)) return rep.code(404).send({ error: `No conocemos ${contra}` });
   const importe = Number(req.query.importe ?? 1000);
   if (!Number.isFinite(importe) || importe <= 0 || importe > MONTO_MAXIMO) {
     return rep.code(400).send({ error: `El monto debe estar entre $1 y $${MONTO_MAXIMO.toLocaleString("es")}.` });
   }
   const desde = /^\d{4}-\d{2}-\d{2}$/.test(req.query.desde ?? "") ? req.query.desde! : new Date(Date.now() - 365 * 86_400_000).toISOString().slice(0, 10);
-  const c = datos.cierres([t, REFERENCIA], desde);
-  const r = maquinaDelTiempo(importe, c[t], desde, c[REFERENCIA]);
+  const c = datos.cierres(contra ? [t, contra] : [t], desde);
+  const r = maquinaDelTiempo(importe, c[t], desde, contra ? c[contra] ?? [] : []);
   if (!r) return rep.code(404).send({ error: "No hay precios para esa fecha." });
-  return { ticker: t, importe, ...r, aviso: AVISO_SIMULADOR };
+  return { ticker: t, importe, contra, ...r, aviso: AVISO_SIMULADOR };
+});
+
+// --- comunidad ------------------------------------------------------------------------
+app.get<{ Querystring: { antes?: string; ticker?: string } }>("/comunidad", async (req) =>
+  comunidad.muro(req.usuarioId, { antes: req.query.antes, ticker: req.query.ticker?.toUpperCase() }));
+
+app.post<{ Body: { texto?: string; ticker?: string | null; compartirCartera?: boolean } }>("/comunidad", async (req, rep) => {
+  const id = await exigirUsuario(req);
+  const ticker = req.body?.ticker ? String(req.body.ticker).toUpperCase() : null;
+  if (ticker && !(await actual()).resumenes.has(ticker)) return rep.code(404).send({ error: `No conocemos ${ticker}` });
+  const cartera = req.body?.compartirCartera ? await carteraCompartida(id) : null;
+  if (req.body?.compartirCartera && !cartera) return rep.code(400).send({ error: "Tu cartera del simulador está vacía." });
+  const p = await comunidad.publicar(id, { texto: req.body?.texto, ticker, cartera });
+  if (typeof p === "string") return rep.code(400).send({ error: p });
+  return p;
+});
+
+app.delete<{ Params: { id: string } }>("/comunidad/:id", async (req, rep) => {
+  if (!(await comunidad.borrar(await exigirUsuario(req), req.params.id))) return rep.code(404).send({ error: "No encontramos esa publicación." });
+  return { ok: true };
+});
+
+for (const metodo of ["PUT", "DELETE"] as const) {
+  app.route<{ Params: { id: string } }>({
+    method: metodo, url: "/comunidad/:id/me-gusta",
+    handler: async (req, rep) => {
+      const r = await comunidad.meGusta(await exigirUsuario(req), req.params.id, metodo === "PUT");
+      return r ?? rep.code(404).send({ error: "Esa publicación ya no existe." });
+    },
+  });
+}
+
+app.get<{ Params: { id: string } }>("/comunidad/:id/comentarios", async (req) => comunidad.comentarios(req.usuarioId, req.params.id));
+
+app.post<{ Params: { id: string }; Body: { texto?: string } }>("/comunidad/:id/comentarios", async (req, rep) => {
+  const c = await comunidad.comentar(await exigirUsuario(req), req.params.id, req.body?.texto);
+  if (typeof c === "string") return rep.code(400).send({ error: c });
+  return c;
+});
+
+app.delete<{ Params: { id: string } }>("/comentarios/:id", async (req, rep) => {
+  if (!(await comunidad.borrarComentario(await exigirUsuario(req), req.params.id))) return rep.code(404).send({ error: "No encontramos ese comentario." });
+  return { ok: true };
+});
+
+app.get<{ Params: { publico: string } }>("/usuarios/:publico", async (req, rep) => {
+  const p = await comunidad.perfil(req.usuarioId, req.params.publico);
+  return p ?? rep.code(404).send({ error: "No encontramos a ese usuario." });
+});
+
+app.post<{ Body: { tipo?: string; texto?: string } }>("/buzon", async (req, rep) => {
+  const r = await comunidad.buzon(req.usuarioId, req.body?.tipo, req.body?.texto);
+  if (r !== true) return rep.code(400).send({ error: r });
+  return { ok: true };
 });
 
 version = datos.version();
